@@ -59,10 +59,6 @@ Lena has three startups on the PP-034 shortlist and needs Jonas to say which are
 - Add "Cancel request" next to the state. Confirm, take an optional reason, set Cancelled, log cancelled. No email to the owner.
 - When a startup is added or removed while a request is open, show "Shortlist changed since the request" with "Cancel and resend". That cancels the request and reopens the dialog with the note filled in.
 
-Data. request: id, pain_point_id, shortlist_id, owner_id, sent_by, note, state, sent_at, due_at, link_expires_at, startups_snapshot, reminders_sent, flag, cancelled_reason. The snapshot holds each startup's id, name, description and Lena's comment at send time. DR-3 renders the snapshot, never the live shortlist.
-
-Out of scope: other question types, more than one owner, sending to someone other than the owner, editing after sending.
-
 #### User stories
 
 - As Lena, I want to ask Jonas with one button, so that I stop writing chasing emails.
@@ -107,10 +103,6 @@ Jonas gets one email with one button. He taps it, confirms it is him, and lands 
 - "Not me": show "Thanks, we've told Lena Hartmann". Change nothing. Tell Lena once per request.
 - Expired link: show "This link has expired" with "Request a new link". The new link goes to the same address, lasts 14 days from now, and tells Lena "Jonas Keller asked for a new link". Open requests only, 3 times per request, then "Ask Lena Hartmann for a new link". Answered request: "Your answer was sent on 12 Oct 2026". Cancelled: "Lena no longer needs this".
 - SPF, DKIM and DMARC on the sending domain. Add "allowlist the sender" to the customer setup checklist.
-
-Data. link: request_id, token_hash, bound_email, expires_at, confirmed_at, renewals. Events: link_opened (likely_bot), identity_confirmed, not_me, link_renewed. An open before any tap is likely_bot when it comes from a known scanner range, or lands within 60 seconds of sending with no tap after it.
-
-Out of scope: buttons in the email body, Teams or Slack, a sending domain per customer.
 
 #### User stories
 
@@ -157,10 +149,6 @@ After the identity tap, Jonas gets one page with the three startups and three ch
 - On the shortlist, show each choice with who, when and how. Tell Lena once: "Jonas Keller answered PP-034", or "Jonas Keller needs more information on 3 startups" when nothing was rated.
 - After an answer, bring the button back as "Ask Jonas Keller again". That is the follow-up to Need more info. The information itself goes by email or a call.
 - Under Send: "Someone else should answer this". A name field that suggests OS users as he types. Any name is allowed. "Tell Lena" keeps the request open, tells Lena "Jonas Keller says Petra Ahlers should answer PP-034", and shows "Sent to Lena Hartmann. She'll send PP-034 to Petra Ahlers." If he answers afterwards, the answer wins and the handoff is cleared.
-
-Data. answer: request_id, items (startup_id, choice, comment), none_fit, none_fit_comment, submitted_at, via (magic_link or on_behalf), late, rated. Sending sets Answered. late means the pain point was finalised before the answer. rated means at least one Interested or Not now, or None of these fit. Three times Need more info is rated false. handoff: request_id, suggested_name, suggested_user_id, by, at. Events: answered (via, rated, late), handoff (matched).
-
-Out of scope: editing after sending, suggested stage change, SourceAI profiles, attachments.
 
 #### User stories
 
@@ -209,10 +197,6 @@ Today Lena is the reminder system. This ticket moves it into the OS: two automat
 - Resume reminders sets Waiting, or Late at once if day 8 has passed, and tells Lena once. Don't send reminders missed while paused. Send the next one due as normal.
 - Merge reminders due the same day for one owner into one email, with a section and a button per request.
 - Make the jobs idempotent: re-check the state and the event log right before sending. Send only when Waiting, fewer than two sent, and the pain point still in Shortlist.
-
-Data. Fields: reminders_sent, last_owner_activity_at, flag (none, away, bounced), paused_at, resumed_at. Events: reminder_sent (number, merged), reminder_skipped (reason), paused (flag), resumed, late.
-
-Out of scope: reading return dates out of auto-replies, a note to the owner's manager, customers changing the cadence, public holidays.
 
 #### User stories
 
@@ -268,8 +252,6 @@ Lena needs one place that shows everything still waiting on someone and lets her
   - First touch: the share answered within one working day.
   - No manual chase: the share of answered requests with no remind_now before the answer.
   - Late rate: the share whose wait (answered minus created, or today minus created while open) is more than 1.2 times the unit's median, or more than 8 days until the unit has 10 answered requests.
-
-Out of scope: the digest email, a measures screen, bulk actions, risk flags.
 
 #### User stories
 
