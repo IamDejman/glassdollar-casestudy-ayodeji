@@ -149,7 +149,7 @@ main{display:grid;gap:16px;align-items:start}
 .head .actions{flex:none;padding-top:4px}
 @container lena (max-width:700px){.head{flex-wrap:wrap}.head .actions{padding-top:0;width:100%}.head .actions .btn.primary{width:100%}}
 .head>*{min-width:0}
-.head .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:var(--ink-2)}
+.head .meta{margin:4px 0 0;color:var(--ink-2)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:0 1px 2px rgba(0,29,15,.04)}
 .s-head{display:flex;gap:10px;align-items:center}
 .avatar{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex:none}
@@ -232,9 +232,6 @@ dialog::backdrop{background:rgba(0,29,15,.45)}
 .dlg .preview{border:1px solid var(--line);border-radius:var(--radius-s);padding:12px;background:var(--bg);display:grid;gap:8px;font-size:14px}
 .dlg .preview .cta{display:inline-block;padding:8px 14px;background:var(--accent);color:#fff;border-radius:var(--radius-s);font-weight:600;width:max-content}
 label.field{display:grid;gap:6px}
-.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0}
-.facts dt{color:var(--ink-2)}
-.facts dd{margin:0}
 .peek summary{cursor:pointer;color:var(--ink-2);width:max-content}
 .peek .preview{margin-top:10px}
 .dlg .actions{justify-content:flex-end}
@@ -247,7 +244,7 @@ label.field{display:grid;gap:6px}
 
 <div class="guide" id="guide">
   <div class="guide-head">
-    <p class="guide-title"><b>Decision requests, a prototype.</b> Lena asks Jonas to rate three startups. He answers from his phone without logging in.</p>
+    <p class="guide-title"><b>Decision requests, a prototype.</b> Lena asks Jonas to rate three startups.</p>
     <ol class="steps" id="steps" aria-label="Walkthrough"></ol>
   </div>
   <div class="guide-row">
@@ -311,7 +308,7 @@ label.field{display:grid;gap:6px}
     </div>
   </section>
   <section class="pane jonas" id="jonasPane" aria-label="Jonas Keller's phone">
-    <p class="pane-head"><b>Jonas Keller</b>, logistics process lead at the Hamburg hub. This is his phone. He never logs in.</p>
+    <p class="pane-head"><b>Jonas Keller</b>, logistics process lead at the Hamburg hub. This is his phone.</p>
     <div class="device"><div id="jonas"></div></div>
   </section>
 </main>
@@ -320,12 +317,7 @@ label.field{display:grid;gap:6px}
 <dialog id="sendDialog" aria-labelledby="sendTitle">
   <form class="dlg" id="sendForm">
     <h2 id="sendTitle">Ask Jonas Keller to rate this shortlist</h2>
-    <p class="muted">He gets one email with a link. The page opens without a login.</p>
-    <dl class="facts">
-      <dt>Due</dt><dd id="pvDue">6 Oct 2026</dd>
-      <dt>Reminders</dt><dd><span id="pvR1">2 Oct</span> and <span id="pvR2">6 Oct</span>, only if he hasn't answered</dd>
-      <dt>Late</dt><dd>From <span id="pvLate">7 Oct</span>. You hear about it that day.</dd>
-    </dl>
+    <p>He has until <span id="pvDue">6 Oct 2026</span>. If he hasn't answered, he gets a reminder on <span id="pvR1">2 Oct</span> and another on <span id="pvR2">6 Oct</span>. From <span id="pvLate">7 Oct</span> the request is late and you hear about it.</p>
     <label class="field">Note to Jonas (optional)
       <textarea id="noteInput" name="note" autocomplete="off" maxlength="1000" rows="2">You know Pallet.ai and Parcelgrid from PP-024. Cargonaut Labs is new to you, but they're already running a pilot at the Hamburg hub on PP-030.</textarea>
     </label>
@@ -334,9 +326,8 @@ label.field{display:grid;gap:6px}
       <div class="preview" aria-label="Email preview">
         <div><b>To</b> jonas.keller@nordwind.example</div>
         <div><b>Subject</b> PP-034: Lena Hartmann needs your view on 3 startups</div>
-        <p>Hi Jonas, you raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by <span id="pvDueMail">6 Oct 2026</span>. It takes about 3 minutes and there's no login.</p>
+        <p>Hi Jonas, you raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by <span id="pvDueMail">6 Oct 2026</span>. It takes about 3 minutes.</p>
         <span class="cta" aria-hidden="true">Review 3 startups</span>
-        <p class="muted small">The startup names stay out of the email.</p>
       </div>
     </details>
     <div class="actions">
@@ -527,8 +518,8 @@ function guide(){
   else if (step === 2){
     pane = 'jonas';
     if (S.screen === 'inbox'){ text = 'Now on Jonas\u2019s phone. Open the email from Lena.'; target = '.mail-row'; }
-    else if (S.screen === 'email'){ text = 'Press \u201cReview 3 startups\u201d. Nothing is recorded until the next tap.'; target = '.email .cta'; }
-    else if (S.screen === 'identity'){ text = 'Confirm it\u2019s Jonas. This tap is what keeps the link safe from mail scanners.'; target = '[data-screen="answer"]'; }
+    else if (S.screen === 'email'){ text = 'Press \u201cReview 3 startups\u201d.'; target = '.email .cta'; }
+    else if (S.screen === 'identity'){ text = 'Confirm it\u2019s Jonas.'; target = '[data-screen="answer"]'; }
     else { text = 'Go back to the inbox and open the email again.'; target = '[data-screen="inbox"]'; }
   }
   else if (step === 3){
@@ -606,7 +597,7 @@ function renderShortlist(){
   const noneFit = r && r.answer && r.answer.noneFit ? `<div class="card"><b>None of these fit.</b> ${esc(r.answer.noneFitText)}</div>` : '';
   const behalf = r && r.answer && r.answer.note ? `<p class="muted small">${esc(r.answer.note)}</p>` : '';
   const events = r ? `<details class="log"><summary>Events for this request (${r.events.length})</summary><table><thead><tr><th>Date</th><th>Event</th></tr></thead><tbody>${r.events.map(e => `<tr><td class="num">${fmt(e.day)}</td><td>${esc(e.text)}</td></tr>`).join('')}</tbody></table></details>` : '';
-  return `<div class="head"><div><h1>PP-034 Reduce manual load planning for outbound trucks</h1><div class="meta small">Owner Jonas Keller <span>Shortlist, 3 startups</span></div></div><div class="actions">${status}${action}</div></div>
+  return `<div class="head"><div><h1>PP-034 Reduce manual load planning for outbound trucks</h1><p class="meta small">Raised by Jonas Keller, logistics process lead at the Hamburg hub. Three startups on the shortlist.</p></div><div class="actions">${status}${action}</div></div>
     <div class="stack">${noneFit}${cards}</div>${behalf}${events}`;
 }
 
@@ -649,10 +640,10 @@ function renderJonas(){
     const m = r.mails.find(x => x.id === S.openMail);
     const due = fmt(r.sentDay + DUE_DAY);
     const text = m.kind === 'request'
-      ? `<p>Hi Jonas, you raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by ${due}. It takes about 3 minutes and there's no login.</p>`
+      ? `<p>Hi Jonas, you raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by ${due}. It takes about 3 minutes.</p>`
       : m.kind === 'reminder'
-      ? `<p>Hi Jonas, a quick reminder that I still need your view on 3 startups for PP-034 by ${due}. It takes about 3 minutes and there's no login. This is reminder ${m.n} of 2.</p>`
-      : `<p>Hi Jonas, could you look at PP-034 today? It's three startups and takes about 3 minutes, with no login. I'd like to brief the Hamburg team this week.</p>`;
+      ? `<p>Hi Jonas, a quick reminder that I still need your view on 3 startups for PP-034 by ${due}. It takes about 3 minutes. This is reminder ${m.n} of 2.</p>`
+      : `<p>Hi Jonas, could you look at PP-034 today? It's three startups and takes about 3 minutes. I'd like to brief the Hamburg team this week.</p>`;
     body = `<button class="btn quiet" data-screen="inbox">Back to inbox</button>
       <div class="mail"><div class="email"><div class="hdr"><b>${esc(m.subject)}</b><span>Lena Hartmann via GlassDollar, ${fmt(m.day)}</span><span>To jonas.keller@nordwind.example</span></div>
       ${text}<button class="cta" data-screen="identity">Review 3 startups</button>
