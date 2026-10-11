@@ -230,6 +230,11 @@ dialog::backdrop{background:rgba(0,29,15,.45)}
 .dlg .preview{border:1px solid var(--line);border-radius:var(--radius-s);padding:12px;background:var(--bg);display:grid;gap:8px;font-size:14px}
 .dlg .preview .cta{display:inline-block;padding:8px 14px;background:var(--accent);color:#fff;border-radius:var(--radius-s);font-weight:600;width:max-content}
 label.field{display:grid;gap:6px}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;margin:0}
+.facts dt{color:var(--ink-2)}
+.facts dd{margin:0}
+.peek summary{cursor:pointer;color:var(--ink-2);width:max-content}
+.peek .preview{margin-top:10px}
 .dlg .actions{justify-content:flex-end}
 
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
@@ -313,17 +318,25 @@ label.field{display:grid;gap:6px}
 <dialog id="sendDialog" aria-labelledby="sendTitle">
   <form class="dlg" id="sendForm">
     <h2 id="sendTitle">Ask Jonas Keller to rate this shortlist</h2>
-    <p class="muted small">This is the email Jonas gets. The link opens one page with no login, and the startup names stay out of the email.</p>
-    <div class="preview" aria-label="Email preview">
-      <div><b>To</b> jonas.keller@nordwind.example</div>
-      <div><b>Subject</b> PP-034: Lena Hartmann needs your view on 3 startups</div>
-      <p>Hi Jonas, you raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by <span id="pvDue">6 Oct 2026</span>. It takes about 3 minutes and there's no login.</p>
-      <span class="cta" aria-hidden="true">Review 3 startups</span>
-      <p class="muted small">If Jonas hasn't answered, reminders go out on <span id="pvR1">2 Oct</span> and <span id="pvR2">6 Oct</span>. If he still hasn't by <span id="pvLate">7 Oct</span>, you'll hear about it.</p>
-    </div>
+    <p class="muted">He gets one email with a link. The page opens without a login.</p>
+    <dl class="facts">
+      <dt>Due</dt><dd id="pvDue">6 Oct 2026</dd>
+      <dt>Reminders</dt><dd><span id="pvR1">2 Oct</span> and <span id="pvR2">6 Oct</span>, only if he hasn't answered</dd>
+      <dt>Late</dt><dd>From <span id="pvLate">7 Oct</span>. You hear about it that day.</dd>
+    </dl>
     <label class="field">Note to Jonas (optional)
-      <textarea id="noteInput" name="note" autocomplete="off" maxlength="1000">You know Pallet.ai and Parcelgrid from PP-024. Cargonaut Labs is new to you, but they're already running a pilot at the Hamburg hub on PP-030.</textarea>
+      <textarea id="noteInput" name="note" autocomplete="off" maxlength="1000" rows="2">You know Pallet.ai and Parcelgrid from PP-024. Cargonaut Labs is new to you, but they're already running a pilot at the Hamburg hub on PP-030.</textarea>
     </label>
+    <details class="peek">
+      <summary>See the email</summary>
+      <div class="preview" aria-label="Email preview">
+        <div><b>To</b> jonas.keller@nordwind.example</div>
+        <div><b>Subject</b> PP-034: Lena Hartmann needs your view on 3 startups</div>
+        <p>Hi Jonas, you raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by <span id="pvDueMail">6 Oct 2026</span>. It takes about 3 minutes and there's no login.</p>
+        <span class="cta" aria-hidden="true">Review 3 startups</span>
+        <p class="muted small">The startup names stay out of the email.</p>
+      </div>
+    </details>
     <div class="actions">
       <button class="btn" type="button" id="sendCancel">Cancel</button>
       <button class="btn primary" type="submit">Send request</button>
@@ -740,7 +753,7 @@ function bind(){
   main.querySelectorAll('[data-list]').forEach(b => b.onclick = () => { S.listTab = b.dataset.list; render(); });
   main.querySelectorAll('[data-dismiss]').forEach(b => b.onclick = () => { S.banners.splice(+b.dataset.dismiss, 1); render(); });
   const ask = main.querySelector('#askBtn'); if (ask) ask.onclick = () => {
-    byId('pvDue').textContent = fmt(S.day + DUE_DAY); byId('pvR1').textContent = short(S.day + 3); byId('pvR2').textContent = short(S.day + 7); byId('pvLate').textContent = short(S.day + LATE_DAY);
+    byId('pvDue').textContent = fmt(S.day + DUE_DAY); byId('pvDueMail').textContent = fmt(S.day + DUE_DAY); byId('pvR1').textContent = short(S.day + 3); byId('pvR2').textContent = short(S.day + 7); byId('pvLate').textContent = short(S.day + LATE_DAY);
     byId('sendDialog').showModal();
   };
   main.querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
