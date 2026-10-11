@@ -1,6 +1,6 @@
 # Decision requests prototype
 
-This is the prototype from my GlassDollar case study. It tackles the third pain point on the list: business units submit a problem and then disappear. The idea is to get an answer from the business unit owner.
+This is the prototype from my GlassDollar case study. It tackles the third pain point on the list: business units submit a problem and then disappear. The idea is that nothing Lena owns stalls without her knowing, and that the owner can answer in about three minutes.
 
 Try it here: https://iamdejman.github.io/glassdollar-casestudy-ayodeji/
 
@@ -17,5 +17,7 @@ Here is the flow in five clicks:
 3. Rate the three startups and press "Send to Lena". The answers show up on her shortlist.
 4. Press "Try the reminders" in the guide. A fresh request goes out and the clock appears. Day 3 and day 7 send reminders, and day 8 marks the request Late.
 5. Turn on "Jonas is out of office" to pause reminders, then open "Waiting on others" to try Remind now, Cancel and Answer on behalf.
+
+Instead of rating, Jonas can press "Someone else should answer this" and type a name. Lena then sees "Send to [name] instead" and one click sends the request on with a restarted clock.
 
 Everything in it is sample data. State lives in memory, so "Start over" or a page reload starts you over.

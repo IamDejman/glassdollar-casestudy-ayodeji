@@ -219,6 +219,22 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
 .opts label:has(input:focus-visible){box-shadow:var(--focus)}
 .opts label:has(input:disabled){opacity:.5;cursor:not-allowed}
 textarea{width:100%;min-height:64px;padding:10px;border:1px solid var(--line-2);border-radius:var(--radius-s);resize:vertical;background:#fff}
+input[type=text]{width:100%;min-height:40px;padding:8px 10px;border:1px solid var(--line-2);border-radius:var(--radius-s);background:#fff}
+.handoff{display:grid;gap:10px;padding-top:8px;border-top:1px solid var(--line)}
+.handoff .err{color:var(--late);font-size:14px}
+.linkish{all:unset;cursor:pointer;font-weight:700;color:var(--ink)}
+.linkish:hover{text-decoration:underline}
+.linkish:focus-visible{box-shadow:var(--focus);border-radius:4px}
+.list td:last-child{text-align:right}
+.menu-btn::after{content:"";width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg) translate(-1px,-1px)}
+.menu-items[popover]{position:fixed;inset:auto;margin:0;min-width:220px;padding:6px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 8px 24px rgba(0,29,15,.14)}
+.menu-items:popover-open{display:grid}
+.menu-items button{all:unset;cursor:pointer;padding:9px 10px;border-radius:8px;font-size:14px;color:var(--ink)}
+.menu-items button:hover,.menu-items button:focus-visible{background:var(--wait-soft)}
+.menu-items button:focus-visible{box-shadow:var(--focus)}
+.menu-items button[disabled]{color:var(--ink-3);cursor:default;background:none}
+.menu-items .danger{color:var(--late)}
+.menu-items hr{border:0;border-top:1px solid var(--line);margin:4px 0}
 .check{display:flex;gap:10px;align-items:flex-start;padding:4px 0;font-size:16px;cursor:pointer}
 .check input{width:22px;height:22px;margin:0;flex:none;cursor:pointer}
 .summary{display:grid;gap:6px;padding:12px;background:var(--bg);border-radius:var(--radius-s)}
@@ -394,7 +410,7 @@ function live(text){ byId('live').textContent = text; }
 /* State machine */
 function send(){
   const note = byId('noteInput').value.trim();
-  S.req = { state:'Waiting', sentDay:S.day, note, reminders:0, answer:null, events:[], mails:[], openedDay:null };
+  S.req = { state:'Waiting', sentDay:S.day, owner:'Jonas Keller', note, reminders:0, answer:null, events:[], mails:[], openedDay:null, handoff:null, reassigned:null };
   log('created', 'Request sent to Jonas Keller');
   S.req.mails.push({ id:'m0', day:S.day, kind:'request', subject:'PP-034: Lena Hartmann needs your view on 3 startups' });
   if (S.ooo) pause();
@@ -415,7 +431,19 @@ function resume(){
 function markLate(){
   S.req.state = 'Late';
   log('late', 'Day 8, still no answer. Lena notified.');
-  notify('late', 'Jonas Keller has not answered PP-034 (day 8).');
+  notify('late', `${S.req.owner} has not answered PP-034 (day 8).`);
+}
+function handoff(name){
+  S.req.handoff = { name, day:S.day };
+  log('handoff', `Jonas Keller says ${name} should answer`);
+  notify('pause', `Jonas Keller says ${name} should answer PP-034.`);
+  live('Sent to Lena Hartmann');
+}
+function reassign(){
+  const name = S.req.handoff.name;
+  S.req.owner = name; S.req.sentDay = S.day; S.req.reminders = 0; S.req.openedDay = null; S.req.state = 'Waiting'; S.req.reassigned = { day:S.day };
+  log('reassigned', `Request sent to ${name}. The clock restarted.`);
+  live(`Request sent to ${name}`);
 }
 function jumpTo(d){
   for (let day = S.day + 1; day <= d; day++){
@@ -428,7 +456,7 @@ function jumpTo(d){
       } else {
         S.req.reminders++;
         log('reminder_sent', `Reminder ${S.req.reminders} of 2 sent`);
-        S.req.mails.push({ id:'r'+S.req.reminders, day, kind:'reminder', n:S.req.reminders, subject:'Reminder: PP-034, Lena Hartmann needs your view by ' + fmt(S.req.sentDay + DUE_DAY) });
+        if (!S.req.reassigned) S.req.mails.push({ id:'r'+S.req.reminders, day, kind:'reminder', n:S.req.reminders, subject:'Reminder: PP-034, Lena Hartmann needs your view by ' + fmt(S.req.sentDay + DUE_DAY) });
       }
     }
     if (age === LATE_DAY) markLate();
@@ -439,8 +467,8 @@ function jumpTo(d){
 function remindNow(){
   S.req.reminders++; S.remindNowDay = S.day;
   log('remind_now', 'Lena sent a reminder by hand');
-  S.req.mails.push({ id:'h'+S.day, day:S.day, kind:'manual', subject:'Lena Hartmann: can you look at PP-034 today?' });
-  live('Reminder sent to Jonas Keller');
+  if (!S.req.reassigned) S.req.mails.push({ id:'h'+S.day, day:S.day, kind:'manual', subject:'Lena Hartmann: can you look at PP-034 today?' });
+  live('Reminder sent to ' + S.req.owner);
 }
 function cancel(){
   S.req.state = 'Cancelled'; log('cancelled', 'Lena cancelled the request'); live('Request cancelled');
@@ -449,8 +477,8 @@ function answer(items, noneFit, noneFitText, via, note){
   S.req.answer = { items, noneFit, noneFitText, via, note, day:S.day };
   S.req.state = 'Answered';
   const rated = noneFit || items.some(i => i.choice !== 'need_info');
-  log('answered', via === 'on_behalf' ? 'Answered on behalf by Lena' : 'Jonas Keller answered from the link');
-  notify('done', rated ? `Jonas Keller answered PP-034 on ${fmt(S.day)}.` : `Jonas Keller needs more information on ${items.length} startups.`);
+  log('answered', via === 'on_behalf' ? 'Answered on behalf by Lena' : `${S.req.owner} answered from the link`);
+  notify('done', rated ? `${S.req.owner} answered PP-034 on ${fmt(S.day)}.` : `${S.req.owner} needs more information on ${items.length} startups.`);
   live('Answer sent to Lena Hartmann');
 }
 
@@ -467,8 +495,8 @@ function otherRows(){
 function pp34Row(){
   if (!S.req) return null;
   const r = S.req, age = S.day - r.sentDay;
-  const last = r.answer ? 'Answered ' + fmt(r.answer.day) : r.openedDay != null ? 'Opened the page ' + fmt(r.openedDay) : '-';
-  return { id:'PP-034', title:'Reduce manual load planning for outbound trucks', owner:'Jonas Keller', sent:fmt(r.sentDay), age, due:fmt(r.sentDay + DUE_DAY),
+  const last = r.answer ? 'Answered ' + fmt(r.answer.day) : r.openedDay != null ? 'Opened the page ' + fmt(r.openedDay) : r.handoff && !r.reassigned ? `Named ${r.handoff.name} ${fmt(r.handoff.day)}` : '-';
+  return { id:'PP-034', title:'Reduce manual load planning for outbound trucks', owner:r.owner, sent:fmt(r.sentDay), age, due:fmt(r.sentDay + DUE_DAY),
            state:r.state, reminders:r.reminders, last, fixed:false };
 }
 const isOpen = s => ['Waiting','Late','Paused'].includes(s);
@@ -506,7 +534,7 @@ let lastStep = 0;
 function stepOf(){
   const r = S.req;
   if (!r) return 1;
-  if (r.state === 'Cancelled' || S.tour) return 5;
+  if (r.state === 'Cancelled' || S.tour || r.reassigned) return 5;
   if (r.answer) return 4;
   if (!r.events.some(e => e.type === 'identity_confirmed')) return 2;
   return 3;
@@ -522,6 +550,9 @@ function guide(){
     else if (S.screen === 'identity'){ text = 'Confirm it\u2019s Jonas.'; target = '[data-screen="answer"]'; }
     else { text = 'Go back to the inbox and open the email again.'; target = '[data-screen="inbox"]'; }
   }
+  else if (step === 3 && r.handoff){
+    text = `Jonas says ${r.handoff.name} should answer. On Lena\u2019s screen, press \u201cSend to ${r.handoff.name} instead\u201d.`; target = '#reassignBtn, [data-act="reassign"]';
+  }
   else if (step === 3){
     pane = 'jonas';
     if (S.screen === 'answer'){ text = 'Rate each startup, add a note if you like, and press \u201cSend to Lena\u201d.'; target = '#sendAnswer'; }
@@ -534,6 +565,7 @@ function guide(){
   else {
     if (r.state === 'Cancelled') text = 'Request cancelled. If Jonas opens the link now he sees that Lena no longer needs it. Press Start over to begin again.';
     else if (r.state === 'Answered') text = 'Answered. Press Start over to begin again.';
+    else if (r.reassigned) text = `PP-034 now waits on ${r.owner} from ${fmt(r.sentDay)}. Use the clock to send reminders, or press Start over.`;
     else {
       text = 'Jump ahead to day 3 and 7 to send reminders. Day 8 marks it Late. Tick \u201cJonas is out of office\u201d to pause. Open \u201cWaiting on others\u201d to remind, cancel or answer for him.';
       if (r.state === 'Waiting' && S.day < 3) target = '[data-day="3"]';
@@ -546,14 +578,15 @@ function guide(){
   byId('guideAct').innerHTML = act;
   const tr = byId('tryReminders'); if (tr) tr.onclick = () => { fresh(); S.tour = true; send(); render(); live('Request sent again. Use the clock.'); };
   const wide = window.innerWidth >= 1100;
-  if (step !== lastStep){ if (!wide){ S.role = pane; window.scrollTo(0, 0); } lastStep = step; }
+  const stepKey = step + ':' + pane;
+  if (stepKey !== lastStep){ if (!wide){ S.role = pane; window.scrollTo(0, 0); } lastStep = stepKey; }
   byId('lenaPane').classList.toggle('active', S.role === 'lena');
   byId('jonasPane').classList.toggle('active', S.role === 'jonas');
   byId('roleLena').setAttribute('aria-pressed', S.role === 'lena');
   byId('roleJonas').setAttribute('aria-pressed', S.role === 'jonas');
   byId('lenaPane').classList.toggle('dim', step <= 3 && pane === 'jonas');
   byId('jonasPane').classList.toggle('dim', step <= 3 && pane === 'lena');
-  const showClock = S.tour || S.day > 0 || S.ooo;
+  const showClock = S.tour || S.day > 0 || S.ooo || !!(r && r.reassigned);
   byId('clockGroup').hidden = !showClock; byId('oooGroup').hidden = !showClock;
   byId('resetGroup').hidden = !r;
   document.querySelectorAll('.next').forEach(el => el.classList.remove('next'));
@@ -578,10 +611,13 @@ function renderShortlist(){
   let status = '', action = '';
   if (!r){
     action = `<button class="btn primary" id="askBtn">Ask Jonas Keller to rate this shortlist</button>`;
+  } else if (isOpen(r.state) && r.handoff && !r.reassigned){
+    status = `${pill(r.state)} <span>Jonas Keller says ${esc(r.handoff.name)} should answer</span>`;
+    action = `<button class="btn primary" id="reassignBtn">Send to ${esc(r.handoff.name)} instead</button>`;
   } else if (isOpen(r.state)){
-    status = `${pill(r.state)} <span>Waiting for Jonas Keller, day ${S.day - r.sentDay}</span>`;
+    status = `${pill(r.state)} <span>Waiting for ${esc(r.owner)}, day ${S.day - r.sentDay}</span>`;
   } else if (r.state === 'Answered'){
-    status = `${pill('Answered')} <span>Jonas Keller, ${fmt(r.answer.day)}, ${r.answer.via === 'on_behalf' ? 'on his behalf' : 'via link'}</span>`;
+    status = `${pill('Answered')} <span>${esc(r.owner)}, ${fmt(r.answer.day)}, ${r.answer.via === 'on_behalf' ? 'recorded by Lena' : 'via link'}</span>`;
   } else {
     status = pill('Cancelled');
     action = `<button class="btn primary" id="askBtn">Ask Jonas Keller again</button>`;
@@ -608,19 +644,24 @@ function renderWaiting(){
   const cancelled = all.filter(x => x.state === 'Cancelled');
   const view = S.listTab;
   const rows = view === 'open' ? open : view === 'answered' ? answered : cancelled;
-  const actions = x => {
-    if (x.fixed || !isOpen(x.state)) return '';
-    const remindedToday = S.remindNowDay === S.day;
-    return `<div class="actions">
-      ${x.state === 'Paused' ? `<button class="btn small" data-act="resume">Resume reminders</button>` : ''}
-      <button class="btn small" data-act="remind" ${remindedToday ? 'disabled' : ''}>${remindedToday ? 'Reminded today' : 'Remind now'}</button>
-      <button class="btn small" data-act="behalf">Answer on behalf</button>
-      <button class="btn small" data-act="cancel">Cancel request</button></div>`;
+  const actions = (x, k) => {
+    if (x.fixed) return '';
+    const r = S.req, remindedToday = S.remindNowDay === S.day;
+    const items = [`<button type="button" data-act="open">Open shortlist</button>`];
+    if (isOpen(x.state)){
+      if (r.handoff && !r.reassigned) items.push(`<button type="button" data-act="reassign">Send to ${esc(r.handoff.name)} instead</button>`);
+      if (x.state === 'Paused') items.push(`<button type="button" data-act="resume">Resume reminders</button>`);
+      items.push(`<button type="button" data-act="remind" ${remindedToday ? 'disabled' : ''}>${remindedToday ? 'Reminded today' : 'Remind now'}</button>`);
+      items.push(`<button type="button" data-act="behalf">Answer on behalf</button>`);
+      items.push(`<hr><button type="button" class="danger" data-act="cancel">Cancel request</button>`);
+    }
+    return `<button type="button" class="btn small menu-btn" popovertarget="menu-${k}-${x.id}">Actions</button><div class="menu-items" id="menu-${k}-${x.id}" popover>${items.join('')}</div>`;
   };
+  const reqCell = x => x.fixed ? `<b>${x.id}</b>` : `<button type="button" class="linkish" data-act="open">${x.id}</button>`;
   const table = rows.length ? `<div class="tablecard"><table class="list"><thead><tr><th>Request</th><th>Owner</th><th>Age</th><th>Due</th><th>State</th><th>Reminders</th><th>Last owner action</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody>
-    ${rows.map(x => `<tr><td><b>${x.id}</b><br><span class="small muted">${x.title}</span></td><td>${x.owner}</td><td class="num">${x.age} days</td><td class="num">${x.due}</td><td>${pill(x.state)}</td><td class="num">${x.reminders}</td><td>${x.last}</td><td>${actions(x)}</td></tr>`).join('')}</tbody></table></div>
-    <div class="rows">${rows.map(x => `<div class="card row-card"><div class="row-head"><b>${x.id} ${x.title}</b>${pill(x.state)}</div>
-      <div class="kv"><span>Owner</span><b>${x.owner}</b><span>Age</span><b>${x.age} days</b><span>Due</span><b>${x.due}</b><span>Reminders</span><b>${x.reminders}</b><span>Last action</span><b>${x.last}</b></div>${actions(x)}</div>`).join('')}</div>`
+    ${rows.map(x => `<tr><td>${reqCell(x)}<br><span class="small muted">${x.title}</span></td><td>${esc(x.owner)}</td><td class="num">${x.age} days</td><td class="num">${x.due}</td><td>${pill(x.state)}</td><td class="num">${x.reminders}</td><td>${esc(x.last)}</td><td>${actions(x, 't')}</td></tr>`).join('')}</tbody></table></div>
+    <div class="rows">${rows.map(x => `<div class="card row-card"><div class="row-head"><b>${reqCell(x)} ${x.title}</b>${pill(x.state)}</div>
+      <div class="kv"><span>Owner</span><b>${esc(x.owner)}</b><span>Age</span><b>${x.age} days</b><span>Due</span><b>${x.due}</b><span>Reminders</span><b>${x.reminders}</b><span>Last action</span><b>${esc(x.last)}</b></div><div class="actions">${actions(x, 'c')}</div></div>`).join('')}</div>`
     : `<div class="card empty">${view === 'open' ? 'Nothing is waiting on anyone.' : view === 'answered' ? 'No answers yet.' : 'Nothing has been cancelled.'}</div>`;
   return `<div class="head"><h1>Waiting on others</h1>
     <div class="seg" role="group" aria-label="Filter by state">
@@ -656,8 +697,12 @@ function renderJonas(){
     body = `<div class="page"><h1>Nothing was shown</h1><p class="lead">We've let Lena Hartmann know that someone else opened this link. If you need your own request, ask her for a link.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
   } else if (S.screen === 'answer'){
     if (r.state === 'Cancelled') body = `<div class="page"><h1>Lena no longer needs this</h1><p class="lead">Lena cancelled the request for PP-034 on ${fmt(r.events.find(e => e.type === 'cancelled').day)}. There's nothing you need to do.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
+    else if (r.reassigned) body = `<div class="page"><h1>This request went to ${esc(r.owner)}</h1><p class="lead">Lena sent PP-034 to ${esc(r.owner)} on ${fmt(r.reassigned.day)}. There's nothing you need to do.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
+    else if (r.handoff) body = renderHandoff(true);
     else if (r.answer) body = renderDone(true);
     else body = renderForm();
+  } else if (S.screen === 'handoff'){
+    body = renderHandoff(false);
   } else if (S.screen === 'done'){
     body = renderDone(false);
   }
@@ -678,7 +723,15 @@ function renderForm(){
     <label class="check"><input type="checkbox" id="noneFit" name="noneFit"><span>None of these fit</span></label>
     <label class="field" id="noneFitLabel" hidden>Tell Lena why<textarea id="noneFitText" name="noneFitText" autocomplete="off" maxlength="1000" placeholder="What's missing, or what would fit better…"></textarea></label>
     <button class="btn primary" type="submit" id="sendAnswer">Send to Lena</button>
-    <p class="status" id="formStatus" aria-live="polite"></p></form>`;
+    <p class="status" id="formStatus" aria-live="polite"></p>
+    <div class="handoff"><button class="btn quiet small" type="button" id="handoffOpen">Someone else should answer this</button>
+      <div id="handoffBox" hidden><label class="field small">Who should answer?<input type="text" id="handoffName" name="handoffName" autocomplete="off" maxlength="80"></label>
+      <p class="err" id="handoffErr" hidden>Say who should answer.</p>
+      <div class="actions"><button class="btn small" type="button" id="handoffSend">Tell Lena</button></div></div></div></form>`;
+}
+function renderHandoff(reopened){
+  const n = esc(S.req.handoff.name);
+  return `<div class="page"><h1>${reopened ? 'Already sent to Lena Hartmann' : 'Sent to Lena Hartmann'}</h1><p class="lead">She'll send PP-034 to ${n}. You can close this page.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
 }
 
 function renderDone(reopened){
@@ -752,10 +805,19 @@ function bind(){
   main.querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
     const a = b.dataset.act;
     if (a === 'remind'){ remindNow(); render(); }
+    else if (a === 'open'){ S.tab = 'shortlist'; render(); focusTop(lenaEl); }
+    else if (a === 'reassign'){ reassign(); render(); }
     else if (a === 'resume'){ S.ooo = false; resume(); render(); }
     else if (a === 'behalf') openBehalf();
     else if (a === 'cancel') byId('cancelDialog').showModal();
   });
+  const rb = main.querySelector('#reassignBtn'); if (rb) rb.onclick = () => { reassign(); render(); focusTop(lenaEl); };
+  main.querySelectorAll('.menu-items').forEach(p => p.addEventListener('toggle', e => {
+    if (e.newState !== 'open') return;
+    const b = main.querySelector(`[popovertarget="${p.id}"]`), rect = b.getBoundingClientRect();
+    let top = rect.bottom + 4; if (top + p.offsetHeight > window.innerHeight - 8) top = Math.max(8, rect.top - 4 - p.offsetHeight);
+    p.style.top = top + 'px'; p.style.left = Math.max(8, rect.right - p.offsetWidth) + 'px';
+  }));
   main.querySelectorAll('[data-mail]').forEach(b => b.onclick = () => { S.openMail = b.dataset.mail; S.readMail.add(b.dataset.mail); S.screen = 'email'; render(); focusTop(jonasEl); });
   main.querySelectorAll('[data-screen]').forEach(b => b.onclick = () => {
     const to = b.dataset.screen;
@@ -769,6 +831,13 @@ function bind(){
     form.querySelectorAll('.opts input').forEach(i => i.addEventListener('change', () => { const f = i.closest('.choice'); f.classList.remove('invalid'); form.querySelector('#e_' + f.dataset.startup).hidden = true; }));
     form.querySelectorAll('[data-note]').forEach(b => b.onclick = () => { form.querySelector('#l_' + b.dataset.note).hidden = false; form.querySelector('#n_' + b.dataset.note).focus(); b.remove(); });
     form.addEventListener('submit', e => { e.preventDefault(); submitAnswer(form); });
+    const ho = form.querySelector('#handoffOpen');
+    ho.onclick = () => { form.querySelector('#handoffBox').hidden = false; form.querySelector('#handoffName').focus(); ho.remove(); };
+    form.querySelector('#handoffSend').onclick = () => {
+      const name = form.querySelector('#handoffName').value.trim();
+      if (!name){ form.querySelector('#handoffErr').hidden = false; form.querySelector('#handoffName').focus(); return; }
+      handoff(name); S.screen = 'handoff'; render(); focusTop(jonasEl);
+    };
   }
 }
 function focusTop(el){ const h = el.querySelector('h1'); if (h){ h.setAttribute('tabindex','-1'); h.focus(); } }
@@ -778,6 +847,7 @@ byId('roleJonas').onclick = () => { S.role = 'jonas'; render(); };
 document.querySelectorAll('[data-day]').forEach(b => b.onclick = () => { jumpTo(+b.dataset.day); render(); });
 byId('ooo').onchange = e => { S.ooo = e.target.checked; if (S.ooo) pause(); else resume(); render(); };
 byId('reset').onclick = () => { fresh(); lastStep = 0; render(); live('Prototype reset'); };
+window.addEventListener('scroll', () => document.querySelectorAll('.menu-items:popover-open').forEach(p => p.hidePopover()), true);
 
 const sendDialog = byId('sendDialog');
 byId('sendCancel').onclick = () => sendDialog.close();
