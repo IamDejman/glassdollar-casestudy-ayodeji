@@ -1,17 +1,19 @@
-# Decision requests, prototype
+# Decision requests prototype
 
-A clickable prototype for the GlassDollar APO case study, pain point "Business units submit a problem and then disappear".
+This is the prototype from my GlassDollar case study. It tackles the third pain point on the list: business units submit a problem and then disappear. The idea is to get an answer from the business unit owner without asking them to log in to anything.
 
-Live: https://iamdejman.github.io/glassdollar-casestudy-ayodeji/
+Try it here: https://iamdejman.github.io/glassdollar-casestudy-ayodeji/
 
-One file, no build, no login. Open `index.html` or the live link. On a desktop it shows Lena Hartmann's GlassDollar OS and Jonas Keller's phone side by side on one shared state. Under 1100 pixels one person shows at a time with a "Viewing as" switch.
+The whole prototype is a single HTML file. There is nothing to build and nothing to sign in to. You can open index.html from disk or use the link above.
 
-Walkthrough, five clicks:
+On a desktop you see two screens side by side. On the left is Lena Hartmann's GlassDollar OS, where she manages pain points. On the right is Jonas Keller's phone. The two share one state, so what Lena sends shows up on Jonas's phone, and what Jonas answers shows up on Lena's shortlist. On a narrower screen you see one person at a time and can switch between them.
+
+Here is the flow in five clicks:
 
 1. As Lena, press "Ask Jonas Keller to rate this shortlist", then "Send request". The email lands on Jonas's phone.
-2. On the phone, open the email, press "Review 3 startups", confirm it is you.
-3. Rate the three startups and press "Send to Lena". Her shortlist updates with the answers.
-4. Reset, send again, then use the clock: day 3 and day 7 send reminders, day 8 marks it Late.
-5. Turn on "Jonas is out of office" to pause reminders, then open "Waiting on others" for Remind now, Cancel and Answer on behalf.
+2. On the phone, open the email, press "Review 3 startups" and confirm it's you.
+3. Rate the three startups and press "Send to Lena". The answers show up on her shortlist.
+4. Reset, send again, then use the clock. Day 3 and day 7 send reminders, and day 8 marks the request Late.
+5. Turn on "Jonas is out of office" to pause reminders, then open "Waiting on others" to try Remind now, Cancel and Answer on behalf.
 
-Sample data only. State lives in memory, so Reset or reload starts over.
+Everything in it is sample data. State lives in memory, so Reset or a page reload starts you over.

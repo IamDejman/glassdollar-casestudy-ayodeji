@@ -42,6 +42,10 @@ a{color:var(--accent-ink)}
 .notes summary::-webkit-details-marker{display:none}
 .notes summary::before{content:"";width:8px;height:8px;border-right:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:rotate(-45deg);transition:transform .15s}
 .notes details[open] summary::before{transform:rotate(45deg)}
+.notes .intro{margin:0 0 8px;max-width:78ch}
+.notes .intro:last-of-type{margin-bottom:10px}
+.narrow-only{display:inline}.wide-only{display:none}
+@media (min-width:1100px){.narrow-only{display:none}.wide-only{display:inline}}
 .notes ol{margin:8px 0 0;padding-left:20px;max-width:72ch}
 .notes li{margin:2px 0}
 .controls{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--note-line)}
@@ -192,14 +196,16 @@ label.field{display:grid;gap:6px}
 <a class="skip" href="#main">Skip to content</a>
 
 <div class="notes">
-  <details open>
-    <summary>Prototype notes: five clicks from request to answer</summary>
+  <p class="intro"><b>What this is.</b> A prototype of one GlassDollar OS feature, decision requests. Lena Hartmann runs innovation at Nordwind. She needs Jonas Keller, the manager who raised problem PP-034, to rate three startups. Today she chases him by email for weeks. Here she sends one request, and he answers from his phone in three minutes without logging in.</p>
+  <p class="intro"><span class="wide-only"><b>Left is Lena's screen. Right is Jonas's phone.</b> They share one state.</span><span class="narrow-only"><b>Use “Viewing as” to switch between Lena's screen and Jonas's phone.</b> They share one state.</span> Start by pressing the blue button on Lena's side, then follow the request to the phone. The clock below is pretend time. Jump ahead to watch reminders go out.</p>
+  <details>
+    <summary>Full walkthrough in five clicks</summary>
     <ol>
       <li>As Lena, press “Ask Jonas Keller to rate this shortlist”, then “Send request”. The email lands on Jonas's phone.</li>
       <li>On the phone, open the email, press “Review 3 startups” and confirm it's you.</li>
       <li>Rate the three startups and press “Send to Lena”. The answers show up on her shortlist.</li>
-      <li>Reset, send again, then use the clock: day 3 and day 7 send reminders, day 8 marks it Late.</li>
-      <li>Turn on “Jonas is out of office” to pause reminders, then open “Waiting on others” for Remind now, Cancel and Answer on behalf.</li>
+      <li>Reset, send again, then use the clock. Day 3 and day 7 send reminders, and day 8 marks the request Late.</li>
+      <li>Turn on “Jonas is out of office” to pause reminders, then open “Waiting on others” to try Remind now, Cancel and Answer on behalf.</li>
     </ol>
   </details>
   <div class="controls">
@@ -212,7 +218,7 @@ label.field{display:grid;gap:6px}
     </div>
     <div class="group" role="group" aria-label="Clock">
       <span>Today <span class="day" id="today">29 Sep 2026, day 0</span></span>
-      <span>Jump to</span>
+      <span>Jump ahead to</span>
       <button class="btn small" data-day="3">Day 3</button>
       <button class="btn small" data-day="7">Day 7</button>
       <button class="btn small" data-day="8">Day 8</button>
@@ -234,7 +240,7 @@ label.field{display:grid;gap:6px}
     <div id="lena"></div>
   </section>
   <section class="pane jonas" id="jonasPane" aria-label="Jonas Keller's phone">
-    <p class="pane-head"><b>Jonas Keller</b>, logistics process lead, Hamburg hub. His phone, no login.</p>
+    <p class="pane-head"><b>Jonas Keller</b>, logistics process lead at the Hamburg hub. This is his phone. He never logs in.</p>
     <div class="device"><div id="jonas"></div></div>
   </section>
 </main>
@@ -499,8 +505,8 @@ function renderJonas(){
     const text = m.kind === 'request'
       ? `<p>Hi Jonas, you raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by ${due}. It takes about 3 minutes and there's no login.</p>`
       : m.kind === 'reminder'
-      ? `<p>Hi Jonas, a quick reminder: I still need your view on 3 startups for PP-034 by ${due}. About 3 minutes, no login. Reminder ${m.n} of 2.</p>`
-      : `<p>Hi Jonas, could you look at PP-034 today? Three startups, about 3 minutes, no login. I'd like to brief the Hamburg team this week.</p>`;
+      ? `<p>Hi Jonas, a quick reminder that I still need your view on 3 startups for PP-034 by ${due}. It takes about 3 minutes and there's no login. This is reminder ${m.n} of 2.</p>`
+      : `<p>Hi Jonas, could you look at PP-034 today? It's three startups and takes about 3 minutes, with no login. I'd like to brief the Hamburg team this week.</p>`;
     body = `<button class="btn quiet" data-screen="inbox">Back to inbox</button>
       <div class="mail"><div class="email"><div class="hdr"><b>${esc(m.subject)}</b><span>Lena Hartmann via GlassDollar, ${fmt(m.day)}</span><span>To jonas.keller@nordwind.example</span></div>
       ${text}<button class="cta" data-screen="identity">Review 3 startups</button>
@@ -659,7 +665,6 @@ byId('behalfForm').addEventListener('submit', e => {
   behalfDialog.close(); render();
 });
 
-if (window.innerWidth < 760) document.querySelector('.notes details').removeAttribute('open');
 fresh(); render();
 })();
 </script>
