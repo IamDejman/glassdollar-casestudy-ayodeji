@@ -193,11 +193,11 @@ label.field{display:grid;gap:6px}
 
 <div class="notes">
   <details open>
-    <summary>Prototype notes: PP-034 from request to answer in five clicks</summary>
+    <summary>Prototype notes: five clicks from request to answer</summary>
     <ol>
       <li>As Lena, press “Ask Jonas Keller to rate this shortlist”, then “Send request”. The email lands on Jonas's phone.</li>
-      <li>On the phone, open the email, press “Review 3 startups”, confirm it is you.</li>
-      <li>Rate the three startups and press “Send to Lena”. Her shortlist updates with the answers.</li>
+      <li>On the phone, open the email, press “Review 3 startups” and confirm it's you.</li>
+      <li>Rate the three startups and press “Send to Lena”. The answers show up on her shortlist.</li>
       <li>Reset, send again, then use the clock: day 3 and day 7 send reminders, day 8 marks it Late.</li>
       <li>Turn on “Jonas is out of office” to pause reminders, then open “Waiting on others” for Remind now, Cancel and Answer on behalf.</li>
     </ol>
@@ -211,7 +211,7 @@ label.field{display:grid;gap:6px}
       </div>
     </div>
     <div class="group" role="group" aria-label="Clock">
-      <span>Today <span class="day" id="today">2026-09-29, day 0</span></span>
+      <span>Today <span class="day" id="today">29 Sep 2026, day 0</span></span>
       <span>Jump to</span>
       <button class="btn small" data-day="3">Day 3</button>
       <button class="btn small" data-day="7">Day 7</button>
@@ -243,16 +243,16 @@ label.field{display:grid;gap:6px}
 <dialog id="sendDialog" aria-labelledby="sendTitle">
   <form class="dlg" id="sendForm">
     <h2 id="sendTitle">Ask Jonas Keller to rate this shortlist</h2>
-    <p class="muted small">Jonas gets this email. The link opens one page, no login. Startup names stay out of the email.</p>
+    <p class="muted small">This is the email Jonas gets. The link opens one page with no login, and the startup names stay out of the email.</p>
     <div class="preview" aria-label="Email preview">
       <div><b>To</b> jonas.keller@nordwind.example</div>
       <div><b>Subject</b> PP-034: Lena Hartmann needs your view on 3 startups</div>
-      <p>Jonas, you raised PP-034, manual load planning for outbound trucks. I have three startups that could fix it and need your view on each by 2026-10-06. It takes about 3 minutes and needs no login.</p>
+      <p>Hi Jonas, you raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by <span id="pvDue">6 Oct 2026</span>. It takes about 3 minutes and there's no login.</p>
       <span class="cta" aria-hidden="true">Review 3 startups</span>
-      <p class="muted small">Reminders go on 2026-10-02 and 2026-10-06 if Jonas has not answered. You are told on 2026-10-07 if he still has not.</p>
+      <p class="muted small">If Jonas hasn't answered, reminders go out on <span id="pvR1">2 Oct</span> and <span id="pvR2">6 Oct</span>. If he still hasn't by <span id="pvLate">7 Oct</span>, you'll hear about it.</p>
     </div>
     <label class="field">Note to Jonas (optional)
-      <textarea id="noteInput" name="note" autocomplete="off" maxlength="1000">You know Pallet.ai and Parcelgrid from PP-024. Cargonaut Labs is new to you, but they are already piloting at the Hamburg hub on PP-030.</textarea>
+      <textarea id="noteInput" name="note" autocomplete="off" maxlength="1000">You know Pallet.ai and Parcelgrid from PP-024. Cargonaut Labs is new to you, but they're already running a pilot at the Hamburg hub on PP-030.</textarea>
     </label>
     <div class="actions">
       <button class="btn" type="button" id="sendCancel">Cancel</button>
@@ -264,7 +264,7 @@ label.field{display:grid;gap:6px}
 <dialog id="behalfDialog" aria-labelledby="behalfTitle">
   <form class="dlg" id="behalfForm" novalidate>
     <h2 id="behalfTitle">Answer on behalf of Jonas Keller</h2>
-    <p class="muted small">Use this when Jonas told you his view by phone or in person. He gets no email.</p>
+    <p class="muted small">Use this when Jonas gave you his view on the phone or in person. He won't get an email.</p>
     <div id="behalfOpts" class="stack"></div>
     <label class="field">Where this came from
       <textarea id="behalfNote" name="behalfNote" autocomplete="off" required></textarea>
@@ -280,7 +280,7 @@ label.field{display:grid;gap:6px}
 <dialog id="cancelDialog" aria-labelledby="cancelTitle">
   <form class="dlg" id="cancelForm">
     <h2 id="cancelTitle">Cancel the request to Jonas Keller?</h2>
-    <p>Reminders stop. If Jonas opens the link later he sees that you no longer need an answer. You can send a new request afterwards.</p>
+    <p>Reminders stop. If Jonas opens the link later, he'll see that you no longer need an answer. You can send a new request any time.</p>
     <div class="actions">
       <button class="btn" type="button" id="cancelKeep">Keep request</button>
       <button class="btn primary" type="submit">Cancel request</button>
@@ -292,7 +292,8 @@ label.field{display:grid;gap:6px}
 (function(){
 'use strict';
 const BASE = new Date(Date.UTC(2026, 8, 29));
-const fmt = d => { const x = new Date(BASE); x.setUTCDate(x.getUTCDate() + d); return x.toISOString().slice(0,10); };
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmt = d => { const x = new Date(BASE); x.setUTCDate(x.getUTCDate() + d); return `${x.getUTCDate()} ${MONTHS[x.getUTCMonth()]} ${x.getUTCFullYear()}`; };
 const DUE_DAY = 7, LATE_DAY = 8;
 const STARTUPS = [
   { id:'pallet', name:'Pallet.ai', desc:'Load planning software that builds mixed pallets and truck loads.', lena:'Closest to the problem as you described it.' },
@@ -336,7 +337,7 @@ function resume(){
 }
 function markLate(){
   S.req.state = 'Late';
-  log('late', 'Day 8 with no answer. Lena notified.');
+  log('late', 'Day 8, still no answer. Lena notified.');
   notify('late', 'Jonas Keller has not answered PP-034 (day 8).');
 }
 function jumpTo(d){
@@ -371,7 +372,7 @@ function answer(items, noneFit, noneFitText, via, note){
   S.req.answer = { items, noneFit, noneFitText, via, note, day:S.day };
   S.req.state = 'Answered';
   const rated = noneFit || items.some(i => i.choice !== 'need_info');
-  log('answered', via === 'on_behalf' ? 'Answered on behalf by Lena' : 'Jonas Keller answered via the link');
+  log('answered', via === 'on_behalf' ? 'Answered on behalf by Lena' : 'Jonas Keller answered from the link');
   notify('done', rated ? `Jonas Keller answered PP-034 on ${fmt(S.day)}.` : `Jonas Keller needs more information on ${items.length} startups.`);
   live('Answer sent to Lena Hartmann');
 }
@@ -381,9 +382,9 @@ function otherRows(){
   const age40 = S.day + 5;
   return [
     { id:'PP-040', title:'Supplier onboarding document checks', owner:'Anneke de Vries', sent:fmt(-5), age:age40, due:fmt(2),
-      state: age40 >= LATE_DAY ? 'Late' : 'Waiting', reminders: age40 >= 7 ? 2 : age40 >= 3 ? 1 : 0, last:'Opened the page 2026-09-26', fixed:true },
-    { id:'PP-028', title:'Waste-heat recovery at Kiel foundry', owner:'Henrik Vos', sent:'2026-04-20', age:8, due:'2026-04-27',
-      state:'Answered', reminders:0, last:'Answered 2026-04-28', fixed:true }
+      state: age40 >= LATE_DAY ? 'Late' : 'Waiting', reminders: age40 >= 7 ? 2 : age40 >= 3 ? 1 : 0, last:'Opened the page 26 Sep 2026', fixed:true },
+    { id:'PP-028', title:'Waste-heat recovery at Kiel foundry', owner:'Henrik Vos', sent:'20 Apr 2026', age:8, due:'27 Apr 2026',
+      state:'Answered', reminders:0, last:'Answered 28 Apr 2026', fixed:true }
   ];
 }
 function pp34Row(){
@@ -477,7 +478,7 @@ function renderWaiting(){
     ${rows.map(x => `<tr><td><b>${x.id}</b><br><span class="small muted">${x.title}</span></td><td>${x.owner}</td><td class="num">${x.age} days</td><td class="num">${x.due}</td><td>${pill(x.state)}</td><td class="num">${x.reminders}</td><td>${x.last}</td><td>${actions(x)}</td></tr>`).join('')}</tbody></table></div>
     <div class="rows">${rows.map(x => `<div class="card row-card"><div class="row-head"><b>${x.id} ${x.title}</b>${pill(x.state)}</div>
       <div class="kv"><span>Owner</span><b>${x.owner}</b><span>Age</span><b>${x.age} days</b><span>Due</span><b>${x.due}</b><span>Reminders</span><b>${x.reminders}</b><span>Last action</span><b>${x.last}</b></div>${actions(x)}</div>`).join('')}</div>`
-    : `<div class="card empty">${view === 'open' ? 'Nothing is waiting on anyone.' : view === 'answered' ? 'No answers yet.' : 'Nothing cancelled.'}</div>`;
+    : `<div class="card empty">${view === 'open' ? 'Nothing is waiting on anyone.' : view === 'answered' ? 'No answers yet.' : 'Nothing has been cancelled.'}</div>`;
   return `<div class="head"><h1>Waiting on others</h1>
     <div class="seg" role="group" aria-label="Filter by state">
       <button class="btn" aria-pressed="${view === 'open'}" data-list="open">Open (${open.length})</button>
@@ -491,27 +492,27 @@ function renderJonas(){
   const mails = r ? [...r.mails].reverse() : [];
   let body = '';
   if (S.screen === 'inbox'){
-    body = `<h1 class="inbox">Inbox</h1><div class="mail">${mails.length ? mails.map(m => `<button class="mail-row ${S.readMail.has(m.id) ? '' : 'unread'}" data-mail="${m.id}"><span class="from"><span>Lena Hartmann via GlassDollar</span><span>${fmt(m.day)}</span></span><span class="subject">${esc(m.subject)}</span></button>`).join('') : `<div class="empty">No new mail. Lena has not sent a request yet.</div>`}</div>`;
+    body = `<h1 class="inbox">Inbox</h1><div class="mail">${mails.length ? mails.map(m => `<button class="mail-row ${S.readMail.has(m.id) ? '' : 'unread'}" data-mail="${m.id}"><span class="from"><span>Lena Hartmann via GlassDollar</span><span>${fmt(m.day)}</span></span><span class="subject">${esc(m.subject)}</span></button>`).join('') : `<div class="empty">Nothing here yet. Lena hasn't sent a request.</div>`}</div>`;
   } else if (S.screen === 'email'){
     const m = r.mails.find(x => x.id === S.openMail);
     const due = fmt(r.sentDay + DUE_DAY);
     const text = m.kind === 'request'
-      ? `<p>Jonas, you raised PP-034, manual load planning for outbound trucks. I have three startups that could fix it and need your view on each by ${due}. It takes about 3 minutes and needs no login.</p>`
+      ? `<p>Hi Jonas, you raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by ${due}. It takes about 3 minutes and there's no login.</p>`
       : m.kind === 'reminder'
-      ? `<p>Jonas, a reminder that I need your view on 3 startups for PP-034 by ${due}. About 3 minutes, no login. This is reminder ${m.n} of 2.</p>`
-      : `<p>Jonas, could you look at PP-034 today? Three startups, about 3 minutes, no login. I would like to brief the Hamburg team this week.</p>`;
+      ? `<p>Hi Jonas, a quick reminder: I still need your view on 3 startups for PP-034 by ${due}. About 3 minutes, no login. Reminder ${m.n} of 2.</p>`
+      : `<p>Hi Jonas, could you look at PP-034 today? Three startups, about 3 minutes, no login. I'd like to brief the Hamburg team this week.</p>`;
     body = `<button class="btn quiet" data-screen="inbox">Back to inbox</button>
       <div class="mail"><div class="email"><div class="hdr"><b>${esc(m.subject)}</b><span>Lena Hartmann via GlassDollar, ${fmt(m.day)}</span><span>To jonas.keller@nordwind.example</span></div>
       ${text}<button class="cta" data-screen="identity">Review 3 startups</button>
-      <p class="url">If the button does not open, copy this link: https://os.glassdollar.com/r/7Qk2mN9x</p>
+      <p class="url">If the button doesn't work, copy this link: https://os.glassdollar.com/r/7Qk2mN9x</p>
       <p class="small">Reply to this email to reach me.<br>Lena Hartmann, Nordwind Venture Client Unit</p></div></div>`;
   } else if (S.screen === 'identity'){
-    body = `<div class="page"><h1>Review 3 startups for PP-034</h1><p class="lead">This link was sent to jonas.keller@nordwind.example. Confirm it is you before anything is shown.</p>
+    body = `<div class="page"><h1>Review 3 startups for PP-034</h1><p class="lead">This link was sent to jonas.keller@nordwind.example. Confirm it's you and we'll show the startups.</p>
       <button class="btn primary" data-screen="answer">Yes, I am Jonas Keller</button><button class="btn" data-screen="notme">Not me</button></div>`;
   } else if (S.screen === 'notme'){
-    body = `<div class="page"><h1>Nothing was shown</h1><p class="lead">Lena Hartmann has been told that someone else opened this link. If you need your own request, ask her for a link.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
+    body = `<div class="page"><h1>Nothing was shown</h1><p class="lead">We've let Lena Hartmann know that someone else opened this link. If you need your own request, ask her for a link.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
   } else if (S.screen === 'answer'){
-    if (r.state === 'Cancelled') body = `<div class="page"><h1>Lena no longer needs this</h1><p class="lead">The request for PP-034 was cancelled on ${fmt(r.events.find(e => e.type === 'cancelled').day)}. Nothing to do.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
+    if (r.state === 'Cancelled') body = `<div class="page"><h1>Lena no longer needs this</h1><p class="lead">Lena cancelled the request for PP-034 on ${fmt(r.events.find(e => e.type === 'cancelled').day)}. There's nothing you need to do.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
     else if (r.answer) body = renderDone(true);
     else body = renderForm();
   } else if (S.screen === 'done'){
@@ -524,7 +525,7 @@ function renderForm(){
   const r = S.req;
   const cards = STARTUPS.map(s => `<fieldset class="choice" data-startup="${s.id}" id="f_${s.id}"><legend>${s.name}</legend><p class="desc">${s.desc}</p><p class="lena">Lena: ${s.lena}</p>
     <div class="opts">${CHOICES.map(([v, t]) => `<label><input type="radio" name="c_${s.id}" value="${v}"><span>${t}</span></label>`).join('')}</div>
-    <p class="err" id="e_${s.id}" hidden>Pick one to send.</p>
+    <p class="err" id="e_${s.id}" hidden>Pick one before you send.</p>
     <button class="btn quiet small" type="button" data-note="${s.id}">Add a note for Lena</button>
     <label class="field small" id="l_${s.id}" hidden>Note for Lena<textarea id="n_${s.id}" name="n_${s.id}" autocomplete="off" maxlength="1000" placeholder="Anything Lena should know…"></textarea></label></fieldset>`).join('');
   return `<form class="page" id="answerForm" novalidate>
@@ -532,7 +533,7 @@ function renderForm(){
     ${r.note ? `<p class="lena-note">Lena: ${esc(r.note)}</p>` : ''}
     ${cards}
     <label class="check"><input type="checkbox" id="noneFit" name="noneFit"><span>None of these fit</span></label>
-    <label class="field" id="noneFitLabel" hidden>Tell Lena why<textarea id="noneFitText" name="noneFitText" autocomplete="off" maxlength="1000" placeholder="Tell Lena why…"></textarea></label>
+    <label class="field" id="noneFitLabel" hidden>Tell Lena why<textarea id="noneFitText" name="noneFitText" autocomplete="off" maxlength="1000" placeholder="What's missing, or what would fit better…"></textarea></label>
     <button class="btn primary" type="submit" id="sendAnswer">Send to Lena</button>
     <p class="status" id="formStatus" aria-live="polite"></p></form>`;
 }
@@ -542,7 +543,7 @@ function renderDone(reopened){
   const lines = a.noneFit ? `<div><span>None of these fit</span></div>` : a.items.map(i => `<div><span>${STARTUPS.find(s => s.id === i.id).name}</span><b>${label(i.choice)}</b></div>`).join('');
   return `<div class="page"><h1>${reopened ? 'Already sent to Lena Hartmann' : 'Sent to Lena Hartmann'}</h1>
     <div class="summary">${lines}</div>
-    <p class="lead">Lena will tell you what was decided. You can close this page.</p>
+    <p class="lead">Lena will let you know what was decided. You can close this page.</p>
     <button class="btn" data-screen="inbox">Back to inbox</button></div>`;
 }
 
@@ -574,7 +575,7 @@ function submitAnswer(form){
     const missing = items.filter(i => !i.choice);
     missing.forEach(i => { form.querySelector('#f_' + i.id).classList.add('invalid'); form.querySelector('#e_' + i.id).hidden = false; });
     if (missing.length){
-      status.textContent = `Rate ${names(missing)} to send.`;
+      status.textContent = `Rate ${names(missing)} before you send.`;
       form.querySelector(`input[name="c_${missing[0].id}"]`).focus();
       return;
     }
@@ -601,7 +602,11 @@ function bind(){
   });
   main.querySelectorAll('[data-list]').forEach(b => b.onclick = () => { S.listTab = b.dataset.list; render(); });
   main.querySelectorAll('[data-dismiss]').forEach(b => b.onclick = () => { S.banners.splice(+b.dataset.dismiss, 1); render(); });
-  const ask = main.querySelector('#askBtn'); if (ask) ask.onclick = () => byId('sendDialog').showModal();
+  const ask = main.querySelector('#askBtn'); if (ask) ask.onclick = () => {
+    const short = d => fmt(d).replace(/ \d{4}$/, '');
+    byId('pvDue').textContent = fmt(S.day + DUE_DAY); byId('pvR1').textContent = short(S.day + 3); byId('pvR2').textContent = short(S.day + 7); byId('pvLate').textContent = short(S.day + LATE_DAY);
+    byId('sendDialog').showModal();
+  };
   main.querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
     const a = b.dataset.act;
     if (a === 'remind'){ remindNow(); render(); }
@@ -613,7 +618,7 @@ function bind(){
   main.querySelectorAll('[data-screen]').forEach(b => b.onclick = () => {
     const to = b.dataset.screen;
     if (to === 'identity' && !S.req.events.some(e => e.type === 'link_opened')) log('link_opened', 'Link opened from the email');
-    if (to === 'answer'){ S.req.openedDay = S.day; if (!S.req.events.some(e => e.type === 'identity_confirmed')) log('identity_confirmed', 'Jonas Keller confirmed it is him and opened the page'); }
+    if (to === 'answer'){ S.req.openedDay = S.day; if (!S.req.events.some(e => e.type === 'identity_confirmed')) log('identity_confirmed', 'Jonas Keller confirmed it\'s him and opened the page'); }
     S.screen = to; render(); focusTop(jonasEl);
   });
   const form = main.querySelector('#answerForm');
@@ -648,7 +653,7 @@ byId('behalfForm').addEventListener('submit', e => {
   const missing = items.filter(i => !i.choice);
   const note = byId('behalfNote').value.trim();
   const status = byId('behalfStatus');
-  if (missing.length){ status.textContent = `Rate ${names(missing)} to save.`; behalfDialog.querySelector(`input[name="b_${missing[0].id}"]`).focus(); return; }
+  if (missing.length){ status.textContent = `Rate ${names(missing)} before you save.`; behalfDialog.querySelector(`input[name="b_${missing[0].id}"]`).focus(); return; }
   if (!note){ status.textContent = 'Say where this answer came from, then save.'; byId('behalfNote').focus(); return; }
   answer(items, false, '', 'on_behalf', note);
   behalfDialog.close(); render();
