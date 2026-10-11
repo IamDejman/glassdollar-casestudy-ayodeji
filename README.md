@@ -6,7 +6,7 @@ Try it here: https://iamdejman.github.io/glassdollar-casestudy-ayodeji/
 
 The whole prototype is a single HTML file. There is nothing to build and nothing to sign in to. You can open index.html from disk or use the link above.
 
-On a desktop you see two screens side by side. On the left is Lena Hartmann's GlassDollar OS, where she manages pain points. On the right is Jonas Keller's phone. The two share one state, so what Lena sends shows up on Jonas's phone, and what Jonas answers shows up on Lena's shortlist. On a narrower screen you see one person at a time and can switch between them.
+On a desktop you see two screens side by side. On the left is Lena Hartmann's GlassDollar OS, where she manages pain points. Its sidebar, search bar, colours and type follow the app mockups on glassdollar.com/product. The sidebar is decoration; only the shortlist and the Waiting on others list work. On the right is Jonas Keller's phone. The two share one state, so what Lena sends shows up on Jonas's phone, and what Jonas answers shows up on Lena's shortlist. On a narrower screen you see one person at a time and can switch between them.
 
 The green strip at the top guides you. It shows five steps, tells you what to do next and puts a ring around the control to press. The clock and the out-of-office switch only appear when you reach the reminders step. "Start over" clears everything.
 

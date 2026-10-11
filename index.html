@@ -12,15 +12,15 @@
 <style>
 :root{
   /* GlassDollar brand tokens, taken from glassdollar.com */
-  --accent:#002F18;--accent-soft:#EAFBEA;--accent-ink:#001D0F;--green:#38EE45;--green-2:#24982C;
+  --accent:#002F18;--accent-soft:#E8F7E9;--accent-ink:#001D0F;--green:#38EE45;--green-2:#24982C;
   --ink:#001D0F;--ink-2:#3D4F45;--ink-3:#66776F;
-  --line:#E2E7E2;--line-2:#C6CCC6;--bg:#F1F4F1;--card:#FFFFFF;
-  --wait:#002F18;--wait-soft:#DCE3DC;
+  --line:#E3E7E4;--line-2:#C6CCC6;--bg:#F1F4F1;--card:#FFFFFF;
+  --wait:#002F18;--wait-soft:#EEF2EE;
   --late:#CE1919;--late-soft:#FDE8E8;
-  --pause:#9A5B00;--pause-soft:#FBF0D9;
-  --done:#1F7A26;--done-soft:#EAFBEA;
+  --pause:#8A6400;--pause-soft:#FBF3E0;
+  --done:#1F7A26;--done-soft:#E8F7E9;
   --note:#E8F5EA;--note-line:#C5E2CA;
-  --radius:12px;--radius-s:8px;--focus:0 0 0 3px rgba(56,238,69,.6);
+  --radius:16px;--radius-s:10px;--focus:0 0 0 3px rgba(56,238,69,.6);
 }
 *{box-sizing:border-box}
 [hidden]{display:none !important}
@@ -45,7 +45,7 @@ a{color:var(--accent-ink)}
 
 /* Guide strip and prototype controls */
 .guide{background:var(--note);border-bottom:1px solid var(--note-line);padding:12px 16px;position:sticky;top:0;z-index:5}
-@media (max-width:1099px){body.started .guide-title{display:none}}
+@media (max-width:1099px){body.started .guide-title{display:none}.guide{position:static}}
 .guide-head{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;justify-content:space-between}
 .guide-title{max-width:60ch}
 .steps{display:flex;flex-wrap:wrap;gap:4px 16px;margin:0;padding:0;list-style:none}
@@ -61,6 +61,7 @@ a{color:var(--accent-ink)}
 .guide-now p{max-width:70ch}
 .controls{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;margin-left:auto}
 .controls .group{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.days{display:inline-flex;flex-wrap:wrap;gap:6px;align-items:center}
 .next{position:relative;z-index:1;box-shadow:0 0 0 3px #fff,0 0 0 6px var(--accent);animation:nudge 1.4s ease-in-out infinite}
 @keyframes nudge{50%{box-shadow:0 0 0 3px #fff,0 0 0 9px rgba(56,238,69,.5)}}
 @media (prefers-reduced-motion:reduce){.next{animation:none}}
@@ -82,13 +83,33 @@ a{color:var(--accent-ink)}
 .seg .btn+.btn{border-left:1px solid var(--line-2)}
 
 /* Top bar */
+.shell{display:grid;grid-template-columns:196px minmax(0,1fr);min-height:100%}
+.side{background:#F6F7F6;border-right:1px solid var(--line);padding:14px 8px;font-size:12.5px}
+.side .brand{padding:0 6px;font-size:15px}
+.ws{padding:2px 6px 12px;color:var(--ink-3);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.nav li{display:flex;align-items:center;gap:7px;padding:5px 7px;border-radius:8px;color:var(--ink-2);white-space:nowrap;min-width:0}
+.nav li.on span.count{flex:none}
+.nav .lbl{overflow:hidden;text-overflow:ellipsis;min-width:0}
+.nav li::before{content:"";width:9px;height:9px;border-radius:50%;border:1.5px solid #7B8580;flex:none}
+.nav li.grp{color:#7B8580;font-size:11.5px;padding:10px 8px 2px}
+.nav li.grp::before{display:none}
+.nav li.on{background:#E9ECEA;color:var(--ink);font-weight:500}
+.nav li.on::before{border-color:var(--accent);background:var(--accent)}
+.nav .count{margin-left:auto;background:var(--green-2);color:#fff;font-size:11px;font-weight:700;border-radius:10px;padding:0 6px;min-width:18px;text-align:center;line-height:18px}
+.main{container-type:inline-size;container-name:lena;min-width:0}
 .top{background:#fff;border-bottom:1px solid var(--line);padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
+.top .brand{display:none}
+.search{flex:1;max-width:360px;border:1px solid var(--line);border-radius:12px;padding:7px 12px 7px 32px;color:#8A938E;font-size:14px;background:#fff;position:relative;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.search::before{content:"";position:absolute;left:12px;top:50%;width:9px;height:9px;margin-top:-6px;border:1.5px solid #8A938E;border-radius:50%}
+.search::after{content:"";position:absolute;left:21px;top:50%;width:5px;height:1.5px;margin-top:3px;background:#8A938E;transform:rotate(45deg)}
+@container pane (max-width:900px){.shell{grid-template-columns:minmax(0,1fr)}.side{display:none}.top .brand{display:inline-flex}.search{display:none}}
+@media (max-width:1099px){.btn{min-height:40px}.btn.primary,.email .cta{min-height:44px}}
 .brand{font-weight:600;display:inline-flex;align-items:center;gap:7px}
 .brand::before{content:"";width:11px;height:11px;border-radius:50%;background:var(--green);flex:none}
-.brand span{color:var(--ink-3);font-weight:400}
 
 /* Pills */
-.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:999px;font-size:13px;font-weight:500;background:var(--wait-soft);color:var(--wait);white-space:nowrap}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 10px;border-radius:20px;font-size:13px;font-weight:600;background:var(--wait-soft);color:var(--wait);white-space:nowrap}
 .pill.late{background:var(--late-soft);color:var(--late)}
 .pill.pause{background:var(--pause-soft);color:var(--pause)}
 .pill.done{background:var(--done-soft);color:var(--done)}
@@ -98,7 +119,7 @@ a{color:var(--accent-ink)}
 main{display:grid;gap:16px;align-items:start}
 .pane{display:none;min-width:0}
 .pane.active{display:block}
-.pane.lena{container-type:inline-size;container-name:lena;background:var(--bg)}
+.pane.lena{container-type:inline-size;container-name:pane;background:var(--bg)}
 .pane-head{padding:12px 16px 0;color:var(--ink-2)}
 .pane-head b{color:var(--ink)}
 @media (min-width:1100px){
@@ -129,7 +150,9 @@ main{display:grid;gap:16px;align-items:start}
 .head .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:var(--ink-2)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:0 1px 2px rgba(0,29,15,.04)}
 .s-head{display:flex;gap:10px;align-items:center}
-.avatar{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;letter-spacing:.02em;flex:none}
+.avatar{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex:none}
+.startup h3{font-size:16px}
+.head h1{font-size:22px;font-weight:500}
 .stack{display:grid;gap:12px}
 .startup{display:grid;gap:6px}
 .startup .note{color:var(--ink-2)}
@@ -152,7 +175,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
 .row-card .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;color:var(--ink-2)}
 .row-card .kv b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
 .empty{padding:32px 16px;text-align:center;color:var(--ink-2)}
-@container lena (max-width:780px){
+@container lena (max-width:700px){
   .tablecard{display:none}
   .rows{display:grid;gap:12px}
 }
@@ -232,11 +255,11 @@ label.field{display:grid;gap:6px}
     </div>
     <div class="group" id="clockGroup" role="group" aria-label="Clock">
       <span>Today <span class="day" id="today">29 Sep 2026, day 0</span></span>
-      <span>Jump ahead to</span>
+      <span class="days"><span>Jump ahead to</span>
       <button class="btn small" data-day="3">Day 3</button>
       <button class="btn small" data-day="7">Day 7</button>
       <button class="btn small" data-day="8">Day 8</button>
-      <button class="btn small" data-day="13">Day 13</button>
+      <button class="btn small" data-day="13">Day 13</button></span>
     </div>
     <div class="group" id="oooGroup">
       <label class="check" style="font-size:14px"><input type="checkbox" id="ooo"> Jonas is out of office</label>
@@ -250,11 +273,35 @@ label.field{display:grid;gap:6px}
 
 <main id="main" tabindex="-1">
   <section class="pane lena" id="lenaPane" aria-label="Lena Hartmann's screen">
-    <header class="top">
-      <div class="brand">GlassDollar OS <span>for Nordwind Industrial AG</span></div>
-      <div class="small muted">Lena Hartmann, venture client manager</div>
-    </header>
-    <div id="lena"></div>
+    <div class="shell">
+      <aside class="side">
+        <div class="brand">GlassDollar</div>
+        <div class="ws">Nordwind Industrial AG</div>
+        <p class="sr-only">The side navigation is decoration. Only the shortlist and the Waiting on others list work in this prototype.</p>
+        <ul class="nav" aria-hidden="true">
+          <li><span class="lbl">Home</span></li>
+          <li><span class="lbl">Analytics</span></li>
+          <li class="grp">Organization</li>
+          <li><span class="lbl">Innovation Hub</span></li>
+          <li><span class="lbl">Business Units</span></li>
+          <li class="grp">Solutions</li>
+          <li><span class="lbl">SourceAI</span></li>
+          <li><span class="lbl">Lists</span></li>
+          <li><span class="lbl">Your Companies</span></li>
+          <li class="grp">Projects</li>
+          <li class="on"><span class="lbl">Backlog &amp; Requests</span> <span class="count" id="navCount">1</span></li>
+          <li><span class="lbl">Projects</span></li>
+        </ul>
+      </aside>
+      <div class="main">
+        <header class="top">
+          <div class="brand">GlassDollar</div>
+          <div class="search" aria-hidden="true">Search or ask SourceAI</div>
+          <div class="small muted">Lena Hartmann, venture client manager</div>
+        </header>
+        <div id="lena"></div>
+      </div>
+    </div>
   </section>
   <section class="pane jonas" id="jonasPane" aria-label="Jonas Keller's phone">
     <p class="pane-head"><b>Jonas Keller</b>, logistics process lead at the Hamburg hub. This is his phone. He never logs in.</p>
@@ -319,9 +366,9 @@ const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov
 const fmt = d => { const x = new Date(BASE); x.setUTCDate(x.getUTCDate() + d); return `${x.getUTCDate()} ${MONTHS[x.getUTCMonth()]} ${x.getUTCFullYear()}`; };
 const DUE_DAY = 7, LATE_DAY = 8;
 const STARTUPS = [
-  { id:'pallet', name:'Pallet.ai', ini:'PA', hue:'#002F18', desc:'Load planning software that builds mixed pallets and truck loads.', lena:'Closest to the problem as you described it.' },
-  { id:'cargonaut', name:'Cargonaut Labs', ini:'CL', hue:'#24982C', desc:'Route and load planning for hub-and-spoke freight networks.', lena:'Already piloting at the hub on PP-030, so onboarding would be quick.' },
-  { id:'parcelgrid', name:'Parcelgrid', ini:'PG', hue:'#4A5BD6', desc:'Dynamic slotting that re-sorts outbound pallets in mid-size distribution centers.', lena:'Ran the PP-024 pilot this summer. Stopped, but the scope was different.' }
+  { id:'pallet', name:'Pallet.ai', ini:'PA', hue:'#0F2A1C', desc:'Load planning software that builds mixed pallets and truck loads.', lena:'Closest to the problem as you described it.' },
+  { id:'cargonaut', name:'Cargonaut Labs', ini:'CL', hue:'#128AA0', desc:'Route and load planning for hub-and-spoke freight networks.', lena:'Already piloting at the hub on PP-030, so onboarding would be quick.' },
+  { id:'parcelgrid', name:'Parcelgrid', ini:'PG', hue:'#2F6FDB', desc:'Dynamic slotting that re-sorts outbound pallets in mid-size distribution centers.', lena:'Ran the PP-024 pilot this summer. Stopped, but the scope was different.' }
 ];
 const CHOICES = [['interested','Interested'],['not_now','Not now'],['need_info','Need more info']];
 const label = c => (CHOICES.find(x => x[0] === c) || [,'-'])[1];
@@ -437,6 +484,7 @@ function render(){
   byId('lenaPane').classList.toggle('active', S.role === 'lena');
   byId('jonasPane').classList.toggle('active', S.role === 'jonas');
   lenaEl.innerHTML = renderLena();
+  byId('navCount').textContent = [pp34Row(), ...otherRows()].filter(x => x && isOpen(x.state)).length;
   jonasEl.innerHTML = renderJonas();
   bind();
   guide();
@@ -492,7 +540,7 @@ function guide(){
   byId('guideAct').innerHTML = act;
   const tr = byId('tryReminders'); if (tr) tr.onclick = () => { fresh(); S.tour = true; send(); render(); live('Request sent again. Use the clock.'); };
   const wide = window.innerWidth >= 1100;
-  if (step !== lastStep){ if (!wide) S.role = pane; lastStep = step; }
+  if (step !== lastStep){ if (!wide){ S.role = pane; window.scrollTo(0, 0); } lastStep = step; }
   byId('lenaPane').classList.toggle('active', S.role === 'lena');
   byId('jonasPane').classList.toggle('active', S.role === 'jonas');
   byId('roleLena').setAttribute('aria-pressed', S.role === 'lena');
