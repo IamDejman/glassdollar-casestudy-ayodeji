@@ -229,12 +229,12 @@ label.field{display:grid;gap:6px}
   <section class="pane lena" id="lenaPane" aria-label="Lena Hartmann's screen">
     <header class="top">
       <div class="brand">GlassDollar OS <span>for Nordwind Industrial AG</span></div>
-      <div class="small muted">Lena Hartmann, innovation manager</div>
+      <div class="small muted">Lena Hartmann, venture client manager</div>
     </header>
     <div id="lena"></div>
   </section>
   <section class="pane jonas" id="jonasPane" aria-label="Jonas Keller's phone">
-    <p class="pane-head"><b>Jonas Keller</b>, head of logistics. His phone, no login.</p>
+    <p class="pane-head"><b>Jonas Keller</b>, logistics process lead, Hamburg hub. His phone, no login.</p>
     <div class="device"><div id="jonas"></div></div>
   </section>
 </main>
@@ -247,12 +247,12 @@ label.field{display:grid;gap:6px}
     <div class="preview" aria-label="Email preview">
       <div><b>To</b> jonas.keller@nordwind.example</div>
       <div><b>Subject</b> PP-034: Lena Hartmann needs your view on 3 startups</div>
-      <p>Jonas, you raised PP-034, pallet tracking losses at the Hamburg hub. I have three startups that could fix it and need your view on each by 2026-10-06. It takes about 3 minutes and needs no login.</p>
+      <p>Jonas, you raised PP-034, manual load planning for outbound trucks. I have three startups that could fix it and need your view on each by 2026-10-06. It takes about 3 minutes and needs no login.</p>
       <span class="cta" aria-hidden="true">Review 3 startups</span>
       <p class="muted small">Reminders go on 2026-10-02 and 2026-10-06 if Jonas has not answered. You are told on 2026-10-07 if he still has not.</p>
     </div>
     <label class="field">Note to Jonas (optional)
-      <textarea id="noteInput" name="note" autocomplete="off" maxlength="1000">The first two are new to us. Parcelgrid ran PP-024 in the spring with a different scope, so I kept them in.</textarea>
+      <textarea id="noteInput" name="note" autocomplete="off" maxlength="1000">You know Pallet.ai and Parcelgrid from PP-024. Cargonaut Labs is new to you, but they are already piloting at the Hamburg hub on PP-030.</textarea>
     </label>
     <div class="actions">
       <button class="btn" type="button" id="sendCancel">Cancel</button>
@@ -295,9 +295,9 @@ const BASE = new Date(Date.UTC(2026, 8, 29));
 const fmt = d => { const x = new Date(BASE); x.setUTCDate(x.getUTCDate() + d); return x.toISOString().slice(0,10); };
 const DUE_DAY = 7, LATE_DAY = 8;
 const STARTUPS = [
-  { id:'pallet', name:'Pallet.ai', desc:'Bluetooth tags and yard gateways that track pallets across trailers and docks.', lena:'Closest to the problem as you described it.' },
-  { id:'cargonaut', name:'Cargonaut Labs', desc:'Cameras at dock doors that count pallets and match them to shipments.', lena:'No hardware on the pallets, so faster to pilot.' },
-  { id:'parcelgrid', name:'Parcelgrid', desc:'Pallet pooling network with a tracking app for every pool pallet.', lena:'Ran PP-024 in the spring. Different scope.' }
+  { id:'pallet', name:'Pallet.ai', desc:'Load planning software that builds mixed pallets and truck loads.', lena:'Closest to the problem as you described it.' },
+  { id:'cargonaut', name:'Cargonaut Labs', desc:'Route and load planning for hub-and-spoke freight networks.', lena:'Already piloting at the hub on PP-030, so onboarding would be quick.' },
+  { id:'parcelgrid', name:'Parcelgrid', desc:'Dynamic slotting that re-sorts outbound pallets in mid-size distribution centers.', lena:'Ran the PP-024 pilot this summer. Stopped, but the scope was different.' }
 ];
 const CHOICES = [['interested','Interested'],['not_now','Not now'],['need_info','Need more info']];
 const label = c => (CHOICES.find(x => x[0] === c) || [,'-'])[1];
@@ -380,17 +380,17 @@ function answer(items, noneFit, noneFitText, via, note){
 function otherRows(){
   const age40 = S.day + 5;
   return [
-    { id:'PP-040', title:'Returnable crate loss, Rotterdam', owner:'Anneke de Vries', sent:fmt(-5), age:age40, due:fmt(2),
+    { id:'PP-040', title:'Supplier onboarding document checks', owner:'Anneke de Vries', sent:fmt(-5), age:age40, due:fmt(2),
       state: age40 >= LATE_DAY ? 'Late' : 'Waiting', reminders: age40 >= 7 ? 2 : age40 >= 3 ? 1 : 0, last:'Opened the page 2026-09-26', fixed:true },
-    { id:'PP-028', title:'Weld seam inspection, Kiel', owner:'Fatima El-Amin', sent:'2026-09-15', age:4, due:'2026-09-22',
-      state:'Answered', reminders:0, last:'Answered 2026-09-19', fixed:true }
+    { id:'PP-028', title:'Waste-heat recovery at Kiel foundry', owner:'Henrik Vos', sent:'2026-04-20', age:8, due:'2026-04-27',
+      state:'Answered', reminders:0, last:'Answered 2026-04-28', fixed:true }
   ];
 }
 function pp34Row(){
   if (!S.req) return null;
   const r = S.req, age = S.day - r.sentDay;
   const last = r.answer ? 'Answered ' + fmt(r.answer.day) : r.openedDay != null ? 'Opened the page ' + fmt(r.openedDay) : '-';
-  return { id:'PP-034', title:'Pallet tracking losses, Hamburg hub', owner:'Jonas Keller', sent:fmt(r.sentDay), age, due:fmt(r.sentDay + DUE_DAY),
+  return { id:'PP-034', title:'Reduce manual load planning for outbound trucks', owner:'Jonas Keller', sent:fmt(r.sentDay), age, due:fmt(r.sentDay + DUE_DAY),
            state:r.state, reminders:r.reminders, last, fixed:false };
 }
 const isOpen = s => ['Waiting','Late','Paused'].includes(s);
@@ -453,7 +453,7 @@ function renderShortlist(){
   const noneFit = r && r.answer && r.answer.noneFit ? `<div class="card"><b>None of these fit.</b> ${esc(r.answer.noneFitText)}</div>` : '';
   const behalf = r && r.answer && r.answer.note ? `<p class="muted small">${esc(r.answer.note)}</p>` : '';
   const events = r ? `<details class="log"><summary>Events for this request (${r.events.length})</summary><table><thead><tr><th>Date</th><th>Event</th></tr></thead><tbody>${r.events.map(e => `<tr><td class="num">${fmt(e.day)}</td><td>${esc(e.text)}</td></tr>`).join('')}</tbody></table></details>` : '';
-  return `<div class="head"><div><h1>PP-034 Pallet tracking losses, Hamburg hub</h1><div class="meta small">Owner Jonas Keller <span>Shortlist, 3 startups</span></div></div><div class="actions">${status}${action}</div></div>
+  return `<div class="head"><div><h1>PP-034 Reduce manual load planning for outbound trucks</h1><div class="meta small">Owner Jonas Keller <span>Shortlist, 3 startups</span></div></div><div class="actions">${status}${action}</div></div>
     <div class="stack">${noneFit}${cards}</div>${behalf}${events}`;
 }
 
@@ -496,7 +496,7 @@ function renderJonas(){
     const m = r.mails.find(x => x.id === S.openMail);
     const due = fmt(r.sentDay + DUE_DAY);
     const text = m.kind === 'request'
-      ? `<p>Jonas, you raised PP-034, pallet tracking losses at the Hamburg hub. I have three startups that could fix it and need your view on each by ${due}. It takes about 3 minutes and needs no login.</p>`
+      ? `<p>Jonas, you raised PP-034, manual load planning for outbound trucks. I have three startups that could fix it and need your view on each by ${due}. It takes about 3 minutes and needs no login.</p>`
       : m.kind === 'reminder'
       ? `<p>Jonas, a reminder that I need your view on 3 startups for PP-034 by ${due}. About 3 minutes, no login. This is reminder ${m.n} of 2.</p>`
       : `<p>Jonas, could you look at PP-034 today? Three startups, about 3 minutes, no login. I would like to brief the Hamburg team this week.</p>`;
@@ -528,7 +528,7 @@ function renderForm(){
     <button class="btn quiet small" type="button" data-note="${s.id}">Add a note for Lena</button>
     <label class="field small" id="l_${s.id}" hidden>Note for Lena<textarea id="n_${s.id}" name="n_${s.id}" autocomplete="off" maxlength="1000" placeholder="Anything Lena should know…"></textarea></label></fieldset>`).join('');
   return `<form class="page" id="answerForm" novalidate>
-    <div><h1>PP-034 Pallet tracking losses, Hamburg hub</h1><p class="lead">Lena needs your view on each by ${fmt(r.sentDay + DUE_DAY)}.</p></div>
+    <div><h1>PP-034 Reduce manual load planning for outbound trucks</h1><p class="lead">Lena needs your view on each by ${fmt(r.sentDay + DUE_DAY)}.</p></div>
     ${r.note ? `<p class="lena-note">Lena: ${esc(r.note)}</p>` : ''}
     ${cards}
     <label class="check"><input type="checkbox" id="noneFit" name="noneFit"><span>None of these fit</span></label>
