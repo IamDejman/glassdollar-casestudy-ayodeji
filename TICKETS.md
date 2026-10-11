@@ -38,6 +38,23 @@ Test against the sample data at https://github.com/IamDejman/glassdollar-casestu
 - One event table: request_id, type, at, actor, payload. DR-5 lists the types.
 - Sample data: PP-034 is Jonas Keller's. Sent 29 Sep, reminders on 2 and 6 Oct, Late since 7 Oct, day 13 today. PP-040 is Anneke de Vries's, sent 18 Sep, open at day 24.
 
+## Open questions
+
+None of these blocks a build. Each has a default the tickets follow until it is answered.
+
+- Can Lena send to someone other than the owner? Default: no. The wrong owner names the right person (DR-3) and Lena sends it on (DR-5). Ask Lena how often that happens.
+- Should finalising cancel the request? Default: no, so a late answer is still recorded. Ask Lena.
+- Does Nordwind force SSO on outside links? Ask Nordwind IT.
+- One shared GlassDollar sending domain, or one per customer? Ask Nordwind IT.
+- German or English? Default: English until the OS has a workspace language. Ask Lena.
+- Should the confirmation promise a reply time, say "within 3 working days"? Ask Lena.
+- Should Need more info keep the request open? Default: no. It is Answered with rated false, and Lena sends a new request when she has the information. Ask Lena.
+- Which auto-reply headers do Nordwind's mail servers send? Ask Nordwind IT.
+- Calendar or working days for 3, 7 and 8? Ask Lena.
+- Public holidays: default is to treat them as weekdays. Ask Lena.
+- "All NVCU" on by default? Ask Lena.
+- Read-only access for Dr. Sabine Koch? Default: no. Ask Lena.
+
 ## Not in this release
 
 Suggested stage change, editing a request after sending, the closing-the-loop email, the daily digest. The brief says why: https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/PRODUCT-BRIEF.md.
@@ -81,11 +98,6 @@ Lena has three startups on the PP-034 shortlist and needs Jonas to say which are
 - Under 3 or over 5 startups: disable the button, "Needs 3 to 5 startups".
 - A description or comment edited after sending: no banner. The snapshot stands.
 
-#### Open questions
-
-- Can Lena send to someone other than the owner? Default: no. The wrong owner names the right person (DR-3) and Lena sends it on (DR-5). Ask Lena how often that happens.
-- Should finalising cancel the request? Default: no, so a late answer is still recorded. Ask Lena.
-
 ---
 
 ### DR-2: The email, and a link that survives mail scanners
@@ -127,12 +139,6 @@ Jonas gets one email with one button. He taps it, confirms it is him, and lands 
 - The request was sent on (DR-5): the old link shows "This request went to Petra Ahlers".
 - The owner's address changes after sending: the old link keeps working. Use the new address from the next email.
 
-#### Open questions
-
-- Does Nordwind force SSO on outside links? Ask Nordwind IT.
-- One shared GlassDollar sending domain, or one per customer? Ask Nordwind IT.
-- German or English? Default: English until the OS has a workspace language. Ask Lena.
-
 ---
 
 ### DR-3: Jonas answers on one page, Lena sees it on the shortlist
@@ -173,11 +179,6 @@ After the identity tap, Jonas gets one page with the three startups and three ch
 - Opened after a cancel: "Lena no longer needs this". After a send-on: "This request went to Petra Ahlers". After an answer on behalf: "Already answered by Lena Hartmann".
 - Five startups in the snapshot: five cards, same rules.
 - Comments: 1,000 characters, with a counter from 100 left.
-
-#### Open questions
-
-- Should the confirmation promise a reply time, say "within 3 working days"? Ask Lena.
-- Should Need more info keep the request open? Default: no. It is Answered with rated false, and Lena sends a new request when she has the information. Ask Lena.
 
 ---
 
@@ -222,12 +223,6 @@ Today Lena is the reminder system. This ticket moves it into the OS: two automat
 - Resume before day 7: send day 7, skip the missed day 3.
 - The job runs twice: one email, because the second run finds the reminder_sent event.
 - Day 3 on a Saturday: Monday at 09:00.
-
-#### Open questions
-
-- Which auto-reply headers do Nordwind's mail servers send? Ask Nordwind IT.
-- Calendar or working days for 3, 7 and 8? Ask Lena.
-- Public holidays: default is to treat them as weekdays. Ask Lena.
 
 ---
 
@@ -278,7 +273,3 @@ Lena needs one place that shows everything still waiting on someone and lets her
 - Remind now at 08:59 and the job at 09:00: skip the automatic reminder.
 - The new owner may already have another request open. The limit is per shortlist, not per owner.
 
-#### Open questions
-
-- "All NVCU" on by default? Ask Lena.
-- Read-only access for Dr. Sabine Koch? Default: no. Ask Lena.
