@@ -4,25 +4,32 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
-<meta name="theme-color" content="#F6F7FA">
+<meta name="theme-color" content="#F1F4F1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap">
 <title>Decision requests, GlassDollar OS prototype</title>
 <style>
 :root{
-  --accent:#1F5AFF;--accent-soft:#E8EEFF;--accent-ink:#1444C8;
-  --ink:#111318;--ink-2:#4B5160;--ink-3:#5F6676;
-  --line:#E3E6ED;--line-2:#CDD2DC;--bg:#F6F7FA;--card:#FFFFFF;
-  --wait:#344054;--wait-soft:#F2F4F7;
-  --late:#B42318;--late-soft:#FEE4E2;
-  --pause:#B54708;--pause-soft:#FEF0C7;
-  --done:#067647;--done-soft:#DCFAE6;
-  --note:#FFF6C7;--note-line:#E8D77A;
-  --radius:8px;--focus:0 0 0 3px #BFD0FF;
+  /* GlassDollar brand tokens, taken from glassdollar.com */
+  --accent:#002F18;--accent-soft:#EAFBEA;--accent-ink:#001D0F;--green:#38EE45;--green-2:#24982C;
+  --ink:#001D0F;--ink-2:#3D4F45;--ink-3:#66776F;
+  --line:#E2E7E2;--line-2:#C6CCC6;--bg:#F1F4F1;--card:#FFFFFF;
+  --wait:#002F18;--wait-soft:#DCE3DC;
+  --late:#CE1919;--late-soft:#FDE8E8;
+  --pause:#9A5B00;--pause-soft:#FBF0D9;
+  --done:#1F7A26;--done-soft:#EAFBEA;
+  --note:#E8F5EA;--note-line:#C5E2CA;
+  --radius:12px;--radius-s:8px;--focus:0 0 0 3px rgba(56,238,69,.6);
 }
 *{box-sizing:border-box}
 [hidden]{display:none !important}
 html{height:100%}
-body{margin:0;min-height:100%;font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+body{margin:0;min-height:100%;font:14px/1.5 "Space Grotesk",Arial,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
 h1,h2,h3{font-weight:600;line-height:1.3;margin:0;text-wrap:balance}
+h1{letter-spacing:-0.01em}
+/* The mail client on Jonas's phone is not GlassDollar, so it keeps the system font */
+.mail,.email,h1.inbox,.statusbar{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 h1{font-size:20px}h2{font-size:16px}h3{font-size:15px}
 p{margin:0}
 button,input,textarea{font:inherit;color:inherit}
@@ -30,30 +37,37 @@ button,label,a,summary{touch-action:manipulation}
 button{cursor:pointer}
 :focus-visible{outline:none;box-shadow:var(--focus)}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.skip{position:absolute;left:8px;top:-48px;background:#fff;padding:8px 12px;border:1px solid var(--line-2);border-radius:6px;z-index:10}
+.skip{position:absolute;left:8px;top:-48px;background:#fff;padding:8px 12px;border:1px solid var(--line-2);border-radius:var(--radius-s);z-index:10}
 .skip:focus{top:8px}
 .muted{color:var(--ink-3)}
 .small{font-size:13px}
 a{color:var(--accent-ink)}
 
-/* Notes strip and prototype controls */
-.notes{background:var(--note);border-bottom:1px solid var(--note-line);padding:10px 16px}
-.notes summary{cursor:pointer;font-weight:600;list-style:none;display:flex;align-items:center;gap:8px}
-.notes summary::-webkit-details-marker{display:none}
-.notes summary::before{content:"";width:8px;height:8px;border-right:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:rotate(-45deg);transition:transform .15s}
-.notes details[open] summary::before{transform:rotate(45deg)}
-.notes .intro{margin:0 0 8px;max-width:78ch}
-.notes .intro:last-of-type{margin-bottom:10px}
-.narrow-only{display:inline}.wide-only{display:none}
-@media (min-width:1100px){.narrow-only{display:none}.wide-only{display:inline}}
-.notes ol{margin:8px 0 0;padding-left:20px;max-width:72ch}
-.notes li{margin:2px 0}
-.controls{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--note-line)}
+/* Guide strip and prototype controls */
+.guide{background:var(--note);border-bottom:1px solid var(--note-line);padding:12px 16px;position:sticky;top:0;z-index:5}
+@media (max-width:1099px){body.started .guide-title{display:none}}
+.guide-head{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;justify-content:space-between}
+.guide-title{max-width:60ch}
+.steps{display:flex;flex-wrap:wrap;gap:4px 16px;margin:0;padding:0;list-style:none}
+.steps li{display:flex;gap:6px;align-items:center;color:var(--ink-3);font-size:13px}
+.steps li[aria-current]{color:var(--ink);font-weight:600}
+.steps .n{width:22px;height:22px;border-radius:50%;border:1px solid var(--line-2);display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;background:#fff;flex:none}
+.steps li[aria-current] .n{background:var(--accent);border-color:var(--accent);color:#fff}
+.steps li.done .n{background:var(--done-soft);border-color:var(--done-soft);color:var(--done)}
+@media (max-width:760px){.steps li:not([aria-current]) .t{display:none}}
+.guide-row{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;justify-content:space-between;margin-top:8px}
+.guide-now{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font-size:15px}
+.guide-now .guide-step{font-weight:600;color:var(--accent-ink);white-space:nowrap}
+.guide-now p{max-width:70ch}
+.controls{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;margin-left:auto}
 .controls .group{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.next{position:relative;z-index:1;box-shadow:0 0 0 3px #fff,0 0 0 6px var(--accent);animation:nudge 1.4s ease-in-out infinite}
+@keyframes nudge{50%{box-shadow:0 0 0 3px #fff,0 0 0 9px rgba(56,238,69,.5)}}
+@media (prefers-reduced-motion:reduce){.next{animation:none}}
 .day{font-weight:600;font-variant-numeric:tabular-nums}
 
 /* Buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:6px 12px;border:1px solid var(--line-2);border-radius:6px;background:#fff;color:var(--ink);text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:6px 12px;border:1px solid var(--line-2);border-radius:var(--radius-s);background:#fff;color:var(--ink);text-decoration:none}
 .btn:hover{background:var(--bg)}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
 .btn.primary:hover{background:var(--accent-ink);border-color:var(--accent-ink)}
@@ -63,13 +77,14 @@ a{color:var(--accent-ink)}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .btn:disabled:hover{background:#fff}
 .btn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
-.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:6px;overflow:hidden}
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:var(--radius-s);overflow:hidden}
 .seg .btn{border:0;border-radius:0;min-height:34px}
 .seg .btn+.btn{border-left:1px solid var(--line-2)}
 
 /* Top bar */
 .top{background:#fff;border-bottom:1px solid var(--line);padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
-.brand{font-weight:600}
+.brand{font-weight:600;display:inline-flex;align-items:center;gap:7px}
+.brand::before{content:"";width:11px;height:11px;border-radius:50%;background:var(--green);flex:none}
 .brand span{color:var(--ink-3);font-weight:400}
 
 /* Pills */
@@ -83,18 +98,21 @@ a{color:var(--accent-ink)}
 main{display:grid;gap:16px;align-items:start}
 .pane{display:none;min-width:0}
 .pane.active{display:block}
-.lena{container-type:inline-size;container-name:lena;background:var(--bg)}
+.pane.lena{container-type:inline-size;container-name:lena;background:var(--bg)}
 .pane-head{padding:12px 16px 0;color:var(--ink-2)}
 .pane-head b{color:var(--ink)}
 @media (min-width:1100px){
   main{grid-template-columns:minmax(0,1fr) 414px;padding:16px}
   .pane{display:block}
   .controls .role{display:none}
-  .lena{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;min-height:720px}
+  .pane.lena{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;min-height:720px}
   .pane-head{padding:0 0 10px}
-  .jonas .device{width:414px;border:1px solid var(--line-2);border-radius:28px;padding:12px;background:#fff}
-  .jonas .screen{background:var(--bg);border-radius:18px;min-height:700px}
+  .pane.dim{opacity:.55;transition:opacity .2s}
+  .jonas .device{width:414px;border:10px solid #141A16;border-radius:44px;background:#141A16;box-shadow:0 20px 50px rgba(0,29,15,.2);position:sticky;top:calc(var(--guide-h,0px) + 16px)}
+  .jonas .screen{background:var(--bg);border-radius:34px;height:760px;max-width:none;padding:8px 14px 16px;overflow:auto;overscroll-behavior:contain}
+  .jonas .statusbar{display:flex}
 }
+.statusbar{display:none;justify-content:space-between;font-size:13px;font-weight:600;padding:6px 10px 12px}
 
 /* Lena */
 .wrap{max-width:1080px;margin:0 auto;padding:16px}
@@ -102,14 +120,16 @@ main{display:grid;gap:16px;align-items:start}
 .tab{background:none;border:0;padding:10px 12px;color:var(--ink-2);border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:6px 6px 0 0}
 .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
 .tab:hover{background:var(--bg)}
-.banner{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;padding:10px 12px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;background:#fff;margin-bottom:12px}
+.banner{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;padding:10px 12px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:var(--radius-s);background:#fff;margin-bottom:12px}
 .banner.late{border-left-color:var(--late)}
 .banner.pause{border-left-color:var(--pause)}
 .banner.done{border-left-color:var(--done)}
 .head{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;margin-bottom:12px}
 .head>*{min-width:0}
 .head .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:var(--ink-2)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:0 1px 2px rgba(0,29,15,.04)}
+.s-head{display:flex;gap:10px;align-items:center}
+.avatar{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600;letter-spacing:.02em;flex:none}
 .stack{display:grid;gap:12px}
 .startup{display:grid;gap:6px}
 .startup .note{color:var(--ink-2)}
@@ -150,7 +170,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
 .email{padding:16px;display:grid;gap:12px;font-size:15px}
 .email .hdr{display:grid;gap:2px;color:var(--ink-2);font-size:13px;padding-bottom:12px;border-bottom:1px solid var(--line)}
 .email .hdr b{color:var(--ink);font-size:16px;font-weight:600;overflow-wrap:anywhere}
-.email .cta{display:inline-flex;justify-content:center;min-height:44px;padding:10px 18px;background:var(--accent);color:#fff;border-radius:6px;font-weight:600;text-decoration:none;border:0;width:100%}
+.email .cta{display:inline-flex;justify-content:center;min-height:44px;padding:10px 18px;background:var(--accent);color:#fff;border-radius:var(--radius-s);font-weight:600;text-decoration:none;border:0;width:100%}
 .email .cta:hover{background:var(--accent-ink)}
 .email .url{overflow-wrap:anywhere;color:var(--ink-3);font-size:13px}
 .page{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px 16px;display:grid;gap:16px;font-size:16px}
@@ -158,34 +178,34 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
 .page .lead{color:var(--ink-2)}
 .page .btn{min-height:44px;font-size:16px}
 .page .btn.quiet.small{min-height:36px;font-size:15px;justify-self:start}
-.lena-note{color:var(--ink-2);font-size:15px;padding:10px 12px;background:var(--bg);border-radius:6px}
+.lena-note{color:var(--ink-2);font-size:15px;padding:10px 12px;background:var(--bg);border-radius:var(--radius-s)}
 .choice{border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:grid;gap:10px;margin:0;min-width:0}
 .choice legend{float:left;width:100%;font-weight:600;font-size:17px;padding:0;margin:0}
 .choice.invalid{border-color:var(--late)}
 .choice .desc{color:var(--ink-2);font-size:15px}
-.choice .lena{color:var(--ink-2);font-size:14px;padding:8px 10px;background:var(--bg);border-radius:6px}
+.choice .lena{color:var(--ink-2);font-size:14px;padding:8px 10px;background:var(--bg);border-radius:var(--radius-s)}
 .choice .err{color:var(--late);font-size:14px}
 .opts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.opts label{position:relative;display:flex;align-items:center;justify-content:center;min-height:48px;padding:6px 4px;border:1px solid var(--line-2);border-radius:6px;text-align:center;font-size:15px;line-height:1.2;cursor:pointer;background:#fff}
+.opts label{position:relative;display:flex;align-items:center;justify-content:center;min-height:48px;padding:6px 4px;border:1px solid var(--line-2);border-radius:var(--radius-s);text-align:center;font-size:15px;line-height:1.2;cursor:pointer;background:#fff}
 .opts label:hover{background:var(--bg)}
 .opts input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
 .opts input:checked+span{font-weight:600}
 .opts label:has(input:checked){background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink)}
 .opts label:has(input:focus-visible){box-shadow:var(--focus)}
 .opts label:has(input:disabled){opacity:.5;cursor:not-allowed}
-textarea{width:100%;min-height:64px;padding:10px;border:1px solid var(--line-2);border-radius:6px;resize:vertical;background:#fff}
+textarea{width:100%;min-height:64px;padding:10px;border:1px solid var(--line-2);border-radius:var(--radius-s);resize:vertical;background:#fff}
 .check{display:flex;gap:10px;align-items:flex-start;padding:4px 0;font-size:16px;cursor:pointer}
 .check input{width:22px;height:22px;margin:0;flex:none;cursor:pointer}
-.summary{display:grid;gap:6px;padding:12px;background:var(--bg);border-radius:6px}
+.summary{display:grid;gap:6px;padding:12px;background:var(--bg);border-radius:var(--radius-s)}
 .summary div{display:flex;justify-content:space-between;gap:12px}
 .status{min-height:20px;color:var(--late)}
 
 /* Dialog */
-dialog{border:1px solid var(--line);border-radius:var(--radius);padding:0;max-width:560px;width:calc(100% - 32px);box-shadow:0 12px 40px rgba(17,19,24,.18);overscroll-behavior:contain}
-dialog::backdrop{background:rgba(17,19,24,.4)}
+dialog{border:1px solid var(--line);border-radius:var(--radius);padding:0;max-width:560px;width:calc(100% - 32px);box-shadow:0 12px 40px rgba(0,29,15,.2);overscroll-behavior:contain}
+dialog::backdrop{background:rgba(0,29,15,.45)}
 .dlg{padding:20px;display:grid;gap:14px}
-.dlg .preview{border:1px solid var(--line);border-radius:6px;padding:12px;background:var(--bg);display:grid;gap:8px;font-size:14px}
-.dlg .preview .cta{display:inline-block;padding:8px 14px;background:var(--accent);color:#fff;border-radius:6px;font-weight:600;width:max-content}
+.dlg .preview{border:1px solid var(--line);border-radius:var(--radius-s);padding:12px;background:var(--bg);display:grid;gap:8px;font-size:14px}
+.dlg .preview .cta{display:inline-block;padding:8px 14px;background:var(--accent);color:#fff;border-radius:var(--radius-s);font-weight:600;width:max-content}
 label.field{display:grid;gap:6px}
 .dlg .actions{justify-content:flex-end}
 
@@ -195,19 +215,13 @@ label.field{display:grid;gap:6px}
 <body>
 <a class="skip" href="#main">Skip to content</a>
 
-<div class="notes">
-  <p class="intro"><b>What this is.</b> A prototype of one GlassDollar OS feature, decision requests. Lena Hartmann runs innovation at Nordwind. She needs Jonas Keller, the manager who raised problem PP-034, to rate three startups. Today she chases him by email for weeks. Here she sends one request, and he answers from his phone in three minutes without logging in.</p>
-  <p class="intro"><span class="wide-only"><b>Left is Lena's screen. Right is Jonas's phone.</b> They share one state.</span><span class="narrow-only"><b>Use “Viewing as” to switch between Lena's screen and Jonas's phone.</b> They share one state.</span> Start by pressing the blue button on Lena's side, then follow the request to the phone. The clock below is pretend time. Jump ahead to watch reminders go out.</p>
-  <details>
-    <summary>Full walkthrough in five clicks</summary>
-    <ol>
-      <li>As Lena, press “Ask Jonas Keller to rate this shortlist”, then “Send request”. The email lands on Jonas's phone.</li>
-      <li>On the phone, open the email, press “Review 3 startups” and confirm it's you.</li>
-      <li>Rate the three startups and press “Send to Lena”. The answers show up on her shortlist.</li>
-      <li>Reset, send again, then use the clock. Day 3 and day 7 send reminders, and day 8 marks the request Late.</li>
-      <li>Turn on “Jonas is out of office” to pause reminders, then open “Waiting on others” to try Remind now, Cancel and Answer on behalf.</li>
-    </ol>
-  </details>
+<div class="guide" id="guide">
+  <div class="guide-head">
+    <p class="guide-title"><b>Decision requests, a prototype.</b> Lena asks Jonas to rate three startups. He answers from his phone without logging in.</p>
+    <ol class="steps" id="steps" aria-label="Walkthrough"></ol>
+  </div>
+  <div class="guide-row">
+  <div class="guide-now"><span class="guide-step" id="guideStep"></span><p id="guideText" aria-live="polite"></p><span id="guideAct"></span></div>
   <div class="controls">
     <div class="group role">
       <span id="roleLabel">Viewing as</span>
@@ -216,7 +230,7 @@ label.field{display:grid;gap:6px}
         <button class="btn" id="roleJonas" aria-pressed="false">Jonas Keller</button>
       </div>
     </div>
-    <div class="group" role="group" aria-label="Clock">
+    <div class="group" id="clockGroup" role="group" aria-label="Clock">
       <span>Today <span class="day" id="today">29 Sep 2026, day 0</span></span>
       <span>Jump ahead to</span>
       <button class="btn small" data-day="3">Day 3</button>
@@ -224,11 +238,14 @@ label.field{display:grid;gap:6px}
       <button class="btn small" data-day="8">Day 8</button>
       <button class="btn small" data-day="13">Day 13</button>
     </div>
-    <div class="group">
+    <div class="group" id="oooGroup">
       <label class="check" style="font-size:14px"><input type="checkbox" id="ooo"> Jonas is out of office</label>
-      <button class="btn small" id="reset">Reset</button>
+    </div>
+    <div class="group" id="resetGroup">
+      <button class="btn small" id="reset">Start over</button>
     </div>
   </div>
+</div>
 </div>
 
 <main id="main" tabindex="-1">
@@ -302,19 +319,20 @@ const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov
 const fmt = d => { const x = new Date(BASE); x.setUTCDate(x.getUTCDate() + d); return `${x.getUTCDate()} ${MONTHS[x.getUTCMonth()]} ${x.getUTCFullYear()}`; };
 const DUE_DAY = 7, LATE_DAY = 8;
 const STARTUPS = [
-  { id:'pallet', name:'Pallet.ai', desc:'Load planning software that builds mixed pallets and truck loads.', lena:'Closest to the problem as you described it.' },
-  { id:'cargonaut', name:'Cargonaut Labs', desc:'Route and load planning for hub-and-spoke freight networks.', lena:'Already piloting at the hub on PP-030, so onboarding would be quick.' },
-  { id:'parcelgrid', name:'Parcelgrid', desc:'Dynamic slotting that re-sorts outbound pallets in mid-size distribution centers.', lena:'Ran the PP-024 pilot this summer. Stopped, but the scope was different.' }
+  { id:'pallet', name:'Pallet.ai', ini:'PA', hue:'#002F18', desc:'Load planning software that builds mixed pallets and truck loads.', lena:'Closest to the problem as you described it.' },
+  { id:'cargonaut', name:'Cargonaut Labs', ini:'CL', hue:'#24982C', desc:'Route and load planning for hub-and-spoke freight networks.', lena:'Already piloting at the hub on PP-030, so onboarding would be quick.' },
+  { id:'parcelgrid', name:'Parcelgrid', ini:'PG', hue:'#4A5BD6', desc:'Dynamic slotting that re-sorts outbound pallets in mid-size distribution centers.', lena:'Ran the PP-024 pilot this summer. Stopped, but the scope was different.' }
 ];
 const CHOICES = [['interested','Interested'],['not_now','Not now'],['need_info','Need more info']];
 const label = c => (CHOICES.find(x => x[0] === c) || [,'-'])[1];
+const short = d => fmt(d).replace(/ \d{4}$/, '');
 const byId = id => document.getElementById(id);
 const names = list => { const n = list.map(i => STARTUPS.find(s => s.id === i.id).name); return n.length > 1 ? n.slice(0,-1).join(', ') + ' and ' + n[n.length-1] : n[0]; };
 
 let S;
 function fresh(){
   S = { day:0, role:'lena', tab:'shortlist', listTab:'open', screen:'inbox', openMail:null, ooo:false,
-        req:null, banners:[], remindNowDay:null, readMail:new Set() };
+        req:null, banners:[], remindNowDay:null, readMail:new Set(), tour:false };
 }
 function log(type, text){ S.req.events.push({ day:S.day, type, text }); }
 function notify(kind, text){ S.banners.unshift({ kind, text }); S.banners = S.banners.slice(0,2); }
@@ -421,6 +439,71 @@ function render(){
   lenaEl.innerHTML = renderLena();
   jonasEl.innerHTML = renderJonas();
   bind();
+  guide();
+  document.body.classList.toggle('started', !!S.req);
+  setGuideH();
+}
+function setGuideH(){ document.documentElement.style.setProperty('--guide-h', byId('guide').offsetHeight + 'px'); }
+window.addEventListener('resize', setGuideH);
+
+/* Guide: one step at a time, derived from state */
+const STEPS = ['Send the request', 'Jonas opens the email', 'Jonas answers', 'Lena sees the answer', 'Reminders and chasing'];
+let lastStep = 0;
+function stepOf(){
+  const r = S.req;
+  if (!r) return 1;
+  if (r.state === 'Cancelled' || S.tour) return 5;
+  if (r.answer) return 4;
+  if (!r.events.some(e => e.type === 'identity_confirmed')) return 2;
+  return 3;
+}
+function guide(){
+  const r = S.req, step = stepOf();
+  let text = '', target = null, pane = 'lena', act = '';
+  if (step === 1){ text = 'Press the green button on Lena\u2019s screen to ask Jonas.'; target = '#askBtn'; }
+  else if (step === 2){
+    pane = 'jonas';
+    if (S.screen === 'inbox'){ text = 'Now on Jonas\u2019s phone. Open the email from Lena.'; target = '.mail-row'; }
+    else if (S.screen === 'email'){ text = 'Press \u201cReview 3 startups\u201d. Nothing is recorded until the next tap.'; target = '.email .cta'; }
+    else if (S.screen === 'identity'){ text = 'Confirm it\u2019s Jonas. This tap is what keeps the link safe from mail scanners.'; target = '[data-screen="answer"]'; }
+    else { text = 'Go back to the inbox and open the email again.'; target = '[data-screen="inbox"]'; }
+  }
+  else if (step === 3){
+    pane = 'jonas';
+    if (S.screen === 'answer'){ text = 'Rate each startup, add a note if you like, and press \u201cSend to Lena\u201d.'; target = '#sendAnswer'; }
+    else { text = 'Open the email again to get back to the three startups.'; target = S.screen === 'inbox' ? '.mail-row' : '[data-screen="inbox"]'; }
+  }
+  else if (step === 4){
+    text = 'Lena has the answers and one notification. Next, see what happens when Jonas does not answer.';
+    act = '<button class="btn primary small" id="tryReminders">Try the reminders</button>';
+  }
+  else {
+    if (r.state === 'Cancelled') text = 'Request cancelled. If Jonas opens the link now he sees that Lena no longer needs it. Press Start over to begin again.';
+    else if (r.state === 'Answered') text = 'Answered. Press Start over to begin again.';
+    else {
+      text = 'Jump ahead to day 3 and 7 to send reminders. Day 8 marks it Late. Tick \u201cJonas is out of office\u201d to pause. Open \u201cWaiting on others\u201d to remind, cancel or answer for him.';
+      if (r.state === 'Waiting' && S.day < 3) target = '[data-day="3"]';
+      else if (S.day >= LATE_DAY && S.tab !== 'waiting') target = '[data-tab="waiting"]';
+    }
+  }
+  byId('steps').innerHTML = STEPS.map((t, i) => `<li class="${i + 1 < step ? 'done' : ''}"${i + 1 === step ? ' aria-current="step"' : ''}><span class="n">${i + 1 < step ? '\u2713' : i + 1}</span><span class="t">${t}</span></li>`).join('');
+  byId('guideStep').textContent = `Step ${step} of 5.`;
+  byId('guideText').textContent = text;
+  byId('guideAct').innerHTML = act;
+  const tr = byId('tryReminders'); if (tr) tr.onclick = () => { fresh(); S.tour = true; send(); render(); live('Request sent again. Use the clock.'); };
+  const wide = window.innerWidth >= 1100;
+  if (step !== lastStep){ if (!wide) S.role = pane; lastStep = step; }
+  byId('lenaPane').classList.toggle('active', S.role === 'lena');
+  byId('jonasPane').classList.toggle('active', S.role === 'jonas');
+  byId('roleLena').setAttribute('aria-pressed', S.role === 'lena');
+  byId('roleJonas').setAttribute('aria-pressed', S.role === 'jonas');
+  byId('lenaPane').classList.toggle('dim', step <= 3 && pane === 'jonas');
+  byId('jonasPane').classList.toggle('dim', step <= 3 && pane === 'lena');
+  const showClock = S.tour || S.day > 0 || S.ooo;
+  byId('clockGroup').hidden = !showClock; byId('oooGroup').hidden = !showClock;
+  byId('resetGroup').hidden = !r;
+  document.querySelectorAll('.next').forEach(el => el.classList.remove('next'));
+  if (target){ const el = document.querySelector(target); if (el && (wide || el.closest('.pane.active') || !el.closest('.pane'))) (el.classList.contains('mail-row') ? el.closest('.mail') : el).classList.add('next'); }
 }
 
 function renderLena(){
@@ -455,7 +538,7 @@ function renderShortlist(){
       const it = r.answer.items.find(i => i.id === s.id);
       ans = `<div class="answer-line"><span class="pill ${it.choice === 'interested' ? 'done' : ''}">${label(it.choice)}</span>${it.comment ? `<span>${esc(it.comment)}</span>` : ''}</div>`;
     }
-    return `<div class="card startup"><h3>${s.name}</h3><p>${s.desc}</p><p class="note">Lena: ${s.lena}</p>${ans}</div>`;
+    return `<div class="card startup"><div class="s-head"><span class="avatar" style="background:${s.hue}" aria-hidden="true">${s.ini}</span><h3>${s.name}</h3></div><p>${s.desc}</p><p class="note">Lena: ${s.lena}</p>${ans}</div>`;
   }).join('');
   const noneFit = r && r.answer && r.answer.noneFit ? `<div class="card"><b>None of these fit.</b> ${esc(r.answer.noneFitText)}</div>` : '';
   const behalf = r && r.answer && r.answer.note ? `<p class="muted small">${esc(r.answer.note)}</p>` : '';
@@ -524,7 +607,7 @@ function renderJonas(){
   } else if (S.screen === 'done'){
     body = renderDone(false);
   }
-  return `<div class="screen">${body}</div>`;
+  return `<div class="screen"><div class="statusbar" aria-hidden="true"><span>9:41</span><span>${short(S.day)}</span></div>${body}</div>`;
 }
 
 function renderForm(){
@@ -609,7 +692,6 @@ function bind(){
   main.querySelectorAll('[data-list]').forEach(b => b.onclick = () => { S.listTab = b.dataset.list; render(); });
   main.querySelectorAll('[data-dismiss]').forEach(b => b.onclick = () => { S.banners.splice(+b.dataset.dismiss, 1); render(); });
   const ask = main.querySelector('#askBtn'); if (ask) ask.onclick = () => {
-    const short = d => fmt(d).replace(/ \d{4}$/, '');
     byId('pvDue').textContent = fmt(S.day + DUE_DAY); byId('pvR1').textContent = short(S.day + 3); byId('pvR2').textContent = short(S.day + 7); byId('pvLate').textContent = short(S.day + LATE_DAY);
     byId('sendDialog').showModal();
   };
@@ -641,7 +723,7 @@ byId('roleLena').onclick = () => { S.role = 'lena'; render(); };
 byId('roleJonas').onclick = () => { S.role = 'jonas'; render(); };
 document.querySelectorAll('[data-day]').forEach(b => b.onclick = () => { jumpTo(+b.dataset.day); render(); });
 byId('ooo').onchange = e => { S.ooo = e.target.checked; if (S.ooo) pause(); else resume(); render(); };
-byId('reset').onclick = () => { fresh(); render(); live('Prototype reset'); };
+byId('reset').onclick = () => { fresh(); lastStep = 0; render(); live('Prototype reset'); };
 
 const sendDialog = byId('sendDialog');
 byId('sendCancel').onclick = () => sendDialog.close();
