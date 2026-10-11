@@ -10,7 +10,7 @@ Email is the channel because every owner has it. The ask is what changes: three 
 
 ## Order
 
-Build DR-1 to DR-5 in that order. Each ticket stands on its own. The acceptance criteria use [data/sample-data.json](data/sample-data.json), so you can check your work without asking anyone.
+Build DR-1 to DR-5 in that order. Each ticket stands on its own. The acceptance criteria use the sample data at https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/data/sample-data.json, so you can check your work without asking anyone.
 
 ## Terms used in all five tickets
 
@@ -36,45 +36,63 @@ The seed data tells one story. PP-034 is Jonas's pain point about manual load pl
 
 ## Left out on purpose
 
-Suggested stage change, editing a request after it is sent, the closing-the-loop email and the daily digest are Should or Later. [README.md](README.md#scope) says why.
+Suggested stage change, editing a request after it is sent, the closing-the-loop email and the daily digest are Should or Later. The brief says why: https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/PRODUCT-BRIEF.md.
 
 ---
 
 ### DR-1: Create a decision request from a shortlist
 
-Lena has three startups on the PP-034 shortlist and needs Jonas to say which are worth a call. Today she writes an email and hopes. This ticket gives her a button on the shortlist that sends one request, and shows her that it's out there.
+Lena has three startups on the PP-034 shortlist and needs Jonas to say which are worth a call. Today she writes an email and hopes. This ticket gives her a button on the shortlist that sends one request, shows her that it is out there, and lets her cancel it.
 
 #### What to build
 
-- On a shortlist with 3 to 5 startups, a button "Ask Jonas Keller to rate this shortlist". It opens a preview of the email (DR-2), an optional note to the owner of up to 1,000 characters, and Send.
-- One open request per shortlist. The request keeps a snapshot of the startups as they were at send time.
-- While a request is open, the shortlist header says "Waiting for Jonas Keller, day N".
+- In the header of the shortlist page of a pain point in the Shortlist stage, a button "Ask Jonas Keller to rate this shortlist". The name is the pain point's owner. Anyone who can edit the pain point can press it.
+- The button opens a dialog with the email the owner will get (the DR-2 template with this request's details filled in; until DR-2 ships, the dialog shows the template text), an optional plain-text note to the owner of up to 1,000 characters with line breaks kept, and "Send request".
+- Send creates the request in Waiting with sent_at now, due_at the end of day 7 and link_expires_at the end of day 14, both in the workspace timezone, and stores a snapshot of the shortlist. Sending the email is DR-2's job. DR-1 writes the request and the created event.
+- One open request per shortlist. Open means Waiting, Late or Paused. Enforce it in the database, not only in the UI.
+- While a request is open the header shows its state and age: "Waiting for Jonas Keller, day N", "Late: Jonas Keller, day N" or "Paused: Jonas Keller, day N". N is calendar days since sent_at. Once Answered, DR-3 puts the answers in its place. Once Cancelled, the button comes back.
+- Next to the state, "Cancel request". It asks "Cancel the request to Jonas Keller?" with an optional reason, sets the state to Cancelled, writes the cancelled event and brings the button back. The owner gets no email. If he opens the link later, DR-3 tells him Lena no longer needs this. DR-5 puts the same action on the list.
+- When a startup is added to or removed from the shortlist while a request is open, the header shows "Shortlist changed since the request" with "Cancel and resend". It cancels the open request and opens the send dialog with the note prefilled.
 
 #### Not in this ticket
 
-Other kinds of question. More than one owner on a request. Editing a request after it's sent: cancel it and send a new one.
+Other kinds of question. More than one owner on a request. Sending to someone other than the pain point's owner (see Open questions). Editing a request after it's sent: cancel it and send a new one. The email itself (DR-2).
 
 #### Data
 
-request {id, pain_point_id, shortlist_id, owner_id, sent_by, note, state, sent_at, due_at, link_expires_at, startups_snapshot[], reminders_sent, flag}. Any open state can go to Answered or Cancelled.
+request {id, pain_point_id, shortlist_id, owner_id, sent_by, note, state, sent_at, due_at, link_expires_at, startups_snapshot[], reminders_sent, flag, cancelled_reason}. state starts at Waiting, reminders_sent at 0 and flag at none. startups_snapshot holds {startup_id, name, description, manager_comment} for each startup as it was at send time. DR-3 shows the snapshot, not the live shortlist.
+
+event {request_id, type, at, actor, payload}. DR-1 creates the table and writes created {startups_count, note_length} and cancelled {reason}. Later tickets add their own types and DR-5 lists them all.
+
+State changes: Waiting, Late or Paused can go to Answered or Cancelled. Answered and Cancelled are final. Late and Paused come from DR-4.
+
+Days count from the calendar date of sending. A request sent at 23:30 on 29 September has day 1 on 30 September and due_at on 6 October at 23:59.
 
 #### Edge cases
 
 - Fewer than 3 or more than 5 startups: the button is disabled and says "Needs 3 to 5 startups".
-- The shortlist changes after sending: show "Shortlist changed since the request" with Cancel and resend.
-- The owner has no email address, or the owner is the sender: the button is disabled and says why.
+- The pain point has no owner, the owner is not a user in the OS and so has no email address, or the owner is the sender: the button is disabled and says which of the three it is.
+- Two managers press Send on the same shortlist at the same time: one request is created and the other sees "Already sent by Lena Hartmann".
+- A startup's description or Lena's comment is edited after sending: no banner. The owner sees the snapshot.
+- The pain point moves past Shortlist while a request is open: the request stays open until link_expires_at so a late answer is still recorded (DR-3). The header shows "Finalised, answer still open until 2026-10-13" and DR-4 sends no more reminders.
+- The request is cancelled while the owner has the answer page open: his Send gets "Lena no longer needs this" (DR-3).
 
 #### Acceptance criteria
 
-- PP-034 has 3 startups and Lena sends on 2026-09-29. The request is Waiting, due_at is 2026-10-06 23:59 Europe/Berlin, link_expires_at is 2026-10-13 23:59 and reminders_sent is 0.
-- That request is still open and Tobias Brandt opens the shortlist on 2026-10-12. He sees "Waiting for Jonas Keller, day 13" and can't create another.
+- PP-034 has 3 startups and Lena sends on 2026-09-29 at any time of day. The request is Waiting, sent_by is Lena Hartmann, due_at is 2026-10-06 23:59 Europe/Berlin, link_expires_at is 2026-10-13 23:59, reminders_sent is 0, flag is none, startups_snapshot holds Pallet.ai, Cargonaut Labs and Parcelgrid with their descriptions and Lena's comments, and a created event is logged.
+- That request is still open and Tobias Brandt opens the shortlist on 2026-10-12. He sees "Late: Jonas Keller, day 13" and no send button.
 - A shortlist has 2 startups. The button is disabled and says "Needs 3 to 5 startups".
-- A request is out and Lena adds a fourth startup. The shortlist shows "Shortlist changed since the request" with Cancel and resend.
+- A pain point in Shortlist whose owner is Henrik Vos, who is not a user in the OS (as on PP-017). The button is disabled and says "Henrik Vos has no email address in the OS".
+- A request is out and Lena adds a fourth startup. The header shows "Shortlist changed since the request" with "Cancel and resend". She presses it: the old request is Cancelled with a cancelled event, the dialog opens with her note prefilled, and Send creates a new Waiting request with 4 startups in the snapshot and reminders_sent 0.
+- Lena edits Pallet.ai's description while a request is open. No banner, and the snapshot is unchanged.
+- Lena presses "Cancel request" on PP-034 with the reason "Jonas is on leave". The state is Cancelled, the reason is stored, cancelled is logged, Jonas gets no email, and the send button is back.
+- Lena and Tobias press Send on the same shortlist within a second. One request exists and the other sees "Already sent by Lena Hartmann".
+- Lena moves PP-034 past Shortlist on 2026-10-12 with the request open. The request stays Late, the header shows "Finalised, answer still open until 2026-10-13", and no reminder goes out.
 
 #### Details
 
-- Analytics: decision_request_created {request_id, startups_count, note_length}
-- Open questions: none
+- Analytics: decision_request_created {request_id, startups_count, note_length}; decision_request_cancelled {request_id, age_days, has_reason}
+- Open questions: should Lena be able to send to someone other than the pain point's owner? The default here is no, and a wrong owner says who is right (DR-3), which Lena acts on (DR-5). Ask Lena how often the owner is not the right judge. Should a request be cancelled automatically when the pain point leaves Shortlist? The default here is no, so a late answer is still recorded. Ask Lena.
 - Module: Pain points
 - Estimate: M
 - Depends on: none
@@ -188,7 +206,7 @@ Reading return dates out of auto-replies. Drafting a note to the owner's manager
 
 #### Data
 
-The jobs are idempotent and check the state again right before sending. Fields: reminders_sent, last_owner_activity_at, flag (none | away | bounced), paused_at. A reminder goes out only when the state is Waiting and reminders_sent is under 2. On Resume, if day 8 has already passed, the state becomes Late straight away and Lena is told once.
+The jobs are idempotent and check the state again right before sending. Fields: reminders_sent, last_owner_activity_at, flag (none | away | bounced), paused_at. A reminder goes out only when the state is Waiting, reminders_sent is under 2 and the pain point is still in Shortlist. On Resume, if day 8 has already passed, the state becomes Late straight away and Lena is told once.
 
 #### Edge cases
 
@@ -225,7 +243,7 @@ Lena needs one place that shows everything still waiting on someone and lets her
 - Columns: Request, Owner, Age, Due, State (Waiting, Late, Paused), Reminders, Last owner action, Flag. Late rows first, then oldest. Empty cells show "-". When nothing is open: "Nothing is waiting on anyone."
 - Actions on each row: Remind now (once per 24 hours, counts as a manual chase), Cancel (optional reason), Answer on behalf (the DR-3 form plus a required note, default "recorded by Lena Hartmann from a call"; the owner gets no email), and, when the owner named someone else, "Send to Petra Ahlers instead".
 - "Send to [name] instead": the request moves to that person with a fresh link, sent_at and due_at restart, reminders_sent goes back to 0, and the old link shows "This request went to Petra Ahlers". If the name isn't in the OS, Lena is asked for an email address first. The same button sits on the shortlist header.
-- An event log: {request_id, type, at, actor, payload} with the types created, link_opened, identity_confirmed, reminder_sent, reminder_skipped, remind_now, paused, resumed, late, handoff, reassigned, answered, cancelled.
+- The event log from DR-1, with the types created, link_opened, identity_confirmed, reminder_sent, reminder_skipped, remind_now, paused, resumed, late, handoff, reassigned, answered, cancelled.
 - The four measures written as queries, with no screen yet: owner wait time (median days from created to answered among rated requests, plus the share answered by day 7 with unanswered counted as misses); first touch within one working day; answered without a manual chase (no remind_now before answered); late rate (open requests older than 1.2 times the unit's median, or day 8 until there is a median).
 
 #### Not in this ticket
