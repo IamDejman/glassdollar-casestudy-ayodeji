@@ -145,7 +145,9 @@ main{display:grid;gap:16px;align-items:start}
 .banner.late{border-left-color:var(--late)}
 .banner.pause{border-left-color:var(--pause)}
 .banner.done{border-left-color:var(--done)}
-.head{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.head{display:flex;gap:12px 20px;align-items:flex-start;justify-content:space-between;margin-bottom:20px}
+.head .actions{flex:none;padding-top:4px}
+@container lena (max-width:700px){.head{flex-wrap:wrap}.head .actions{padding-top:0;width:100%}.head .actions .btn.primary{width:100%}}
 .head>*{min-width:0}
 .head .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:var(--ink-2)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:0 1px 2px rgba(0,29,15,.04)}
