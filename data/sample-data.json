@@ -1,0 +1,2660 @@
+{
+  "today": "2026-10-12",
+  "users": [
+    {
+      "id": "U-001",
+      "name": "Lena Hartmann",
+      "role": "Venture client manager, NVCU",
+      "persona": "Venture client manager (power user)",
+      "business_unit": "Nordwind Venture Client Unit",
+      "email": "lena.hartmann@nordwind.example",
+      "last_login": "2026-10-12"
+    },
+    {
+      "id": "U-002",
+      "name": "Tobias Brandt",
+      "role": "Venture client manager, NVCU",
+      "persona": "Second venture client manager",
+      "business_unit": "Nordwind Venture Client Unit",
+      "email": "tobias.brandt@nordwind.example",
+      "last_login": "2026-10-12"
+    },
+    {
+      "id": "U-003",
+      "name": "Dr. Sabine Koch",
+      "role": "Head of NVCU",
+      "persona": "Head of unit (leadership, internal)",
+      "business_unit": "Nordwind Venture Client Unit",
+      "email": "sabine.koch@nordwind.example",
+      "last_login": "2026-10-06"
+    },
+    {
+      "id": "U-004",
+      "name": "Markus Lindqvist",
+      "role": "CTO",
+      "persona": "Executive (leadership, external to the unit)",
+      "business_unit": "Group executive team",
+      "email": "markus.lindqvist@nordwind.example",
+      "last_login": null
+    },
+    {
+      "id": "U-005",
+      "name": "Fatima El-Amin",
+      "role": "Head of Plant Maintenance, Bremen plant",
+      "persona": "Pain point owner (occasional user)",
+      "business_unit": "Plant Maintenance",
+      "email": "fatima.el-amin@nordwind.example",
+      "last_login": "2026-05-27"
+    },
+    {
+      "id": "U-006",
+      "name": "Jonas Keller",
+      "role": "Logistics process lead, Hamburg hub",
+      "persona": "Pain point owner 2",
+      "business_unit": "Logistics",
+      "email": "jonas.keller@nordwind.example",
+      "last_login": "2026-08-19"
+    },
+    {
+      "id": "U-007",
+      "name": "Anneke de Vries",
+      "role": "Strategic buyer, startup contracts",
+      "persona": "Procurement",
+      "business_unit": "Procurement",
+      "email": "anneke.de-vries@nordwind.example",
+      "last_login": "2026-10-08"
+    },
+    {
+      "id": "U-008",
+      "name": "Priya Raman",
+      "role": "Co-founder, Vibralytics GmbH",
+      "persona": "Startup contact (external)",
+      "business_unit": "External (Vibralytics GmbH)",
+      "email": "priya.raman@nordwind.example",
+      "last_login": null
+    },
+    {
+      "id": "U-009",
+      "name": "Petra Ahlers",
+      "role": "Shift planning lead, Hamburg hub",
+      "persona": "Colleague of a pain point owner",
+      "business_unit": "Logistics",
+      "email": "petra.ahlers@nordwind.example",
+      "last_login": null
+    }
+  ],
+  "startups": [
+    {
+      "id": "S-001",
+      "name": "Vibralytics GmbH",
+      "city": "Munich",
+      "country": "Germany",
+      "description": "Vibration and temperature sensors that predict compressor and motor failures.",
+      "category": "Predictive maintenance",
+      "founded_year": 2019,
+      "team_size": 34,
+      "website": "vibralytics.example"
+    },
+    {
+      "id": "S-002",
+      "name": "Sensorik Nord",
+      "city": "Kiel",
+      "country": "Germany",
+      "description": "Vibration analytics for rotating equipment in harsh industrial settings.",
+      "category": "Predictive maintenance",
+      "founded_year": 2017,
+      "team_size": 26,
+      "website": "sensorik-nord.example"
+    },
+    {
+      "id": "S-003",
+      "name": "Kondo Robotics",
+      "city": "Eindhoven",
+      "country": "Netherlands",
+      "description": "Picking robots that work beside people in warehouse aisles.",
+      "category": "Warehouse automation",
+      "founded_year": 2018,
+      "team_size": 72,
+      "website": "kondo-robotics.example"
+    },
+    {
+      "id": "S-004",
+      "name": "Pallet.ai",
+      "city": "Rotterdam",
+      "country": "Netherlands",
+      "description": "Load planning software that builds mixed pallets and truck loads.",
+      "category": "Logistics software",
+      "founded_year": 2020,
+      "team_size": 31,
+      "website": "pallet-ai.example"
+    },
+    {
+      "id": "S-005",
+      "name": "Thermion",
+      "city": "Vienna",
+      "country": "Austria",
+      "description": "Heat recovery units that turn waste heat from furnaces into process steam.",
+      "category": "Energy efficiency",
+      "founded_year": 2016,
+      "team_size": 58,
+      "website": "thermion.example"
+    },
+    {
+      "id": "S-006",
+      "name": "Clausio",
+      "city": "Berlin",
+      "country": "Germany",
+      "description": "AI review of supplier and customer contracts with clause-level risk scores.",
+      "category": "Legal tech",
+      "founded_year": 2021,
+      "team_size": 22,
+      "website": "clausio.example"
+    },
+    {
+      "id": "S-007",
+      "name": "Stackwise",
+      "city": "Stockholm",
+      "country": "Sweden",
+      "description": "Inventory forecasts that flag stockouts for spare parts and consumables.",
+      "category": "Inventory forecasting",
+      "founded_year": 2019,
+      "team_size": 40,
+      "website": "stackwise.example"
+    },
+    {
+      "id": "S-008",
+      "name": "Fieldnote",
+      "city": "Copenhagen",
+      "country": "Denmark",
+      "description": "Maintenance work orders and technician scheduling for plant floors.",
+      "category": "Maintenance software",
+      "founded_year": 2020,
+      "team_size": 47,
+      "website": "fieldnote.example"
+    },
+    {
+      "id": "S-009",
+      "name": "Ampera",
+      "city": "Zurich",
+      "country": "Switzerland",
+      "description": "Energy monitoring for industrial sites with alerts on abnormal load.",
+      "category": "Energy monitoring",
+      "founded_year": 2018,
+      "team_size": 39,
+      "website": "ampera.example"
+    },
+    {
+      "id": "S-010",
+      "name": "Weldscan",
+      "city": "Aachen",
+      "country": "Germany",
+      "description": "Camera-based inspection of weld seams on production lines.",
+      "category": "Computer vision QA",
+      "founded_year": 2019,
+      "team_size": 29,
+      "website": "weldscan.example"
+    },
+    {
+      "id": "S-011",
+      "name": "Quantia Sense GmbH",
+      "city": "Stuttgart",
+      "country": "Germany",
+      "description": "Thermal sensors that flag overheating electrical cabinets early.",
+      "category": "Predictive maintenance",
+      "founded_year": 2019,
+      "team_size": 38,
+      "website": "quantia-sense.example"
+    },
+    {
+      "id": "S-012",
+      "name": "Brickwerk Robotics",
+      "city": "Odense",
+      "country": "Denmark",
+      "description": "Mobile robots that move totes between packing stations.",
+      "category": "Warehouse automation",
+      "founded_year": 2018,
+      "team_size": 61,
+      "website": "brickwerk.example"
+    },
+    {
+      "id": "S-013",
+      "name": "Lumen Freight",
+      "city": "Antwerp",
+      "country": "Belgium",
+      "description": "Yard management software for trucks waiting at loading docks.",
+      "category": "Logistics software",
+      "founded_year": 2020,
+      "team_size": 27,
+      "website": "lumen-freight.example"
+    },
+    {
+      "id": "S-014",
+      "name": "Kiln Heat Labs",
+      "city": "Leoben",
+      "country": "Austria",
+      "description": "Modular heat exchangers for recovering process heat in metal works.",
+      "category": "Energy efficiency",
+      "founded_year": 2017,
+      "team_size": 44,
+      "website": "kiln-heat.example"
+    },
+    {
+      "id": "S-015",
+      "name": "Redline Contracts",
+      "city": "Amsterdam",
+      "country": "Netherlands",
+      "description": "Clause library and risk flags for supplier agreements.",
+      "category": "Legal tech",
+      "founded_year": 2021,
+      "team_size": 19,
+      "website": "redline-contracts.example"
+    },
+    {
+      "id": "S-016",
+      "name": "Torque Vision",
+      "city": "Ljubljana",
+      "country": "Slovenia",
+      "description": "Surface defect detection for sheet metal on press lines.",
+      "category": "Computer vision QA",
+      "founded_year": 2020,
+      "team_size": 33,
+      "website": "torque-vision.example"
+    },
+    {
+      "id": "S-017",
+      "name": "Parcelgrid",
+      "city": "Warsaw",
+      "country": "Poland",
+      "description": "Dynamic slotting that re-sorts outbound pallets in mid-size distribution centers.",
+      "category": "Logistics software",
+      "founded_year": 2019,
+      "team_size": 54,
+      "website": "parcelgrid.example"
+    },
+    {
+      "id": "S-018",
+      "name": "Gridmind Energy",
+      "city": "Oslo",
+      "country": "Norway",
+      "description": "Demand response software for industrial sites with flexible loads.",
+      "category": "Energy monitoring",
+      "founded_year": 2018,
+      "team_size": 36,
+      "website": "gridmind.example"
+    },
+    {
+      "id": "S-019",
+      "name": "Mantle Maintenance",
+      "city": "Helsinki",
+      "country": "Finland",
+      "description": "Mobile inspection rounds and checklists for plant technicians.",
+      "category": "Maintenance software",
+      "founded_year": 2021,
+      "team_size": 22,
+      "website": "mantle-maintenance.example"
+    },
+    {
+      "id": "S-020",
+      "name": "Ferro Acoustics",
+      "city": "Ostrava",
+      "country": "Czechia",
+      "description": "Acoustic emission sensors that detect bearing wear in pumps.",
+      "category": "Predictive maintenance",
+      "founded_year": 2016,
+      "team_size": 29,
+      "website": "ferro-acoustics.example"
+    },
+    {
+      "id": "S-021",
+      "name": "Cargonaut Labs",
+      "city": "Hamburg",
+      "country": "Germany",
+      "description": "Route and load planning for hub-and-spoke freight networks.",
+      "category": "Logistics software",
+      "founded_year": 2022,
+      "team_size": 15,
+      "website": "cargonaut.example"
+    },
+    {
+      "id": "S-022",
+      "name": "Vertex Supply",
+      "city": "Milan",
+      "country": "Italy",
+      "description": "Demand signals from ERP data that flag stockouts two weeks early.",
+      "category": "Inventory forecasting",
+      "founded_year": 2020,
+      "team_size": 48,
+      "website": "vertex-supply.example"
+    },
+    {
+      "id": "S-023",
+      "name": "PaperTrail Procure",
+      "city": "Lisbon",
+      "country": "Portugal",
+      "description": "Automated supplier onboarding with document checks.",
+      "category": "Procurement software",
+      "founded_year": 2021,
+      "team_size": 24,
+      "website": "papertrail-procure.example"
+    },
+    {
+      "id": "S-024",
+      "name": "Pulse Metering",
+      "city": "Graz",
+      "country": "Austria",
+      "description": "Submetering for compressed air and steam lines at plant level.",
+      "category": "Energy monitoring",
+      "founded_year": 2019,
+      "team_size": 31,
+      "website": "pulse-metering.example"
+    }
+  ],
+  "pain_points": [
+    {
+      "id": "PP-012",
+      "title": "Early warning for spare-part stockouts",
+      "owner_user_id": "U-006",
+      "owner_name": "Jonas Keller",
+      "business_unit": "Logistics",
+      "submitted_at": "2026-03-02",
+      "current_stage": "Decision",
+      "outcome": null,
+      "vcm_user_id": "U-001",
+      "stage_history": [
+        {
+          "stage": "Submitted",
+          "entered_at": "2026-03-02",
+          "by_user_id": "U-006"
+        },
+        {
+          "stage": "Scouting",
+          "entered_at": "2026-03-05",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Shortlist",
+          "entered_at": "2026-04-01",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Evaluation",
+          "entered_at": "2026-04-08",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Pilot",
+          "entered_at": "2026-04-20",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Decision",
+          "entered_at": "2026-06-19",
+          "by_user_id": "U-001"
+        }
+      ]
+    },
+    {
+      "id": "PP-015",
+      "title": "Vibration monitoring for Bremen pumps",
+      "owner_user_id": "U-005",
+      "owner_name": "Fatima El-Amin",
+      "business_unit": "Plant Maintenance",
+      "submitted_at": "2026-03-09",
+      "current_stage": "Decision",
+      "outcome": null,
+      "vcm_user_id": "U-001",
+      "stage_history": [
+        {
+          "stage": "Submitted",
+          "entered_at": "2026-03-09",
+          "by_user_id": "U-005"
+        },
+        {
+          "stage": "Scouting",
+          "entered_at": "2026-03-11",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Shortlist",
+          "entered_at": "2026-03-30",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Evaluation",
+          "entered_at": "2026-04-10",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Pilot",
+          "entered_at": "2026-05-11",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Decision",
+          "entered_at": "2026-07-10",
+          "by_user_id": "U-001"
+        }
+      ]
+    },
+    {
+      "id": "PP-017",
+      "title": "Energy metering for compressed air lines",
+      "owner_user_id": null,
+      "owner_name": "Henrik Vos",
+      "business_unit": "Energy & Sustainability",
+      "submitted_at": "2026-06-08",
+      "current_stage": "Decision",
+      "outcome": null,
+      "vcm_user_id": "U-001",
+      "stage_history": [
+        {
+          "stage": "Submitted",
+          "entered_at": "2026-06-08",
+          "by_user_id": null
+        },
+        {
+          "stage": "Scouting",
+          "entered_at": "2026-06-10",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Shortlist",
+          "entered_at": "2026-06-22",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Evaluation",
+          "entered_at": "2026-06-29",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Pilot",
+          "entered_at": "2026-07-13",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Decision",
+          "entered_at": "2026-09-11",
+          "by_user_id": "U-001"
+        }
+      ]
+    },
+    {
+      "id": "PP-019",
+      "title": "Warehouse picking robots",
+      "owner_user_id": null,
+      "owner_name": null,
+      "business_unit": "Logistics",
+      "submitted_at": "2026-02-16",
+      "current_stage": "Closed",
+      "outcome": "Stopped",
+      "vcm_user_id": "U-002",
+      "stage_history": [
+        {
+          "stage": "Submitted",
+          "entered_at": "2026-02-16",
+          "by_user_id": null
+        },
+        {
+          "stage": "Scouting",
+          "entered_at": "2026-02-18",
+          "by_user_id": "U-002"
+        },
+        {
+          "stage": "Shortlist",
+          "entered_at": "2026-03-18",
+          "by_user_id": "U-002"
+        },
+        {
+          "stage": "Evaluation",
+          "entered_at": "2026-03-30",
+          "by_user_id": "U-002"
+        },
+        {
+          "stage": "Pilot",
+          "entered_at": "2026-04-13",
+          "by_user_id": "U-002"
+        },
+        {
+          "stage": "Decision",
+          "entered_at": "2026-06-26",
+          "by_user_id": "U-002"
+        },
+        {
+          "stage": "Closed",
+          "entered_at": "2026-07-03",
+          "by_user_id": "U-002"
+        }
+      ]
+    },
+    {
+      "id": "PP-022",
+      "title": "Visual weld inspection",
+      "owner_user_id": null,
+      "owner_name": null,
+      "business_unit": "Quality",
+      "submitted_at": "2026-03-27",
+      "current_stage": "Closed",
+      "outcome": "Adopted",
+      "vcm_user_id": "U-002",
+      "stage_history": [
+        {
+          "stage": "Submitted",
+          "entered_at": "2026-03-27",
+          "by_user_id": null
+        },
+        {
+          "stage": "Scouting",
+          "entered_at": "2026-03-30",
+          "by_user_id": "U-002"
+        },
+        {
+          "stage": "Shortlist",
+          "entered_at": "2026-04-14",
+          "by_user_id": "U-002"
+        },
+        {
+          "stage": "Evaluation",
+          "entered_at": "2026-04-21",
+          "by_user_id": "U-002"
+        },
+        {
+          "stage": "Pilot",
+          "entered_at": "2026-05-04",
+          "by_user_id": "U-002"
+        },
+        {
+          "stage": "Decision",
+          "entered_at": "2026-07-31",
+          "by_user_id": "U-002"
+        },
+        {
+          "stage": "Closed",
+          "entered_at": "2026-08-14",
+          "by_user_id": "U-002"
+        }
+      ]
+    },
+    {
+      "id": "PP-024",
+      "title": "Dynamic slotting for outbound pallets",
+      "owner_user_id": "U-006",
+      "owner_name": "Jonas Keller",
+      "business_unit": "Logistics",
+      "submitted_at": "2026-06-02",
+      "current_stage": "Decision",
+      "outcome": null,
+      "vcm_user_id": "U-001",
+      "stage_history": [
+        {
+          "stage": "Submitted",
+          "entered_at": "2026-06-02",
+          "by_user_id": "U-006"
+        },
+        {
+          "stage": "Scouting",
+          "entered_at": "2026-06-05",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Shortlist",
+          "entered_at": "2026-06-30",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Evaluation",
+          "entered_at": "2026-07-09",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Pilot",
+          "entered_at": "2026-07-20",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Decision",
+          "entered_at": "2026-08-28",
+          "by_user_id": "U-001"
+        }
+      ]
+    },
+    {
+      "id": "PP-026",
+      "title": "Mobile inspection rounds for technicians",
+      "owner_user_id": "U-005",
+      "owner_name": "Fatima El-Amin",
+      "business_unit": "Plant Maintenance",
+      "submitted_at": "2026-07-20",
+      "current_stage": "Pilot",
+      "outcome": null,
+      "vcm_user_id": "U-001",
+      "stage_history": [
+        {
+          "stage": "Submitted",
+          "entered_at": "2026-07-20",
+          "by_user_id": "U-005"
+        },
+        {
+          "stage": "Scouting",
+          "entered_at": "2026-07-23",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Shortlist",
+          "entered_at": "2026-08-03",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Evaluation",
+          "entered_at": "2026-08-12",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Pilot",
+          "entered_at": "2026-09-07",
+          "by_user_id": "U-001"
+        }
+      ]
+    },
+    {
+      "id": "PP-028",
+      "title": "Waste-heat recovery at Kiel foundry",
+      "owner_user_id": null,
+      "owner_name": "Henrik Vos",
+      "business_unit": "Energy & Sustainability",
+      "submitted_at": "2026-02-09",
+      "current_stage": "Decision",
+      "outcome": null,
+      "vcm_user_id": "U-001",
+      "stage_history": [
+        {
+          "stage": "Submitted",
+          "entered_at": "2026-02-09",
+          "by_user_id": null
+        },
+        {
+          "stage": "Scouting",
+          "entered_at": "2026-02-12",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Shortlist",
+          "entered_at": "2026-04-20",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Evaluation",
+          "entered_at": "2026-04-29",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Pilot",
+          "entered_at": "2026-07-06",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Decision",
+          "entered_at": "2026-09-30",
+          "by_user_id": "U-001"
+        }
+      ]
+    },
+    {
+      "id": "PP-030",
+      "title": "Freight route planning for hub-and-spoke network",
+      "owner_user_id": "U-006",
+      "owner_name": "Jonas Keller",
+      "business_unit": "Logistics",
+      "submitted_at": "2026-04-02",
+      "current_stage": "Pilot",
+      "outcome": null,
+      "vcm_user_id": "U-001",
+      "stage_history": [
+        {
+          "stage": "Submitted",
+          "entered_at": "2026-04-02",
+          "by_user_id": "U-006"
+        },
+        {
+          "stage": "Scouting",
+          "entered_at": "2026-04-06",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Shortlist",
+          "entered_at": "2026-08-28",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Evaluation",
+          "entered_at": "2026-09-02",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Pilot",
+          "entered_at": "2026-10-05",
+          "by_user_id": "U-001"
+        }
+      ]
+    },
+    {
+      "id": "PP-031",
+      "title": "Predictive maintenance for compressors at Bremen plant",
+      "owner_user_id": "U-005",
+      "owner_name": "Fatima El-Amin",
+      "business_unit": "Plant Maintenance",
+      "submitted_at": "2026-03-16",
+      "current_stage": "Pilot",
+      "outcome": null,
+      "vcm_user_id": "U-001",
+      "stage_history": [
+        {
+          "stage": "Submitted",
+          "entered_at": "2026-03-16",
+          "by_user_id": "U-005"
+        },
+        {
+          "stage": "Scouting",
+          "entered_at": "2026-03-18",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Shortlist",
+          "entered_at": "2026-05-05",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Evaluation",
+          "entered_at": "2026-05-19",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Pilot",
+          "entered_at": "2026-08-27",
+          "by_user_id": "U-001"
+        }
+      ]
+    },
+    {
+      "id": "PP-033",
+      "title": "Shift planning recommendations for HR",
+      "owner_user_id": null,
+      "owner_name": null,
+      "business_unit": "HR",
+      "submitted_at": "2026-10-05",
+      "current_stage": "Submitted",
+      "outcome": null,
+      "vcm_user_id": "U-001",
+      "stage_history": [
+        {
+          "stage": "Submitted",
+          "entered_at": "2026-10-05",
+          "by_user_id": null
+        }
+      ]
+    },
+    {
+      "id": "PP-034",
+      "title": "Reduce manual load planning for outbound trucks",
+      "owner_user_id": "U-006",
+      "owner_name": "Jonas Keller",
+      "business_unit": "Logistics",
+      "submitted_at": "2026-08-10",
+      "current_stage": "Shortlist",
+      "outcome": null,
+      "vcm_user_id": "U-001",
+      "stage_history": [
+        {
+          "stage": "Submitted",
+          "entered_at": "2026-08-10",
+          "by_user_id": "U-006"
+        },
+        {
+          "stage": "Scouting",
+          "entered_at": "2026-08-12",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Shortlist",
+          "entered_at": "2026-09-29",
+          "by_user_id": "U-001"
+        }
+      ]
+    },
+    {
+      "id": "PP-036",
+      "title": "Automate contract clause review for startup agreements",
+      "owner_user_id": "U-007",
+      "owner_name": "Anneke de Vries",
+      "business_unit": "Procurement",
+      "submitted_at": "2026-05-19",
+      "current_stage": "Evaluation",
+      "outcome": null,
+      "vcm_user_id": "U-001",
+      "stage_history": [
+        {
+          "stage": "Submitted",
+          "entered_at": "2026-05-19",
+          "by_user_id": "U-007"
+        },
+        {
+          "stage": "Scouting",
+          "entered_at": "2026-05-26",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Shortlist",
+          "entered_at": "2026-09-14",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Evaluation",
+          "entered_at": "2026-10-01",
+          "by_user_id": "U-001"
+        }
+      ]
+    },
+    {
+      "id": "PP-037",
+      "title": "Surface defect detection for sheet metal",
+      "owner_user_id": null,
+      "owner_name": null,
+      "business_unit": "Quality",
+      "submitted_at": "2026-08-24",
+      "current_stage": "Scouting",
+      "outcome": null,
+      "vcm_user_id": "U-001",
+      "stage_history": [
+        {
+          "stage": "Submitted",
+          "entered_at": "2026-08-24",
+          "by_user_id": null
+        },
+        {
+          "stage": "Scouting",
+          "entered_at": "2026-08-28",
+          "by_user_id": "U-001"
+        }
+      ]
+    },
+    {
+      "id": "PP-038",
+      "title": "Carbon accounting for logistics fleets",
+      "owner_user_id": null,
+      "owner_name": null,
+      "business_unit": "Energy & Sustainability",
+      "submitted_at": "2026-09-14",
+      "current_stage": "Scouting",
+      "outcome": null,
+      "vcm_user_id": "U-001",
+      "stage_history": [
+        {
+          "stage": "Submitted",
+          "entered_at": "2026-09-14",
+          "by_user_id": null
+        },
+        {
+          "stage": "Scouting",
+          "entered_at": "2026-09-21",
+          "by_user_id": "U-001"
+        }
+      ]
+    },
+    {
+      "id": "PP-040",
+      "title": "Supplier onboarding document checks",
+      "owner_user_id": "U-007",
+      "owner_name": "Anneke de Vries",
+      "business_unit": "Procurement",
+      "submitted_at": "2026-07-27",
+      "current_stage": "Shortlist",
+      "outcome": null,
+      "vcm_user_id": "U-001",
+      "stage_history": [
+        {
+          "stage": "Submitted",
+          "entered_at": "2026-07-27",
+          "by_user_id": "U-007"
+        },
+        {
+          "stage": "Scouting",
+          "entered_at": "2026-07-30",
+          "by_user_id": "U-001"
+        },
+        {
+          "stage": "Shortlist",
+          "entered_at": "2026-09-18",
+          "by_user_id": "U-001"
+        }
+      ]
+    }
+  ],
+  "shortlists": [
+    {
+      "id": "SL-001",
+      "pain_point_id": "PP-012",
+      "startup_ids": [
+        "S-007",
+        "S-022",
+        "S-021"
+      ],
+      "sent_to_owner_at": "2026-04-03",
+      "owner_feedback_status": "complete",
+      "owner_feedback_at": "2026-04-07",
+      "reminders_sent": 0
+    },
+    {
+      "id": "SL-002",
+      "pain_point_id": "PP-015",
+      "startup_ids": [
+        "S-002",
+        "S-020",
+        "S-001"
+      ],
+      "sent_to_owner_at": "2026-04-02",
+      "owner_feedback_status": "complete",
+      "owner_feedback_at": "2026-04-09",
+      "reminders_sent": 1
+    },
+    {
+      "id": "SL-003",
+      "pain_point_id": "PP-017",
+      "startup_ids": [
+        "S-009",
+        "S-018",
+        "S-024"
+      ],
+      "sent_to_owner_at": "2026-06-22",
+      "owner_feedback_status": "complete",
+      "owner_feedback_at": "2026-06-29",
+      "reminders_sent": 0
+    },
+    {
+      "id": "SL-004",
+      "pain_point_id": "PP-019",
+      "startup_ids": [
+        "S-003",
+        "S-012",
+        "S-004"
+      ],
+      "sent_to_owner_at": "2026-03-18",
+      "owner_feedback_status": "complete",
+      "owner_feedback_at": "2026-03-27",
+      "reminders_sent": 0
+    },
+    {
+      "id": "SL-005",
+      "pain_point_id": "PP-022",
+      "startup_ids": [
+        "S-010",
+        "S-016",
+        "S-011"
+      ],
+      "sent_to_owner_at": "2026-04-14",
+      "owner_feedback_status": "complete",
+      "owner_feedback_at": "2026-04-20",
+      "reminders_sent": 0
+    },
+    {
+      "id": "SL-006",
+      "pain_point_id": "PP-024",
+      "startup_ids": [
+        "S-017",
+        "S-013",
+        "S-004"
+      ],
+      "sent_to_owner_at": "2026-06-30",
+      "owner_feedback_status": "complete",
+      "owner_feedback_at": "2026-07-08",
+      "reminders_sent": 1
+    },
+    {
+      "id": "SL-007",
+      "pain_point_id": "PP-026",
+      "startup_ids": [
+        "S-019",
+        "S-008",
+        "S-011"
+      ],
+      "sent_to_owner_at": "2026-08-03",
+      "owner_feedback_status": "complete",
+      "owner_feedback_at": "2026-08-10",
+      "reminders_sent": 0
+    },
+    {
+      "id": "SL-008",
+      "pain_point_id": "PP-028",
+      "startup_ids": [
+        "S-005",
+        "S-014",
+        "S-018"
+      ],
+      "sent_to_owner_at": "2026-04-20",
+      "owner_feedback_status": "complete",
+      "owner_feedback_at": "2026-04-28",
+      "reminders_sent": 0
+    },
+    {
+      "id": "SL-009",
+      "pain_point_id": "PP-030",
+      "startup_ids": [
+        "S-021",
+        "S-017",
+        "S-013"
+      ],
+      "sent_to_owner_at": "2026-08-28",
+      "owner_feedback_status": "complete",
+      "owner_feedback_at": "2026-09-02",
+      "reminders_sent": 0
+    },
+    {
+      "id": "SL-010",
+      "pain_point_id": "PP-031",
+      "startup_ids": [
+        "S-001",
+        "S-002",
+        "S-020",
+        "S-011"
+      ],
+      "sent_to_owner_at": "2026-05-05",
+      "owner_feedback_status": "complete",
+      "owner_feedback_at": "2026-05-12",
+      "reminders_sent": 0
+    },
+    {
+      "id": "SL-011",
+      "pain_point_id": "PP-034",
+      "startup_ids": [
+        "S-004",
+        "S-021",
+        "S-017"
+      ],
+      "sent_to_owner_at": "2026-09-29",
+      "owner_feedback_status": "pending",
+      "owner_feedback_at": null,
+      "reminders_sent": 2
+    },
+    {
+      "id": "SL-012",
+      "pain_point_id": "PP-036",
+      "startup_ids": [
+        "S-006",
+        "S-015",
+        "S-023"
+      ],
+      "sent_to_owner_at": "2026-09-14",
+      "owner_feedback_status": "complete",
+      "owner_feedback_at": "2026-09-21",
+      "reminders_sent": 0
+    },
+    {
+      "id": "SL-013",
+      "pain_point_id": "PP-040",
+      "startup_ids": [
+        "S-023",
+        "S-015",
+        "S-006"
+      ],
+      "sent_to_owner_at": "2026-09-18",
+      "owner_feedback_status": "partial",
+      "owner_feedback_at": "2026-09-24",
+      "reminders_sent": 1
+    }
+  ],
+  "evaluations": [
+    {
+      "id": "EV-001",
+      "pain_point_id": "PP-012",
+      "startup_id": "S-007",
+      "questionnaire_sent_at": "2026-04-07",
+      "questionnaire_returned_at": "2026-04-13",
+      "call_booked_at": "2026-04-16",
+      "call_held_at": "2026-04-21",
+      "score": 4,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-002",
+      "pain_point_id": "PP-012",
+      "startup_id": "S-022",
+      "questionnaire_sent_at": "2026-04-07",
+      "questionnaire_returned_at": "2026-04-13",
+      "call_booked_at": "2026-04-16",
+      "call_held_at": "2026-04-21",
+      "score": 3,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-003",
+      "pain_point_id": "PP-012",
+      "startup_id": "S-021",
+      "questionnaire_sent_at": "2026-04-07",
+      "questionnaire_returned_at": "2026-04-13",
+      "call_booked_at": "2026-04-16",
+      "call_held_at": "2026-04-21",
+      "score": 2,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-004",
+      "pain_point_id": "PP-015",
+      "startup_id": "S-002",
+      "questionnaire_sent_at": "2026-04-06",
+      "questionnaire_returned_at": "2026-04-12",
+      "call_booked_at": "2026-04-15",
+      "call_held_at": "2026-04-20",
+      "score": 4,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-005",
+      "pain_point_id": "PP-015",
+      "startup_id": "S-020",
+      "questionnaire_sent_at": "2026-04-06",
+      "questionnaire_returned_at": "2026-04-12",
+      "call_booked_at": "2026-04-15",
+      "call_held_at": "2026-04-20",
+      "score": 3,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-006",
+      "pain_point_id": "PP-015",
+      "startup_id": "S-001",
+      "questionnaire_sent_at": "2026-04-06",
+      "questionnaire_returned_at": "2026-04-12",
+      "call_booked_at": "2026-04-15",
+      "call_held_at": "2026-04-20",
+      "score": 2,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-007",
+      "pain_point_id": "PP-017",
+      "startup_id": "S-009",
+      "questionnaire_sent_at": "2026-06-26",
+      "questionnaire_returned_at": "2026-07-02",
+      "call_booked_at": "2026-07-05",
+      "call_held_at": "2026-07-10",
+      "score": 4,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-008",
+      "pain_point_id": "PP-017",
+      "startup_id": "S-018",
+      "questionnaire_sent_at": "2026-06-26",
+      "questionnaire_returned_at": "2026-07-02",
+      "call_booked_at": "2026-07-05",
+      "call_held_at": "2026-07-10",
+      "score": 3,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-009",
+      "pain_point_id": "PP-017",
+      "startup_id": "S-024",
+      "questionnaire_sent_at": "2026-06-26",
+      "questionnaire_returned_at": "2026-07-02",
+      "call_booked_at": "2026-07-05",
+      "call_held_at": "2026-07-10",
+      "score": 2,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-010",
+      "pain_point_id": "PP-019",
+      "startup_id": "S-003",
+      "questionnaire_sent_at": "2026-03-22",
+      "questionnaire_returned_at": "2026-03-28",
+      "call_booked_at": "2026-03-31",
+      "call_held_at": "2026-04-05",
+      "score": 4,
+      "evaluator_user_id": "U-002"
+    },
+    {
+      "id": "EV-011",
+      "pain_point_id": "PP-019",
+      "startup_id": "S-012",
+      "questionnaire_sent_at": "2026-03-22",
+      "questionnaire_returned_at": "2026-03-28",
+      "call_booked_at": "2026-03-31",
+      "call_held_at": "2026-04-05",
+      "score": 3,
+      "evaluator_user_id": "U-002"
+    },
+    {
+      "id": "EV-012",
+      "pain_point_id": "PP-019",
+      "startup_id": "S-004",
+      "questionnaire_sent_at": "2026-03-22",
+      "questionnaire_returned_at": "2026-03-28",
+      "call_booked_at": "2026-03-31",
+      "call_held_at": "2026-04-05",
+      "score": 2,
+      "evaluator_user_id": "U-002"
+    },
+    {
+      "id": "EV-013",
+      "pain_point_id": "PP-022",
+      "startup_id": "S-010",
+      "questionnaire_sent_at": "2026-04-18",
+      "questionnaire_returned_at": "2026-04-24",
+      "call_booked_at": "2026-04-27",
+      "call_held_at": "2026-05-02",
+      "score": 4,
+      "evaluator_user_id": "U-002"
+    },
+    {
+      "id": "EV-014",
+      "pain_point_id": "PP-022",
+      "startup_id": "S-016",
+      "questionnaire_sent_at": "2026-04-18",
+      "questionnaire_returned_at": "2026-04-24",
+      "call_booked_at": "2026-04-27",
+      "call_held_at": "2026-05-02",
+      "score": 3,
+      "evaluator_user_id": "U-002"
+    },
+    {
+      "id": "EV-015",
+      "pain_point_id": "PP-022",
+      "startup_id": "S-011",
+      "questionnaire_sent_at": "2026-04-18",
+      "questionnaire_returned_at": "2026-04-24",
+      "call_booked_at": "2026-04-27",
+      "call_held_at": "2026-05-02",
+      "score": 2,
+      "evaluator_user_id": "U-002"
+    },
+    {
+      "id": "EV-016",
+      "pain_point_id": "PP-024",
+      "startup_id": "S-017",
+      "questionnaire_sent_at": "2026-07-04",
+      "questionnaire_returned_at": "2026-07-10",
+      "call_booked_at": "2026-07-13",
+      "call_held_at": "2026-07-18",
+      "score": 4,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-017",
+      "pain_point_id": "PP-024",
+      "startup_id": "S-013",
+      "questionnaire_sent_at": "2026-07-04",
+      "questionnaire_returned_at": "2026-07-10",
+      "call_booked_at": "2026-07-13",
+      "call_held_at": "2026-07-18",
+      "score": 3,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-018",
+      "pain_point_id": "PP-024",
+      "startup_id": "S-004",
+      "questionnaire_sent_at": "2026-07-04",
+      "questionnaire_returned_at": "2026-07-10",
+      "call_booked_at": "2026-07-13",
+      "call_held_at": "2026-07-18",
+      "score": 2,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-019",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-019",
+      "questionnaire_sent_at": "2026-08-07",
+      "questionnaire_returned_at": "2026-08-13",
+      "call_booked_at": "2026-08-16",
+      "call_held_at": "2026-08-21",
+      "score": 4,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-020",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-008",
+      "questionnaire_sent_at": "2026-08-07",
+      "questionnaire_returned_at": "2026-08-13",
+      "call_booked_at": "2026-08-16",
+      "call_held_at": "2026-08-21",
+      "score": 3,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-021",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-011",
+      "questionnaire_sent_at": "2026-08-07",
+      "questionnaire_returned_at": "2026-08-13",
+      "call_booked_at": "2026-08-16",
+      "call_held_at": "2026-08-21",
+      "score": 2,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-022",
+      "pain_point_id": "PP-028",
+      "startup_id": "S-005",
+      "questionnaire_sent_at": "2026-04-24",
+      "questionnaire_returned_at": "2026-04-30",
+      "call_booked_at": "2026-05-03",
+      "call_held_at": "2026-05-08",
+      "score": 4,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-023",
+      "pain_point_id": "PP-028",
+      "startup_id": "S-014",
+      "questionnaire_sent_at": "2026-04-24",
+      "questionnaire_returned_at": "2026-04-30",
+      "call_booked_at": "2026-05-03",
+      "call_held_at": "2026-05-08",
+      "score": 3,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-024",
+      "pain_point_id": "PP-028",
+      "startup_id": "S-018",
+      "questionnaire_sent_at": "2026-04-24",
+      "questionnaire_returned_at": "2026-04-30",
+      "call_booked_at": "2026-05-03",
+      "call_held_at": "2026-05-08",
+      "score": 2,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-025",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-021",
+      "questionnaire_sent_at": "2026-09-01",
+      "questionnaire_returned_at": "2026-09-07",
+      "call_booked_at": "2026-09-10",
+      "call_held_at": "2026-09-15",
+      "score": 4,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-026",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-017",
+      "questionnaire_sent_at": "2026-09-01",
+      "questionnaire_returned_at": "2026-09-07",
+      "call_booked_at": "2026-09-10",
+      "call_held_at": "2026-09-15",
+      "score": 3,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-027",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-013",
+      "questionnaire_sent_at": "2026-09-01",
+      "questionnaire_returned_at": "2026-09-07",
+      "call_booked_at": "2026-09-10",
+      "call_held_at": "2026-09-15",
+      "score": 2,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-028",
+      "pain_point_id": "PP-031",
+      "startup_id": "S-001",
+      "questionnaire_sent_at": "2026-05-09",
+      "questionnaire_returned_at": "2026-05-15",
+      "call_booked_at": "2026-05-18",
+      "call_held_at": "2026-05-23",
+      "score": 4,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-029",
+      "pain_point_id": "PP-031",
+      "startup_id": "S-002",
+      "questionnaire_sent_at": "2026-05-09",
+      "questionnaire_returned_at": "2026-05-15",
+      "call_booked_at": "2026-05-18",
+      "call_held_at": "2026-05-23",
+      "score": 3,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-030",
+      "pain_point_id": "PP-031",
+      "startup_id": "S-020",
+      "questionnaire_sent_at": "2026-05-09",
+      "questionnaire_returned_at": "2026-05-15",
+      "call_booked_at": "2026-05-18",
+      "call_held_at": "2026-05-23",
+      "score": 2,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-031",
+      "pain_point_id": "PP-031",
+      "startup_id": "S-011",
+      "questionnaire_sent_at": "2026-05-09",
+      "questionnaire_returned_at": "2026-05-15",
+      "call_booked_at": "2026-05-18",
+      "call_held_at": "2026-05-23",
+      "score": 3,
+      "evaluator_user_id": "U-001"
+    },
+    {
+      "id": "EV-032",
+      "pain_point_id": "PP-036",
+      "startup_id": "S-006",
+      "questionnaire_sent_at": "2026-10-06",
+      "questionnaire_returned_at": null,
+      "call_booked_at": null,
+      "call_held_at": null,
+      "score": null,
+      "evaluator_user_id": "U-001"
+    }
+  ],
+  "pilots": [
+    {
+      "id": "PL-001",
+      "pain_point_id": "PP-019",
+      "startup_id": "S-003",
+      "started_at": "2026-04-13",
+      "planned_end_at": "2026-06-12",
+      "actual_end_at": "2026-06-26",
+      "budget_eur": 42000,
+      "status": "ended",
+      "decision": "Stopped",
+      "decision_at": "2026-07-03"
+    },
+    {
+      "id": "PL-002",
+      "pain_point_id": "PP-022",
+      "startup_id": "S-010",
+      "started_at": "2026-05-04",
+      "planned_end_at": "2026-07-03",
+      "actual_end_at": "2026-07-31",
+      "budget_eur": 55000,
+      "status": "ended",
+      "decision": "Adopted",
+      "decision_at": "2026-08-14"
+    },
+    {
+      "id": "PL-003",
+      "pain_point_id": "PP-012",
+      "startup_id": "S-007",
+      "started_at": "2026-04-20",
+      "planned_end_at": "2026-06-19",
+      "actual_end_at": "2026-06-19",
+      "budget_eur": 38000,
+      "status": "ended",
+      "decision": "Adopted",
+      "decision_at": "2026-06-29"
+    },
+    {
+      "id": "PL-004",
+      "pain_point_id": "PP-015",
+      "startup_id": "S-002",
+      "started_at": "2026-05-11",
+      "planned_end_at": "2026-07-10",
+      "actual_end_at": "2026-07-10",
+      "budget_eur": 61000,
+      "status": "ended",
+      "decision": "Scaled",
+      "decision_at": "2026-08-27"
+    },
+    {
+      "id": "PL-005",
+      "pain_point_id": "PP-028",
+      "startup_id": "S-005",
+      "started_at": "2026-07-06",
+      "planned_end_at": "2026-09-30",
+      "actual_end_at": "2026-09-30",
+      "budget_eur": 47000,
+      "status": "ended",
+      "decision": null,
+      "decision_at": null
+    },
+    {
+      "id": "PL-006",
+      "pain_point_id": "PP-017",
+      "startup_id": "S-009",
+      "started_at": "2026-07-13",
+      "planned_end_at": "2026-09-11",
+      "actual_end_at": "2026-09-11",
+      "budget_eur": 33000,
+      "status": "ended",
+      "decision": "Adopted",
+      "decision_at": "2026-09-22"
+    },
+    {
+      "id": "PL-007",
+      "pain_point_id": "PP-024",
+      "startup_id": "S-017",
+      "started_at": "2026-07-20",
+      "planned_end_at": "2026-09-04",
+      "actual_end_at": "2026-08-28",
+      "budget_eur": 29000,
+      "status": "ended",
+      "decision": "Stopped",
+      "decision_at": "2026-09-04"
+    },
+    {
+      "id": "PL-008",
+      "pain_point_id": "PP-031",
+      "startup_id": "S-001",
+      "started_at": "2026-08-27",
+      "planned_end_at": "2026-10-24",
+      "actual_end_at": null,
+      "budget_eur": 58000,
+      "status": "running",
+      "decision": null,
+      "decision_at": null
+    },
+    {
+      "id": "PL-009",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-019",
+      "started_at": "2026-09-07",
+      "planned_end_at": "2026-11-06",
+      "actual_end_at": null,
+      "budget_eur": 22000,
+      "status": "running",
+      "decision": null,
+      "decision_at": null
+    },
+    {
+      "id": "PL-010",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-021",
+      "started_at": "2026-10-05",
+      "planned_end_at": "2026-12-07",
+      "actual_end_at": null,
+      "budget_eur": 36000,
+      "status": "running",
+      "decision": null,
+      "decision_at": null
+    }
+  ],
+  "events": [
+    {
+      "id": "E-0001",
+      "at": "2026-07-13T09:00:00+02:00",
+      "type": "pilot_started",
+      "pain_point_id": "PP-017",
+      "startup_id": "S-009",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-001",
+      "summary": "Pilot with Ampera started for PP-017."
+    },
+    {
+      "id": "E-0002",
+      "at": "2026-07-13T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-017",
+      "startup_id": "S-009",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-001",
+      "summary": "Lena Hartmann moved PP-017 to Pilot."
+    },
+    {
+      "id": "E-0003",
+      "at": "2026-07-13T11:00:00+02:00",
+      "type": "call_booked",
+      "pain_point_id": "PP-024",
+      "startup_id": "S-017",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Parcelgrid booked for PP-024."
+    },
+    {
+      "id": "E-0004",
+      "at": "2026-07-13T11:00:00+02:00",
+      "type": "call_booked",
+      "pain_point_id": "PP-024",
+      "startup_id": "S-013",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Lumen Freight booked for PP-024."
+    },
+    {
+      "id": "E-0005",
+      "at": "2026-07-13T11:00:00+02:00",
+      "type": "call_booked",
+      "pain_point_id": "PP-024",
+      "startup_id": "S-004",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Pallet.ai booked for PP-024."
+    },
+    {
+      "id": "E-0006",
+      "at": "2026-07-18T14:00:00+02:00",
+      "type": "call_held",
+      "pain_point_id": "PP-024",
+      "startup_id": "S-017",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Parcelgrid held for PP-024."
+    },
+    {
+      "id": "E-0007",
+      "at": "2026-07-18T14:00:00+02:00",
+      "type": "call_held",
+      "pain_point_id": "PP-024",
+      "startup_id": "S-013",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Lumen Freight held for PP-024."
+    },
+    {
+      "id": "E-0008",
+      "at": "2026-07-18T14:00:00+02:00",
+      "type": "call_held",
+      "pain_point_id": "PP-024",
+      "startup_id": "S-004",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Pallet.ai held for PP-024."
+    },
+    {
+      "id": "E-0009",
+      "at": "2026-07-20T09:00:00+02:00",
+      "type": "pilot_started",
+      "pain_point_id": "PP-024",
+      "startup_id": "S-017",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Pilot with Parcelgrid started for PP-024."
+    },
+    {
+      "id": "E-0010",
+      "at": "2026-07-20T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-024",
+      "startup_id": "S-017",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Lena Hartmann moved PP-024 to Pilot."
+    },
+    {
+      "id": "E-0011",
+      "at": "2026-07-22T10:30:00+02:00",
+      "type": "comment_added",
+      "pain_point_id": "PP-024",
+      "startup_id": null,
+      "actor_user_id": "U-006",
+      "target_user_id": "U-001",
+      "summary": "Parcelgrid integration needs two more IT tickets before the pilot can run."
+    },
+    {
+      "id": "E-0012",
+      "at": "2026-07-23T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-026",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-005",
+      "summary": "Lena Hartmann moved PP-026 to Scouting."
+    },
+    {
+      "id": "E-0013",
+      "at": "2026-07-30T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-040",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-007",
+      "summary": "Lena Hartmann moved PP-040 to Scouting."
+    },
+    {
+      "id": "E-0014",
+      "at": "2026-07-31T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-022",
+      "startup_id": "S-010",
+      "actor_user_id": "U-002",
+      "target_user_id": "U-002",
+      "summary": "Tobias Brandt moved PP-022 to Decision."
+    },
+    {
+      "id": "E-0015",
+      "at": "2026-07-31T17:00:00+02:00",
+      "type": "pilot_ended",
+      "pain_point_id": "PP-022",
+      "startup_id": "S-010",
+      "actor_user_id": "U-002",
+      "target_user_id": "U-002",
+      "summary": "Pilot with Weldscan for PP-022 ended."
+    },
+    {
+      "id": "E-0016",
+      "at": "2026-08-03T09:30:00+02:00",
+      "type": "shortlist_sent",
+      "pain_point_id": "PP-026",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-005",
+      "summary": "Shortlist of 3 startups for PP-026 sent to the owner."
+    },
+    {
+      "id": "E-0017",
+      "at": "2026-08-03T09:31:00+02:00",
+      "type": "feedback_requested",
+      "pain_point_id": "PP-026",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-005",
+      "summary": "Owner feedback requested on the PP-026 shortlist."
+    },
+    {
+      "id": "E-0018",
+      "at": "2026-08-03T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-026",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-005",
+      "summary": "Lena Hartmann moved PP-026 to Shortlist."
+    },
+    {
+      "id": "E-0019",
+      "at": "2026-08-06T16:10:00+02:00",
+      "type": "comment_added",
+      "pain_point_id": "PP-026",
+      "startup_id": null,
+      "actor_user_id": "U-005",
+      "target_user_id": "U-001",
+      "summary": "Technicians want the mobile rounds in German first."
+    },
+    {
+      "id": "E-0020",
+      "at": "2026-08-07T10:00:00+02:00",
+      "type": "questionnaire_sent",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-019",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Questionnaire sent to Mantle Maintenance for PP-026."
+    },
+    {
+      "id": "E-0021",
+      "at": "2026-08-07T10:00:00+02:00",
+      "type": "questionnaire_sent",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-008",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Questionnaire sent to Fieldnote for PP-026."
+    },
+    {
+      "id": "E-0022",
+      "at": "2026-08-07T10:00:00+02:00",
+      "type": "questionnaire_sent",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-011",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Questionnaire sent to Quantia Sense GmbH for PP-026."
+    },
+    {
+      "id": "E-0023",
+      "at": "2026-08-10T11:00:00+02:00",
+      "type": "feedback_given",
+      "pain_point_id": "PP-026",
+      "startup_id": null,
+      "actor_user_id": "U-005",
+      "target_user_id": "U-001",
+      "summary": "Owner feedback on the PP-026 shortlist is complete."
+    },
+    {
+      "id": "E-0024",
+      "at": "2026-08-12T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-026",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-005",
+      "summary": "Lena Hartmann moved PP-026 to Evaluation."
+    },
+    {
+      "id": "E-0025",
+      "at": "2026-08-12T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-034",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Lena Hartmann moved PP-034 to Scouting."
+    },
+    {
+      "id": "E-0026",
+      "at": "2026-08-12T11:20:00+02:00",
+      "type": "startup_replied",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-019",
+      "actor_user_id": null,
+      "target_user_id": "U-001",
+      "summary": "Mantle Maintenance replied to the shortlist outreach and asked for a September start."
+    },
+    {
+      "id": "E-0027",
+      "at": "2026-08-13T15:00:00+02:00",
+      "type": "questionnaire_returned",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-019",
+      "actor_user_id": null,
+      "target_user_id": "U-001",
+      "summary": "Mantle Maintenance returned the questionnaire for PP-026."
+    },
+    {
+      "id": "E-0028",
+      "at": "2026-08-13T15:00:00+02:00",
+      "type": "questionnaire_returned",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-008",
+      "actor_user_id": null,
+      "target_user_id": "U-001",
+      "summary": "Fieldnote returned the questionnaire for PP-026."
+    },
+    {
+      "id": "E-0029",
+      "at": "2026-08-13T15:00:00+02:00",
+      "type": "questionnaire_returned",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-011",
+      "actor_user_id": null,
+      "target_user_id": "U-001",
+      "summary": "Quantia Sense GmbH returned the questionnaire for PP-026."
+    },
+    {
+      "id": "E-0030",
+      "at": "2026-08-14T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-022",
+      "startup_id": "S-010",
+      "actor_user_id": "U-002",
+      "target_user_id": "U-002",
+      "summary": "Tobias Brandt moved PP-022 to Closed."
+    },
+    {
+      "id": "E-0031",
+      "at": "2026-08-14T14:00:00+02:00",
+      "type": "decision_recorded",
+      "pain_point_id": "PP-022",
+      "startup_id": "S-010",
+      "actor_user_id": "U-002",
+      "target_user_id": "U-002",
+      "summary": "Decision recorded for PP-022: Adopted."
+    },
+    {
+      "id": "E-0032",
+      "at": "2026-08-16T11:00:00+02:00",
+      "type": "call_booked",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-019",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Mantle Maintenance booked for PP-026."
+    },
+    {
+      "id": "E-0033",
+      "at": "2026-08-16T11:00:00+02:00",
+      "type": "call_booked",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-008",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Fieldnote booked for PP-026."
+    },
+    {
+      "id": "E-0034",
+      "at": "2026-08-16T11:00:00+02:00",
+      "type": "call_booked",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-011",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Quantia Sense GmbH booked for PP-026."
+    },
+    {
+      "id": "E-0035",
+      "at": "2026-08-21T14:00:00+02:00",
+      "type": "call_held",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-019",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Mantle Maintenance held for PP-026."
+    },
+    {
+      "id": "E-0036",
+      "at": "2026-08-21T14:00:00+02:00",
+      "type": "call_held",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-008",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Fieldnote held for PP-026."
+    },
+    {
+      "id": "E-0037",
+      "at": "2026-08-21T14:00:00+02:00",
+      "type": "call_held",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-011",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Quantia Sense GmbH held for PP-026."
+    },
+    {
+      "id": "E-0038",
+      "at": "2026-08-27T09:00:00+02:00",
+      "type": "pilot_started",
+      "pain_point_id": "PP-031",
+      "startup_id": "S-001",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-005",
+      "summary": "Pilot with Vibralytics GmbH started for PP-031."
+    },
+    {
+      "id": "E-0039",
+      "at": "2026-08-27T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-031",
+      "startup_id": "S-001",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-005",
+      "summary": "Lena Hartmann moved PP-031 to Pilot."
+    },
+    {
+      "id": "E-0040",
+      "at": "2026-08-27T14:00:00+02:00",
+      "type": "decision_recorded",
+      "pain_point_id": "PP-015",
+      "startup_id": "S-002",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-005",
+      "summary": "Decision recorded for PP-015: Scaled."
+    },
+    {
+      "id": "E-0041",
+      "at": "2026-08-28T09:30:00+02:00",
+      "type": "shortlist_sent",
+      "pain_point_id": "PP-030",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Shortlist of 3 startups for PP-030 sent to the owner."
+    },
+    {
+      "id": "E-0042",
+      "at": "2026-08-28T09:31:00+02:00",
+      "type": "feedback_requested",
+      "pain_point_id": "PP-030",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Owner feedback requested on the PP-030 shortlist."
+    },
+    {
+      "id": "E-0043",
+      "at": "2026-08-28T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-024",
+      "startup_id": "S-017",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Lena Hartmann moved PP-024 to Decision."
+    },
+    {
+      "id": "E-0044",
+      "at": "2026-08-28T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-030",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Lena Hartmann moved PP-030 to Shortlist."
+    },
+    {
+      "id": "E-0045",
+      "at": "2026-08-28T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-037",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-001",
+      "summary": "Lena Hartmann moved PP-037 to Scouting."
+    },
+    {
+      "id": "E-0046",
+      "at": "2026-08-28T17:00:00+02:00",
+      "type": "pilot_ended",
+      "pain_point_id": "PP-024",
+      "startup_id": "S-017",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Pilot with Parcelgrid for PP-024 ended."
+    },
+    {
+      "id": "E-0047",
+      "at": "2026-09-01T10:00:00+02:00",
+      "type": "questionnaire_sent",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-021",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Questionnaire sent to Cargonaut Labs for PP-030."
+    },
+    {
+      "id": "E-0048",
+      "at": "2026-09-01T10:00:00+02:00",
+      "type": "questionnaire_sent",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-017",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Questionnaire sent to Parcelgrid for PP-030."
+    },
+    {
+      "id": "E-0049",
+      "at": "2026-09-01T10:00:00+02:00",
+      "type": "questionnaire_sent",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-013",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Questionnaire sent to Lumen Freight for PP-030."
+    },
+    {
+      "id": "E-0050",
+      "at": "2026-09-02T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-030",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Lena Hartmann moved PP-030 to Evaluation."
+    },
+    {
+      "id": "E-0051",
+      "at": "2026-09-02T11:00:00+02:00",
+      "type": "feedback_given",
+      "pain_point_id": "PP-030",
+      "startup_id": null,
+      "actor_user_id": "U-006",
+      "target_user_id": "U-001",
+      "summary": "Owner feedback on the PP-030 shortlist is complete."
+    },
+    {
+      "id": "E-0052",
+      "at": "2026-09-04T09:00:00+02:00",
+      "type": "pilot_deadline_7d",
+      "pain_point_id": "PP-017",
+      "startup_id": "S-009",
+      "actor_user_id": null,
+      "target_user_id": "U-001",
+      "summary": "Pilot with Ampera for PP-017 has 7 days left."
+    },
+    {
+      "id": "E-0053",
+      "at": "2026-09-04T14:00:00+02:00",
+      "type": "decision_recorded",
+      "pain_point_id": "PP-024",
+      "startup_id": "S-017",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Decision recorded for PP-024: Stopped."
+    },
+    {
+      "id": "E-0054",
+      "at": "2026-09-07T09:00:00+02:00",
+      "type": "pilot_started",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-019",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-005",
+      "summary": "Pilot with Mantle Maintenance started for PP-026."
+    },
+    {
+      "id": "E-0055",
+      "at": "2026-09-07T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-026",
+      "startup_id": "S-019",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-005",
+      "summary": "Lena Hartmann moved PP-026 to Pilot."
+    },
+    {
+      "id": "E-0056",
+      "at": "2026-09-07T15:00:00+02:00",
+      "type": "questionnaire_returned",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-021",
+      "actor_user_id": null,
+      "target_user_id": "U-001",
+      "summary": "Cargonaut Labs returned the questionnaire for PP-030."
+    },
+    {
+      "id": "E-0057",
+      "at": "2026-09-07T15:00:00+02:00",
+      "type": "questionnaire_returned",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-017",
+      "actor_user_id": null,
+      "target_user_id": "U-001",
+      "summary": "Parcelgrid returned the questionnaire for PP-030."
+    },
+    {
+      "id": "E-0058",
+      "at": "2026-09-07T15:00:00+02:00",
+      "type": "questionnaire_returned",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-013",
+      "actor_user_id": null,
+      "target_user_id": "U-001",
+      "summary": "Lumen Freight returned the questionnaire for PP-030."
+    },
+    {
+      "id": "E-0059",
+      "at": "2026-09-10T09:00:00+02:00",
+      "type": "pilot_deadline_1d",
+      "pain_point_id": "PP-017",
+      "startup_id": "S-009",
+      "actor_user_id": null,
+      "target_user_id": "U-001",
+      "summary": "Pilot with Ampera for PP-017 has 1 day left."
+    },
+    {
+      "id": "E-0060",
+      "at": "2026-09-10T11:00:00+02:00",
+      "type": "call_booked",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-021",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Cargonaut Labs booked for PP-030."
+    },
+    {
+      "id": "E-0061",
+      "at": "2026-09-10T11:00:00+02:00",
+      "type": "call_booked",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-017",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Parcelgrid booked for PP-030."
+    },
+    {
+      "id": "E-0062",
+      "at": "2026-09-10T11:00:00+02:00",
+      "type": "call_booked",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-013",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Lumen Freight booked for PP-030."
+    },
+    {
+      "id": "E-0063",
+      "at": "2026-09-11T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-017",
+      "startup_id": "S-009",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-001",
+      "summary": "Lena Hartmann moved PP-017 to Decision."
+    },
+    {
+      "id": "E-0064",
+      "at": "2026-09-11T17:00:00+02:00",
+      "type": "pilot_ended",
+      "pain_point_id": "PP-017",
+      "startup_id": "S-009",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-001",
+      "summary": "Pilot with Ampera for PP-017 ended."
+    },
+    {
+      "id": "E-0065",
+      "at": "2026-09-14T09:30:00+02:00",
+      "type": "shortlist_sent",
+      "pain_point_id": "PP-036",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-007",
+      "summary": "Shortlist of 3 startups for PP-036 sent to the owner."
+    },
+    {
+      "id": "E-0066",
+      "at": "2026-09-14T09:31:00+02:00",
+      "type": "feedback_requested",
+      "pain_point_id": "PP-036",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-007",
+      "summary": "Owner feedback requested on the PP-036 shortlist."
+    },
+    {
+      "id": "E-0067",
+      "at": "2026-09-14T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-036",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-007",
+      "summary": "Lena Hartmann moved PP-036 to Shortlist."
+    },
+    {
+      "id": "E-0068",
+      "at": "2026-09-15T14:00:00+02:00",
+      "type": "call_held",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-021",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Cargonaut Labs held for PP-030."
+    },
+    {
+      "id": "E-0069",
+      "at": "2026-09-15T14:00:00+02:00",
+      "type": "call_held",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-017",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Parcelgrid held for PP-030."
+    },
+    {
+      "id": "E-0070",
+      "at": "2026-09-15T14:00:00+02:00",
+      "type": "call_held",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-013",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Call with Lumen Freight held for PP-030."
+    },
+    {
+      "id": "E-0071",
+      "at": "2026-09-16T09:45:00+02:00",
+      "type": "startup_replied",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-021",
+      "actor_user_id": null,
+      "target_user_id": "U-001",
+      "summary": "Cargonaut Labs replied with a pilot offer for the Hamburg hub."
+    },
+    {
+      "id": "E-0072",
+      "at": "2026-09-18T09:30:00+02:00",
+      "type": "shortlist_sent",
+      "pain_point_id": "PP-040",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-007",
+      "summary": "Shortlist of 3 startups for PP-040 sent to the owner."
+    },
+    {
+      "id": "E-0073",
+      "at": "2026-09-18T09:31:00+02:00",
+      "type": "feedback_requested",
+      "pain_point_id": "PP-040",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-007",
+      "summary": "Owner feedback requested on the PP-040 shortlist."
+    },
+    {
+      "id": "E-0074",
+      "at": "2026-09-18T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-040",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-007",
+      "summary": "Lena Hartmann moved PP-040 to Shortlist."
+    },
+    {
+      "id": "E-0075",
+      "at": "2026-09-21T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-038",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-001",
+      "summary": "Lena Hartmann moved PP-038 to Scouting."
+    },
+    {
+      "id": "E-0076",
+      "at": "2026-09-21T11:00:00+02:00",
+      "type": "feedback_given",
+      "pain_point_id": "PP-036",
+      "startup_id": null,
+      "actor_user_id": "U-007",
+      "target_user_id": "U-001",
+      "summary": "Owner feedback on the PP-036 shortlist is complete."
+    },
+    {
+      "id": "E-0077",
+      "at": "2026-09-22T14:00:00+02:00",
+      "type": "decision_recorded",
+      "pain_point_id": "PP-017",
+      "startup_id": "S-009",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-001",
+      "summary": "Decision recorded for PP-017: Adopted."
+    },
+    {
+      "id": "E-0078",
+      "at": "2026-09-23T09:00:00+02:00",
+      "type": "pilot_deadline_7d",
+      "pain_point_id": "PP-028",
+      "startup_id": "S-005",
+      "actor_user_id": null,
+      "target_user_id": "U-001",
+      "summary": "Pilot with Thermion for PP-028 has 7 days left."
+    },
+    {
+      "id": "E-0079",
+      "at": "2026-09-24T11:00:00+02:00",
+      "type": "feedback_given",
+      "pain_point_id": "PP-040",
+      "startup_id": null,
+      "actor_user_id": "U-007",
+      "target_user_id": "U-001",
+      "summary": "Owner feedback on the PP-040 shortlist is partial."
+    },
+    {
+      "id": "E-0080",
+      "at": "2026-09-28T09:00:00+02:00",
+      "type": "reminder_sent",
+      "pain_point_id": "PP-040",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-007",
+      "summary": "Reminder sent to the owner about the PP-040 shortlist."
+    },
+    {
+      "id": "E-0081",
+      "at": "2026-09-29T09:00:00+02:00",
+      "type": "pilot_deadline_1d",
+      "pain_point_id": "PP-028",
+      "startup_id": "S-005",
+      "actor_user_id": null,
+      "target_user_id": "U-001",
+      "summary": "Pilot with Thermion for PP-028 has 1 day left."
+    },
+    {
+      "id": "E-0082",
+      "at": "2026-09-29T09:30:00+02:00",
+      "type": "shortlist_sent",
+      "pain_point_id": "PP-034",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Shortlist of 3 startups for PP-034 sent to the owner."
+    },
+    {
+      "id": "E-0083",
+      "at": "2026-09-29T09:31:00+02:00",
+      "type": "feedback_requested",
+      "pain_point_id": "PP-034",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Owner feedback requested on the PP-034 shortlist."
+    },
+    {
+      "id": "E-0084",
+      "at": "2026-09-29T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-034",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Lena Hartmann moved PP-034 to Shortlist."
+    },
+    {
+      "id": "E-0085",
+      "at": "2026-09-30T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-028",
+      "startup_id": "S-005",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-001",
+      "summary": "Lena Hartmann moved PP-028 to Decision."
+    },
+    {
+      "id": "E-0086",
+      "at": "2026-09-30T13:15:00+02:00",
+      "type": "comment_added",
+      "pain_point_id": "PP-034",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Shortlist sent to Jonas Keller, no reply yet."
+    },
+    {
+      "id": "E-0087",
+      "at": "2026-09-30T17:00:00+02:00",
+      "type": "pilot_ended",
+      "pain_point_id": "PP-028",
+      "startup_id": "S-005",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-001",
+      "summary": "Pilot with Thermion for PP-028 ended."
+    },
+    {
+      "id": "E-0088",
+      "at": "2026-10-01T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-036",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-007",
+      "summary": "Lena Hartmann moved PP-036 to Evaluation."
+    },
+    {
+      "id": "E-0089",
+      "at": "2026-10-02T09:00:00+02:00",
+      "type": "reminder_sent",
+      "pain_point_id": "PP-034",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Reminder sent to the owner about the PP-034 shortlist."
+    },
+    {
+      "id": "E-0090",
+      "at": "2026-10-05T09:00:00+02:00",
+      "type": "pilot_started",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-021",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Pilot with Cargonaut Labs started for PP-030."
+    },
+    {
+      "id": "E-0091",
+      "at": "2026-10-05T10:00:00+02:00",
+      "type": "stage_changed",
+      "pain_point_id": "PP-030",
+      "startup_id": "S-021",
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Lena Hartmann moved PP-030 to Pilot."
+    },
+    {
+      "id": "E-0092",
+      "at": "2026-10-06T09:30:00+02:00",
+      "type": "comment_added",
+      "pain_point_id": "PP-036",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-007",
+      "summary": "Clausio questionnaire is out, please share the clause sample we agreed."
+    },
+    {
+      "id": "E-0093",
+      "at": "2026-10-06T10:00:00+02:00",
+      "type": "questionnaire_sent",
+      "pain_point_id": "PP-036",
+      "startup_id": "S-006",
+      "actor_user_id": "U-001",
+      "target_user_id": null,
+      "summary": "Questionnaire sent to Clausio for PP-036."
+    },
+    {
+      "id": "E-0094",
+      "at": "2026-10-07T09:00:00+02:00",
+      "type": "reminder_sent",
+      "pain_point_id": "PP-034",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Reminder sent to the owner about the PP-034 shortlist."
+    },
+    {
+      "id": "E-0095",
+      "at": "2026-10-07T15:40:00+02:00",
+      "type": "comment_added",
+      "pain_point_id": "PP-028",
+      "startup_id": null,
+      "actor_user_id": "U-003",
+      "target_user_id": "U-001",
+      "summary": "Decision on the Kiel waste-heat pilot is needed before the Q4 board pack."
+    },
+    {
+      "id": "E-0096",
+      "at": "2026-10-07T16:05:00+02:00",
+      "type": "comment_added",
+      "pain_point_id": "PP-034",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-003",
+      "summary": "Jonas has not answered either reminder, so I am escalating to you."
+    },
+    {
+      "id": "E-0097",
+      "at": "2026-10-08T14:05:00+02:00",
+      "type": "startup_replied",
+      "pain_point_id": "PP-036",
+      "startup_id": "S-006",
+      "actor_user_id": null,
+      "target_user_id": "U-001",
+      "summary": "Clausio asked whether the questionnaire can be answered in two parts."
+    },
+    {
+      "id": "E-0098",
+      "at": "2026-10-09T08:50:00+02:00",
+      "type": "startup_replied",
+      "pain_point_id": "PP-031",
+      "startup_id": "S-001",
+      "actor_user_id": "U-008",
+      "target_user_id": "U-001",
+      "summary": "Priya Raman replied with the first compressor pilot results and an alert accuracy summary."
+    },
+    {
+      "id": "E-0099",
+      "at": "2026-10-10T11:00:00+02:00",
+      "type": "comment_added",
+      "pain_point_id": "PP-031",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-005",
+      "summary": "Waiting on Priya's readings before the pilot closes on 2026-10-24."
+    }
+  ],
+  "upcoming_events": [
+    {
+      "id": "UE-01",
+      "at": "2026-10-13T09:00:00+02:00",
+      "type": "reminder_sent",
+      "pain_point_id": "PP-034",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-006",
+      "summary": "Third reminder to Jonas Keller about the load planning shortlist is due."
+    },
+    {
+      "id": "UE-02",
+      "at": "2026-10-17T09:00:00+02:00",
+      "type": "pilot_deadline_7d",
+      "pain_point_id": "PP-031",
+      "startup_id": "S-001",
+      "actor_user_id": null,
+      "target_user_id": "U-005",
+      "summary": "Vibralytics pilot for the Bremen compressors has 7 days left."
+    },
+    {
+      "id": "UE-03",
+      "at": "2026-10-19T10:00:00+02:00",
+      "type": "feedback_requested",
+      "pain_point_id": "PP-040",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-007",
+      "summary": "Anneke de Vries is asked again for feedback on the supplier onboarding shortlist."
+    },
+    {
+      "id": "UE-04",
+      "at": "2026-10-21T10:00:00+02:00",
+      "type": "reminder_sent",
+      "pain_point_id": "PP-040",
+      "startup_id": null,
+      "actor_user_id": "U-001",
+      "target_user_id": "U-007",
+      "summary": "Reminder to Anneke de Vries about partial shortlist feedback is due."
+    },
+    {
+      "id": "UE-05",
+      "at": "2026-10-23T09:00:00+02:00",
+      "type": "pilot_deadline_1d",
+      "pain_point_id": "PP-031",
+      "startup_id": "S-001",
+      "actor_user_id": null,
+      "target_user_id": "U-005",
+      "summary": "Vibralytics pilot for the Bremen compressors has 1 day left."
+    },
+    {
+      "id": "UE-06",
+      "at": "2026-10-24T17:00:00+02:00",
+      "type": "pilot_ended",
+      "pain_point_id": "PP-031",
+      "startup_id": "S-001",
+      "actor_user_id": null,
+      "target_user_id": "U-005",
+      "summary": "Vibralytics pilot for the Bremen compressors reaches its planned end."
+    }
+  ],
+  "notification_settings_default": {
+    "description": "Current default. Every event type emails its recipient immediately. No digest.",
+    "digest": "none",
+    "channels": {
+      "email": "immediate",
+      "in_app": "immediate"
+    },
+    "per_event_type": {
+      "startup_replied": "email_immediate",
+      "questionnaire_sent": "email_immediate",
+      "questionnaire_returned": "email_immediate",
+      "call_booked": "email_immediate",
+      "call_held": "email_immediate",
+      "feedback_requested": "email_immediate",
+      "feedback_given": "email_immediate",
+      "stage_changed": "email_immediate",
+      "pilot_started": "email_immediate",
+      "pilot_deadline_7d": "email_immediate",
+      "pilot_deadline_1d": "email_immediate",
+      "pilot_ended": "email_immediate",
+      "decision_recorded": "email_immediate",
+      "comment_added": "email_immediate",
+      "shortlist_sent": "email_immediate",
+      "reminder_sent": "email_immediate"
+    }
+  }
+}
