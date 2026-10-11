@@ -1,0 +1,662 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F6F7FA">
+<title>Decision requests, GlassDollar OS prototype</title>
+<style>
+:root{
+  --accent:#1F5AFF;--accent-soft:#E8EEFF;--accent-ink:#1444C8;
+  --ink:#111318;--ink-2:#4B5160;--ink-3:#5F6676;
+  --line:#E3E6ED;--line-2:#CDD2DC;--bg:#F6F7FA;--card:#FFFFFF;
+  --wait:#344054;--wait-soft:#F2F4F7;
+  --late:#B42318;--late-soft:#FEE4E2;
+  --pause:#B54708;--pause-soft:#FEF0C7;
+  --done:#067647;--done-soft:#DCFAE6;
+  --note:#FFF6C7;--note-line:#E8D77A;
+  --radius:8px;--focus:0 0 0 3px #BFD0FF;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html{height:100%}
+body{margin:0;min-height:100%;font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+h1,h2,h3{font-weight:600;line-height:1.3;margin:0;text-wrap:balance}
+h1{font-size:20px}h2{font-size:16px}h3{font-size:15px}
+p{margin:0}
+button,input,textarea{font:inherit;color:inherit}
+button,label,a,summary{touch-action:manipulation}
+button{cursor:pointer}
+:focus-visible{outline:none;box-shadow:var(--focus)}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:8px;top:-48px;background:#fff;padding:8px 12px;border:1px solid var(--line-2);border-radius:6px;z-index:10}
+.skip:focus{top:8px}
+.muted{color:var(--ink-3)}
+.small{font-size:13px}
+a{color:var(--accent-ink)}
+
+/* Notes strip and prototype controls */
+.notes{background:var(--note);border-bottom:1px solid var(--note-line);padding:10px 16px}
+.notes summary{cursor:pointer;font-weight:600;list-style:none;display:flex;align-items:center;gap:8px}
+.notes summary::-webkit-details-marker{display:none}
+.notes summary::before{content:"";width:8px;height:8px;border-right:2px solid var(--ink);border-bottom:2px solid var(--ink);transform:rotate(-45deg);transition:transform .15s}
+.notes details[open] summary::before{transform:rotate(45deg)}
+.notes ol{margin:8px 0 0;padding-left:20px;max-width:72ch}
+.notes li{margin:2px 0}
+.controls{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--note-line)}
+.controls .group{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.day{font-weight:600;font-variant-numeric:tabular-nums}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:36px;padding:6px 12px;border:1px solid var(--line-2);border-radius:6px;background:#fff;color:var(--ink);text-decoration:none}
+.btn:hover{background:var(--bg)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-ink);border-color:var(--accent-ink)}
+.btn.quiet{border-color:transparent;background:transparent;color:var(--accent-ink)}
+.btn.quiet:hover{background:var(--accent-soft)}
+.btn.small{min-height:32px;padding:4px 10px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn:disabled:hover{background:#fff}
+.btn[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:6px;overflow:hidden}
+.seg .btn{border:0;border-radius:0;min-height:34px}
+.seg .btn+.btn{border-left:1px solid var(--line-2)}
+
+/* Top bar */
+.top{background:#fff;border-bottom:1px solid var(--line);padding:10px 16px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between}
+.brand{font-weight:600}
+.brand span{color:var(--ink-3);font-weight:400}
+
+/* Pills */
+.pill{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:999px;font-size:13px;font-weight:500;background:var(--wait-soft);color:var(--wait);white-space:nowrap}
+.pill.late{background:var(--late-soft);color:var(--late)}
+.pill.pause{background:var(--pause-soft);color:var(--pause)}
+.pill.done{background:var(--done-soft);color:var(--done)}
+.pill.cancel{background:var(--wait-soft);color:var(--ink-3)}
+
+/* Two panes: Lena's app and Jonas's phone */
+main{display:grid;gap:16px;align-items:start}
+.pane{display:none;min-width:0}
+.pane.active{display:block}
+.lena{container-type:inline-size;container-name:lena;background:var(--bg)}
+.pane-head{padding:12px 16px 0;color:var(--ink-2)}
+.pane-head b{color:var(--ink)}
+@media (min-width:1100px){
+  main{grid-template-columns:minmax(0,1fr) 414px;padding:16px}
+  .pane{display:block}
+  .controls .role{display:none}
+  .lena{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;min-height:720px}
+  .pane-head{padding:0 0 10px}
+  .jonas .device{width:414px;border:1px solid var(--line-2);border-radius:28px;padding:12px;background:#fff}
+  .jonas .screen{background:var(--bg);border-radius:18px;min-height:700px}
+}
+
+/* Lena */
+.wrap{max-width:1080px;margin:0 auto;padding:16px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.tab{background:none;border:0;padding:10px 12px;color:var(--ink-2);border-bottom:2px solid transparent;margin-bottom:-1px;border-radius:6px 6px 0 0}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+.tab:hover{background:var(--bg)}
+.banner{display:flex;gap:12px;align-items:flex-start;justify-content:space-between;padding:10px 12px;border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;background:#fff;margin-bottom:12px}
+.banner.late{border-left-color:var(--late)}
+.banner.pause{border-left-color:var(--pause)}
+.banner.done{border-left-color:var(--done)}
+.head{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.head>*{min-width:0}
+.head .meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:var(--ink-2)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.stack{display:grid;gap:12px}
+.startup{display:grid;gap:6px}
+.startup .note{color:var(--ink-2)}
+.answer-line{display:flex;flex-wrap:wrap;gap:8px;align-items:center;color:var(--ink-2)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+details.log{margin-top:16px}
+details.log summary{cursor:pointer;color:var(--ink-2)}
+details.log table{margin-top:8px}
+table{width:100%;border-collapse:collapse}
+.tablecard{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow-x:auto}
+.tablecard th:first-child,.tablecard td:first-child{padding-left:12px}
+.tablecard tr:last-child td{border-bottom:0}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--ink-2);font-size:13px}
+td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.rows{display:none}
+.row-card{display:grid;gap:8px}
+.row-head{display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
+.row-head b{min-width:0;overflow-wrap:anywhere}
+.row-card .kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;color:var(--ink-2)}
+.row-card .kv b{color:var(--ink);font-weight:500;overflow-wrap:anywhere}
+.empty{padding:32px 16px;text-align:center;color:var(--ink-2)}
+@container lena (max-width:780px){
+  .tablecard{display:none}
+  .rows{display:grid;gap:12px}
+}
+
+/* Jonas */
+.screen{max-width:460px;margin:0 auto;padding:16px}
+.screen h1.inbox{font-size:16px;color:var(--ink-2);font-weight:600;margin-bottom:8px}
+.mail{background:#fff;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.mail-row{display:grid;gap:2px;padding:12px 16px;border-bottom:1px solid var(--line);width:100%;text-align:left;background:#fff;border-left:0;border-right:0;border-top:0;min-height:56px}
+.mail-row:last-child{border-bottom:0}
+.mail-row:hover{background:var(--bg)}
+.mail-row .from{display:flex;justify-content:space-between;gap:8px;color:var(--ink-2);font-size:13px}
+.mail-row .subject{font-weight:600;overflow-wrap:anywhere}
+.mail-row.unread .subject::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:middle}
+.email{padding:16px;display:grid;gap:12px;font-size:15px}
+.email .hdr{display:grid;gap:2px;color:var(--ink-2);font-size:13px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.email .hdr b{color:var(--ink);font-size:16px;font-weight:600;overflow-wrap:anywhere}
+.email .cta{display:inline-flex;justify-content:center;min-height:44px;padding:10px 18px;background:var(--accent);color:#fff;border-radius:6px;font-weight:600;text-decoration:none;border:0;width:100%}
+.email .cta:hover{background:var(--accent-ink)}
+.email .url{overflow-wrap:anywhere;color:var(--ink-3);font-size:13px}
+.page{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px 16px;display:grid;gap:16px;font-size:16px}
+.page h1{font-size:21px}
+.page .lead{color:var(--ink-2)}
+.page .btn{min-height:44px;font-size:16px}
+.page .btn.quiet.small{min-height:36px;font-size:15px;justify-self:start}
+.lena-note{color:var(--ink-2);font-size:15px;padding:10px 12px;background:var(--bg);border-radius:6px}
+.choice{border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:grid;gap:10px;margin:0;min-width:0}
+.choice legend{float:left;width:100%;font-weight:600;font-size:17px;padding:0;margin:0}
+.choice.invalid{border-color:var(--late)}
+.choice .desc{color:var(--ink-2);font-size:15px}
+.choice .lena{color:var(--ink-2);font-size:14px;padding:8px 10px;background:var(--bg);border-radius:6px}
+.choice .err{color:var(--late);font-size:14px}
+.opts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.opts label{position:relative;display:flex;align-items:center;justify-content:center;min-height:48px;padding:6px 4px;border:1px solid var(--line-2);border-radius:6px;text-align:center;font-size:15px;line-height:1.2;cursor:pointer;background:#fff}
+.opts label:hover{background:var(--bg)}
+.opts input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer}
+.opts input:checked+span{font-weight:600}
+.opts label:has(input:checked){background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink)}
+.opts label:has(input:focus-visible){box-shadow:var(--focus)}
+.opts label:has(input:disabled){opacity:.5;cursor:not-allowed}
+textarea{width:100%;min-height:64px;padding:10px;border:1px solid var(--line-2);border-radius:6px;resize:vertical;background:#fff}
+.check{display:flex;gap:10px;align-items:flex-start;padding:4px 0;font-size:16px;cursor:pointer}
+.check input{width:22px;height:22px;margin:0;flex:none;cursor:pointer}
+.summary{display:grid;gap:6px;padding:12px;background:var(--bg);border-radius:6px}
+.summary div{display:flex;justify-content:space-between;gap:12px}
+.status{min-height:20px;color:var(--late)}
+
+/* Dialog */
+dialog{border:1px solid var(--line);border-radius:var(--radius);padding:0;max-width:560px;width:calc(100% - 32px);box-shadow:0 12px 40px rgba(17,19,24,.18);overscroll-behavior:contain}
+dialog::backdrop{background:rgba(17,19,24,.4)}
+.dlg{padding:20px;display:grid;gap:14px}
+.dlg .preview{border:1px solid var(--line);border-radius:6px;padding:12px;background:var(--bg);display:grid;gap:8px;font-size:14px}
+.dlg .preview .cta{display:inline-block;padding:8px 14px;background:var(--accent);color:#fff;border-radius:6px;font-weight:600;width:max-content}
+label.field{display:grid;gap:6px}
+.dlg .actions{justify-content:flex-end}
+
+@media (prefers-reduced-motion:reduce){*{transition:none !important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<div class="notes">
+  <details open>
+    <summary>Prototype notes: PP-034 from request to answer in five clicks</summary>
+    <ol>
+      <li>As Lena, press “Ask Jonas Keller to rate this shortlist”, then “Send request”. The email lands on Jonas's phone.</li>
+      <li>On the phone, open the email, press “Review 3 startups”, confirm it is you.</li>
+      <li>Rate the three startups and press “Send to Lena”. Her shortlist updates with the answers.</li>
+      <li>Reset, send again, then use the clock: day 3 and day 7 send reminders, day 8 marks it Late.</li>
+      <li>Turn on “Jonas is out of office” to pause reminders, then open “Waiting on others” for Remind now, Cancel and Answer on behalf.</li>
+    </ol>
+  </details>
+  <div class="controls">
+    <div class="group role">
+      <span id="roleLabel">Viewing as</span>
+      <div class="seg" role="group" aria-labelledby="roleLabel">
+        <button class="btn" id="roleLena" aria-pressed="true">Lena Hartmann</button>
+        <button class="btn" id="roleJonas" aria-pressed="false">Jonas Keller</button>
+      </div>
+    </div>
+    <div class="group" role="group" aria-label="Clock">
+      <span>Today <span class="day" id="today">2026-09-29, day 0</span></span>
+      <span>Jump to</span>
+      <button class="btn small" data-day="3">Day 3</button>
+      <button class="btn small" data-day="7">Day 7</button>
+      <button class="btn small" data-day="8">Day 8</button>
+      <button class="btn small" data-day="13">Day 13</button>
+    </div>
+    <div class="group">
+      <label class="check" style="font-size:14px"><input type="checkbox" id="ooo"> Jonas is out of office</label>
+      <button class="btn small" id="reset">Reset</button>
+    </div>
+  </div>
+</div>
+
+<main id="main" tabindex="-1">
+  <section class="pane lena" id="lenaPane" aria-label="Lena Hartmann's screen">
+    <header class="top">
+      <div class="brand">GlassDollar OS <span>for Nordwind Industrial AG</span></div>
+      <div class="small muted">Lena Hartmann, innovation manager</div>
+    </header>
+    <div id="lena"></div>
+  </section>
+  <section class="pane jonas" id="jonasPane" aria-label="Jonas Keller's phone">
+    <p class="pane-head"><b>Jonas Keller</b>, head of logistics. His phone, no login.</p>
+    <div class="device"><div id="jonas"></div></div>
+  </section>
+</main>
+<div class="sr-only" aria-live="polite" id="live"></div>
+
+<dialog id="sendDialog" aria-labelledby="sendTitle">
+  <form class="dlg" id="sendForm">
+    <h2 id="sendTitle">Ask Jonas Keller to rate this shortlist</h2>
+    <p class="muted small">Jonas gets this email. The link opens one page, no login. Startup names stay out of the email.</p>
+    <div class="preview" aria-label="Email preview">
+      <div><b>To</b> jonas.keller@nordwind.example</div>
+      <div><b>Subject</b> PP-034: Lena Hartmann needs your view on 3 startups</div>
+      <p>Jonas, you raised PP-034, pallet tracking losses at the Hamburg hub. I have three startups that could fix it and need your view on each by 2026-10-06. It takes about 3 minutes and needs no login.</p>
+      <span class="cta" aria-hidden="true">Review 3 startups</span>
+      <p class="muted small">Reminders go on 2026-10-02 and 2026-10-06 if Jonas has not answered. You are told on 2026-10-07 if he still has not.</p>
+    </div>
+    <label class="field">Note to Jonas (optional)
+      <textarea id="noteInput" name="note" autocomplete="off" maxlength="1000">The first two are new to us. Parcelgrid ran PP-024 in the spring with a different scope, so I kept them in.</textarea>
+    </label>
+    <div class="actions">
+      <button class="btn" type="button" id="sendCancel">Cancel</button>
+      <button class="btn primary" type="submit">Send request</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="behalfDialog" aria-labelledby="behalfTitle">
+  <form class="dlg" id="behalfForm" novalidate>
+    <h2 id="behalfTitle">Answer on behalf of Jonas Keller</h2>
+    <p class="muted small">Use this when Jonas told you his view by phone or in person. He gets no email.</p>
+    <div id="behalfOpts" class="stack"></div>
+    <label class="field">Where this came from
+      <textarea id="behalfNote" name="behalfNote" autocomplete="off" required></textarea>
+    </label>
+    <p class="status" id="behalfStatus" aria-live="polite"></p>
+    <div class="actions">
+      <button class="btn" type="button" id="behalfCancel">Cancel</button>
+      <button class="btn primary" type="submit">Save answer</button>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="cancelDialog" aria-labelledby="cancelTitle">
+  <form class="dlg" id="cancelForm">
+    <h2 id="cancelTitle">Cancel the request to Jonas Keller?</h2>
+    <p>Reminders stop. If Jonas opens the link later he sees that you no longer need an answer. You can send a new request afterwards.</p>
+    <div class="actions">
+      <button class="btn" type="button" id="cancelKeep">Keep request</button>
+      <button class="btn primary" type="submit">Cancel request</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+(function(){
+'use strict';
+const BASE = new Date(Date.UTC(2026, 8, 29));
+const fmt = d => { const x = new Date(BASE); x.setUTCDate(x.getUTCDate() + d); return x.toISOString().slice(0,10); };
+const DUE_DAY = 7, LATE_DAY = 8;
+const STARTUPS = [
+  { id:'pallet', name:'Pallet.ai', desc:'Bluetooth tags and yard gateways that track pallets across trailers and docks.', lena:'Closest to the problem as you described it.' },
+  { id:'cargonaut', name:'Cargonaut Labs', desc:'Cameras at dock doors that count pallets and match them to shipments.', lena:'No hardware on the pallets, so faster to pilot.' },
+  { id:'parcelgrid', name:'Parcelgrid', desc:'Pallet pooling network with a tracking app for every pool pallet.', lena:'Ran PP-024 in the spring. Different scope.' }
+];
+const CHOICES = [['interested','Interested'],['not_now','Not now'],['need_info','Need more info']];
+const label = c => (CHOICES.find(x => x[0] === c) || [,'-'])[1];
+const byId = id => document.getElementById(id);
+const names = list => { const n = list.map(i => STARTUPS.find(s => s.id === i.id).name); return n.length > 1 ? n.slice(0,-1).join(', ') + ' and ' + n[n.length-1] : n[0]; };
+
+let S;
+function fresh(){
+  S = { day:0, role:'lena', tab:'shortlist', listTab:'open', screen:'inbox', openMail:null, ooo:false,
+        req:null, banners:[], remindNowDay:null, readMail:new Set() };
+}
+function log(type, text){ S.req.events.push({ day:S.day, type, text }); }
+function notify(kind, text){ S.banners.unshift({ kind, text }); S.banners = S.banners.slice(0,2); }
+function live(text){ byId('live').textContent = text; }
+
+/* State machine */
+function send(){
+  const note = byId('noteInput').value.trim();
+  S.req = { state:'Waiting', sentDay:S.day, note, reminders:0, answer:null, events:[], mails:[], openedDay:null };
+  log('created', 'Request sent to Jonas Keller');
+  S.req.mails.push({ id:'m0', day:S.day, kind:'request', subject:'PP-034: Lena Hartmann needs your view on 3 startups' });
+  if (S.ooo) pause();
+  live('Request sent to Jonas Keller');
+}
+function pause(){
+  if (!S.req || !['Waiting','Late'].includes(S.req.state)) return;
+  S.req.state = 'Paused';
+  log('paused', 'Auto-reply received: Jonas Keller is out of office. Reminders paused.');
+  notify('pause', 'Jonas Keller appears to be away. Reminders for PP-034 are paused.');
+}
+function resume(){
+  if (!S.req || S.req.state !== 'Paused') return;
+  S.req.state = 'Waiting';
+  log('resumed', 'Reminders resumed');
+  if (S.day - S.req.sentDay >= LATE_DAY) markLate();
+}
+function markLate(){
+  S.req.state = 'Late';
+  log('late', 'Day 8 with no answer. Lena notified.');
+  notify('late', 'Jonas Keller has not answered PP-034 (day 8).');
+}
+function jumpTo(d){
+  for (let day = S.day + 1; day <= d; day++){
+    S.day = day;
+    if (!S.req || S.req.state !== 'Waiting') continue;
+    const age = day - S.req.sentDay;
+    if ((age === 3 || age === 7) && S.req.reminders < 2){
+      if (S.req.openedDay != null && day - S.req.openedDay <= 1){
+        log('reminder_skipped', 'Reminder skipped: Jonas opened the page in the last 24 hours');
+      } else {
+        S.req.reminders++;
+        log('reminder_sent', `Reminder ${S.req.reminders} of 2 sent`);
+        S.req.mails.push({ id:'r'+S.req.reminders, day, kind:'reminder', n:S.req.reminders, subject:'Reminder: PP-034, Lena Hartmann needs your view by ' + fmt(S.req.sentDay + DUE_DAY) });
+      }
+    }
+    if (age === LATE_DAY) markLate();
+  }
+  S.day = d;
+  live('Today is ' + fmt(d) + ', day ' + d);
+}
+function remindNow(){
+  S.req.reminders++; S.remindNowDay = S.day;
+  log('remind_now', 'Lena sent a reminder by hand');
+  S.req.mails.push({ id:'h'+S.day, day:S.day, kind:'manual', subject:'Lena Hartmann: can you look at PP-034 today?' });
+  live('Reminder sent to Jonas Keller');
+}
+function cancel(){
+  S.req.state = 'Cancelled'; log('cancelled', 'Lena cancelled the request'); live('Request cancelled');
+}
+function answer(items, noneFit, noneFitText, via, note){
+  S.req.answer = { items, noneFit, noneFitText, via, note, day:S.day };
+  S.req.state = 'Answered';
+  const rated = noneFit || items.some(i => i.choice !== 'need_info');
+  log('answered', via === 'on_behalf' ? 'Answered on behalf by Lena' : 'Jonas Keller answered via the link');
+  notify('done', rated ? `Jonas Keller answered PP-034 on ${fmt(S.day)}.` : `Jonas Keller needs more information on ${items.length} startups.`);
+  live('Answer sent to Lena Hartmann');
+}
+
+/* Other requests in the list, relative to the clock */
+function otherRows(){
+  const age40 = S.day + 5;
+  return [
+    { id:'PP-040', title:'Returnable crate loss, Rotterdam', owner:'Anneke de Vries', sent:fmt(-5), age:age40, due:fmt(2),
+      state: age40 >= LATE_DAY ? 'Late' : 'Waiting', reminders: age40 >= 7 ? 2 : age40 >= 3 ? 1 : 0, last:'Opened the page 2026-09-26', fixed:true },
+    { id:'PP-028', title:'Weld seam inspection, Kiel', owner:'Fatima El-Amin', sent:'2026-09-15', age:4, due:'2026-09-22',
+      state:'Answered', reminders:0, last:'Answered 2026-09-19', fixed:true }
+  ];
+}
+function pp34Row(){
+  if (!S.req) return null;
+  const r = S.req, age = S.day - r.sentDay;
+  const last = r.answer ? 'Answered ' + fmt(r.answer.day) : r.openedDay != null ? 'Opened the page ' + fmt(r.openedDay) : '-';
+  return { id:'PP-034', title:'Pallet tracking losses, Hamburg hub', owner:'Jonas Keller', sent:fmt(r.sentDay), age, due:fmt(r.sentDay + DUE_DAY),
+           state:r.state, reminders:r.reminders, last, fixed:false };
+}
+const isOpen = s => ['Waiting','Late','Paused'].includes(s);
+
+/* Rendering */
+const main = byId('main'), lenaEl = byId('lena'), jonasEl = byId('jonas');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function pill(state, text){
+  const cls = { Late:'late', Paused:'pause', Answered:'done', Cancelled:'cancel' }[state] || '';
+  return `<span class="pill ${cls}">${text || (state === 'Paused' ? 'Paused, away' : state)}</span>`;
+}
+
+function render(){
+  byId('today').textContent = fmt(S.day) + ', day ' + S.day;
+  document.querySelectorAll('[data-day]').forEach(b => { b.disabled = +b.dataset.day <= S.day; });
+  byId('roleLena').setAttribute('aria-pressed', S.role === 'lena');
+  byId('roleJonas').setAttribute('aria-pressed', S.role === 'jonas');
+  byId('ooo').checked = S.ooo;
+  byId('lenaPane').classList.toggle('active', S.role === 'lena');
+  byId('jonasPane').classList.toggle('active', S.role === 'jonas');
+  lenaEl.innerHTML = renderLena();
+  jonasEl.innerHTML = renderJonas();
+  bind();
+}
+
+function renderLena(){
+  const banners = S.banners.map((b, i) => `<div class="banner ${b.kind}" role="status"><span>${esc(b.text)}</span><button class="btn quiet small" data-dismiss="${i}">Dismiss</button></div>`).join('');
+  const openCount = [pp34Row(), ...otherRows()].filter(x => x && isOpen(x.state)).length;
+  return `<div class="wrap">
+    ${banners}
+    <div class="tabs" role="tablist" aria-label="Lena's views">
+      <button class="tab" role="tab" id="tab-shortlist" aria-controls="panel" aria-selected="${S.tab === 'shortlist'}" tabindex="${S.tab === 'shortlist' ? 0 : -1}" data-tab="shortlist">PP-034 shortlist</button>
+      <button class="tab" role="tab" id="tab-waiting" aria-controls="panel" aria-selected="${S.tab === 'waiting'}" tabindex="${S.tab === 'waiting' ? 0 : -1}" data-tab="waiting">Waiting on others (${openCount})</button>
+    </div>
+    <div id="panel" role="tabpanel" aria-labelledby="tab-${S.tab}">${S.tab === 'shortlist' ? renderShortlist() : renderWaiting()}</div>
+  </div>`;
+}
+
+function renderShortlist(){
+  const r = S.req;
+  let status = '', action = '';
+  if (!r){
+    action = `<button class="btn primary" id="askBtn">Ask Jonas Keller to rate this shortlist</button>`;
+  } else if (isOpen(r.state)){
+    status = `${pill(r.state)} <span>Waiting for Jonas Keller, day ${S.day - r.sentDay}</span>`;
+  } else if (r.state === 'Answered'){
+    status = `${pill('Answered')} <span>Jonas Keller, ${fmt(r.answer.day)}, ${r.answer.via === 'on_behalf' ? 'on his behalf' : 'via link'}</span>`;
+  } else {
+    status = pill('Cancelled');
+    action = `<button class="btn primary" id="askBtn">Ask Jonas Keller again</button>`;
+  }
+  const cards = STARTUPS.map(s => {
+    let ans = '';
+    if (r && r.answer && !r.answer.noneFit){
+      const it = r.answer.items.find(i => i.id === s.id);
+      ans = `<div class="answer-line"><span class="pill ${it.choice === 'interested' ? 'done' : ''}">${label(it.choice)}</span>${it.comment ? `<span>${esc(it.comment)}</span>` : ''}</div>`;
+    }
+    return `<div class="card startup"><h3>${s.name}</h3><p>${s.desc}</p><p class="note">Lena: ${s.lena}</p>${ans}</div>`;
+  }).join('');
+  const noneFit = r && r.answer && r.answer.noneFit ? `<div class="card"><b>None of these fit.</b> ${esc(r.answer.noneFitText)}</div>` : '';
+  const behalf = r && r.answer && r.answer.note ? `<p class="muted small">${esc(r.answer.note)}</p>` : '';
+  const events = r ? `<details class="log"><summary>Events for this request (${r.events.length})</summary><table><thead><tr><th>Date</th><th>Event</th></tr></thead><tbody>${r.events.map(e => `<tr><td class="num">${fmt(e.day)}</td><td>${esc(e.text)}</td></tr>`).join('')}</tbody></table></details>` : '';
+  return `<div class="head"><div><h1>PP-034 Pallet tracking losses, Hamburg hub</h1><div class="meta small">Owner Jonas Keller <span>Shortlist, 3 startups</span></div></div><div class="actions">${status}${action}</div></div>
+    <div class="stack">${noneFit}${cards}</div>${behalf}${events}`;
+}
+
+function renderWaiting(){
+  const all = [pp34Row(), ...otherRows()].filter(Boolean);
+  const open = all.filter(x => isOpen(x.state)).sort((a, b) => (b.state === 'Late') - (a.state === 'Late') || b.age - a.age);
+  const answered = all.filter(x => x.state === 'Answered');
+  const cancelled = all.filter(x => x.state === 'Cancelled');
+  const view = S.listTab;
+  const rows = view === 'open' ? open : view === 'answered' ? answered : cancelled;
+  const actions = x => {
+    if (x.fixed || !isOpen(x.state)) return '';
+    const remindedToday = S.remindNowDay === S.day;
+    return `<div class="actions">
+      ${x.state === 'Paused' ? `<button class="btn small" data-act="resume">Resume reminders</button>` : ''}
+      <button class="btn small" data-act="remind" ${remindedToday ? 'disabled' : ''}>${remindedToday ? 'Reminded today' : 'Remind now'}</button>
+      <button class="btn small" data-act="behalf">Answer on behalf</button>
+      <button class="btn small" data-act="cancel">Cancel request</button></div>`;
+  };
+  const table = rows.length ? `<div class="tablecard"><table class="list"><thead><tr><th>Request</th><th>Owner</th><th>Age</th><th>Due</th><th>State</th><th>Reminders</th><th>Last owner action</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody>
+    ${rows.map(x => `<tr><td><b>${x.id}</b><br><span class="small muted">${x.title}</span></td><td>${x.owner}</td><td class="num">${x.age} days</td><td class="num">${x.due}</td><td>${pill(x.state)}</td><td class="num">${x.reminders}</td><td>${x.last}</td><td>${actions(x)}</td></tr>`).join('')}</tbody></table></div>
+    <div class="rows">${rows.map(x => `<div class="card row-card"><div class="row-head"><b>${x.id} ${x.title}</b>${pill(x.state)}</div>
+      <div class="kv"><span>Owner</span><b>${x.owner}</b><span>Age</span><b>${x.age} days</b><span>Due</span><b>${x.due}</b><span>Reminders</span><b>${x.reminders}</b><span>Last action</span><b>${x.last}</b></div>${actions(x)}</div>`).join('')}</div>`
+    : `<div class="card empty">${view === 'open' ? 'Nothing is waiting on anyone.' : view === 'answered' ? 'No answers yet.' : 'Nothing cancelled.'}</div>`;
+  return `<div class="head"><h1>Waiting on others</h1>
+    <div class="seg" role="group" aria-label="Filter by state">
+      <button class="btn" aria-pressed="${view === 'open'}" data-list="open">Open (${open.length})</button>
+      <button class="btn" aria-pressed="${view === 'answered'}" data-list="answered">Answered (${answered.length})</button>
+      <button class="btn" aria-pressed="${view === 'cancelled'}" data-list="cancelled">Cancelled (${cancelled.length})</button>
+    </div></div>${table}`;
+}
+
+function renderJonas(){
+  const r = S.req;
+  const mails = r ? [...r.mails].reverse() : [];
+  let body = '';
+  if (S.screen === 'inbox'){
+    body = `<h1 class="inbox">Inbox</h1><div class="mail">${mails.length ? mails.map(m => `<button class="mail-row ${S.readMail.has(m.id) ? '' : 'unread'}" data-mail="${m.id}"><span class="from"><span>Lena Hartmann via GlassDollar</span><span>${fmt(m.day)}</span></span><span class="subject">${esc(m.subject)}</span></button>`).join('') : `<div class="empty">No new mail. Lena has not sent a request yet.</div>`}</div>`;
+  } else if (S.screen === 'email'){
+    const m = r.mails.find(x => x.id === S.openMail);
+    const due = fmt(r.sentDay + DUE_DAY);
+    const text = m.kind === 'request'
+      ? `<p>Jonas, you raised PP-034, pallet tracking losses at the Hamburg hub. I have three startups that could fix it and need your view on each by ${due}. It takes about 3 minutes and needs no login.</p>`
+      : m.kind === 'reminder'
+      ? `<p>Jonas, a reminder that I need your view on 3 startups for PP-034 by ${due}. About 3 minutes, no login. This is reminder ${m.n} of 2.</p>`
+      : `<p>Jonas, could you look at PP-034 today? Three startups, about 3 minutes, no login. I would like to brief the Hamburg team this week.</p>`;
+    body = `<button class="btn quiet" data-screen="inbox">Back to inbox</button>
+      <div class="mail"><div class="email"><div class="hdr"><b>${esc(m.subject)}</b><span>Lena Hartmann via GlassDollar, ${fmt(m.day)}</span><span>To jonas.keller@nordwind.example</span></div>
+      ${text}<button class="cta" data-screen="identity">Review 3 startups</button>
+      <p class="url">If the button does not open, copy this link: https://os.glassdollar.com/r/7Qk2mN9x</p>
+      <p class="small">Reply to this email to reach me.<br>Lena Hartmann, Nordwind Venture Client Unit</p></div></div>`;
+  } else if (S.screen === 'identity'){
+    body = `<div class="page"><h1>Review 3 startups for PP-034</h1><p class="lead">This link was sent to jonas.keller@nordwind.example. Confirm it is you before anything is shown.</p>
+      <button class="btn primary" data-screen="answer">Yes, I am Jonas Keller</button><button class="btn" data-screen="notme">Not me</button></div>`;
+  } else if (S.screen === 'notme'){
+    body = `<div class="page"><h1>Nothing was shown</h1><p class="lead">Lena Hartmann has been told that someone else opened this link. If you need your own request, ask her for a link.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
+  } else if (S.screen === 'answer'){
+    if (r.state === 'Cancelled') body = `<div class="page"><h1>Lena no longer needs this</h1><p class="lead">The request for PP-034 was cancelled on ${fmt(r.events.find(e => e.type === 'cancelled').day)}. Nothing to do.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
+    else if (r.answer) body = renderDone(true);
+    else body = renderForm();
+  } else if (S.screen === 'done'){
+    body = renderDone(false);
+  }
+  return `<div class="screen">${body}</div>`;
+}
+
+function renderForm(){
+  const r = S.req;
+  const cards = STARTUPS.map(s => `<fieldset class="choice" data-startup="${s.id}" id="f_${s.id}"><legend>${s.name}</legend><p class="desc">${s.desc}</p><p class="lena">Lena: ${s.lena}</p>
+    <div class="opts">${CHOICES.map(([v, t]) => `<label><input type="radio" name="c_${s.id}" value="${v}"><span>${t}</span></label>`).join('')}</div>
+    <p class="err" id="e_${s.id}" hidden>Pick one to send.</p>
+    <button class="btn quiet small" type="button" data-note="${s.id}">Add a note for Lena</button>
+    <label class="field small" id="l_${s.id}" hidden>Note for Lena<textarea id="n_${s.id}" name="n_${s.id}" autocomplete="off" maxlength="1000" placeholder="Anything Lena should know…"></textarea></label></fieldset>`).join('');
+  return `<form class="page" id="answerForm" novalidate>
+    <div><h1>PP-034 Pallet tracking losses, Hamburg hub</h1><p class="lead">Lena needs your view on each by ${fmt(r.sentDay + DUE_DAY)}.</p></div>
+    ${r.note ? `<p class="lena-note">Lena: ${esc(r.note)}</p>` : ''}
+    ${cards}
+    <label class="check"><input type="checkbox" id="noneFit" name="noneFit"><span>None of these fit</span></label>
+    <label class="field" id="noneFitLabel" hidden>Tell Lena why<textarea id="noneFitText" name="noneFitText" autocomplete="off" maxlength="1000" placeholder="Tell Lena why…"></textarea></label>
+    <button class="btn primary" type="submit" id="sendAnswer">Send to Lena</button>
+    <p class="status" id="formStatus" aria-live="polite"></p></form>`;
+}
+
+function renderDone(reopened){
+  const a = S.req.answer;
+  const lines = a.noneFit ? `<div><span>None of these fit</span></div>` : a.items.map(i => `<div><span>${STARTUPS.find(s => s.id === i.id).name}</span><b>${label(i.choice)}</b></div>`).join('');
+  return `<div class="page"><h1>${reopened ? 'Already sent to Lena Hartmann' : 'Sent to Lena Hartmann'}</h1>
+    <div class="summary">${lines}</div>
+    <p class="lead">Lena will tell you what was decided. You can close this page.</p>
+    <button class="btn" data-screen="inbox">Back to inbox</button></div>`;
+}
+
+/* Form logic */
+function readItems(root, prefix, notePrefix){
+  return STARTUPS.map(s => {
+    const c = root.querySelector(`input[name="${prefix}${s.id}"]:checked`);
+    const n = notePrefix ? root.querySelector(`#${notePrefix}${s.id}`) : null;
+    return { id:s.id, choice:c ? c.value : null, comment:n ? n.value.trim() : '' };
+  });
+}
+function syncNoneFit(form){
+  const none = form.querySelector('#noneFit').checked;
+  form.querySelectorAll('.opts input').forEach(i => { i.disabled = none; });
+  form.querySelector('#noneFitLabel').hidden = !none;
+  form.querySelectorAll('.choice').forEach(f => f.classList.remove('invalid'));
+  form.querySelectorAll('.err').forEach(e => { e.hidden = true; });
+  form.querySelector('#formStatus').textContent = '';
+}
+function submitAnswer(form){
+  const none = form.querySelector('#noneFit').checked;
+  const noneText = form.querySelector('#noneFitText');
+  const status = form.querySelector('#formStatus');
+  if (none){
+    if (!noneText.value.trim()){ status.textContent = 'Tell Lena why none of these fit, then send.'; noneText.focus(); return; }
+    answer(readItems(form, 'c_', 'n_'), true, noneText.value.trim(), 'magic_link', '');
+  } else {
+    const items = readItems(form, 'c_', 'n_');
+    const missing = items.filter(i => !i.choice);
+    missing.forEach(i => { form.querySelector('#f_' + i.id).classList.add('invalid'); form.querySelector('#e_' + i.id).hidden = false; });
+    if (missing.length){
+      status.textContent = `Rate ${names(missing)} to send.`;
+      form.querySelector(`input[name="c_${missing[0].id}"]`).focus();
+      return;
+    }
+    answer(items, false, '', 'magic_link', '');
+  }
+  S.screen = 'done'; render(); focusTop(jonasEl);
+}
+
+function openBehalf(){
+  byId('behalfOpts').innerHTML = STARTUPS.map(s => `<fieldset class="choice" style="padding:10px"><legend style="font-size:15px">${s.name}</legend><div class="opts">${CHOICES.map(([v, t]) => `<label><input type="radio" name="b_${s.id}" value="${v}"><span>${t}</span></label>`).join('')}</div></fieldset>`).join('');
+  byId('behalfNote').value = `Recorded by Lena Hartmann from a call on ${fmt(S.day)}.`;
+  byId('behalfStatus').textContent = '';
+  byId('behalfDialog').showModal();
+}
+
+/* Events */
+function bind(){
+  main.querySelectorAll('[data-tab]').forEach(b => {
+    b.onclick = () => { S.tab = b.dataset.tab; render(); };
+    b.onkeydown = e => {
+      if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+      S.tab = S.tab === 'shortlist' ? 'waiting' : 'shortlist'; render(); main.querySelector('[data-tab="' + S.tab + '"]').focus();
+    };
+  });
+  main.querySelectorAll('[data-list]').forEach(b => b.onclick = () => { S.listTab = b.dataset.list; render(); });
+  main.querySelectorAll('[data-dismiss]').forEach(b => b.onclick = () => { S.banners.splice(+b.dataset.dismiss, 1); render(); });
+  const ask = main.querySelector('#askBtn'); if (ask) ask.onclick = () => byId('sendDialog').showModal();
+  main.querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
+    const a = b.dataset.act;
+    if (a === 'remind'){ remindNow(); render(); }
+    else if (a === 'resume'){ S.ooo = false; resume(); render(); }
+    else if (a === 'behalf') openBehalf();
+    else if (a === 'cancel') byId('cancelDialog').showModal();
+  });
+  main.querySelectorAll('[data-mail]').forEach(b => b.onclick = () => { S.openMail = b.dataset.mail; S.readMail.add(b.dataset.mail); S.screen = 'email'; render(); focusTop(jonasEl); });
+  main.querySelectorAll('[data-screen]').forEach(b => b.onclick = () => {
+    const to = b.dataset.screen;
+    if (to === 'identity' && !S.req.events.some(e => e.type === 'link_opened')) log('link_opened', 'Link opened from the email');
+    if (to === 'answer'){ S.req.openedDay = S.day; if (!S.req.events.some(e => e.type === 'identity_confirmed')) log('identity_confirmed', 'Jonas Keller confirmed it is him and opened the page'); }
+    S.screen = to; render(); focusTop(jonasEl);
+  });
+  const form = main.querySelector('#answerForm');
+  if (form){
+    form.querySelector('#noneFit').addEventListener('change', () => syncNoneFit(form));
+    form.querySelectorAll('.opts input').forEach(i => i.addEventListener('change', () => { const f = i.closest('.choice'); f.classList.remove('invalid'); form.querySelector('#e_' + f.dataset.startup).hidden = true; }));
+    form.querySelectorAll('[data-note]').forEach(b => b.onclick = () => { form.querySelector('#l_' + b.dataset.note).hidden = false; form.querySelector('#n_' + b.dataset.note).focus(); b.remove(); });
+    form.addEventListener('submit', e => { e.preventDefault(); submitAnswer(form); });
+  }
+}
+function focusTop(el){ const h = el.querySelector('h1'); if (h){ h.setAttribute('tabindex','-1'); h.focus(); } }
+
+byId('roleLena').onclick = () => { S.role = 'lena'; render(); };
+byId('roleJonas').onclick = () => { S.role = 'jonas'; render(); };
+document.querySelectorAll('[data-day]').forEach(b => b.onclick = () => { jumpTo(+b.dataset.day); render(); });
+byId('ooo').onchange = e => { S.ooo = e.target.checked; if (S.ooo) pause(); else resume(); render(); };
+byId('reset').onclick = () => { fresh(); render(); live('Prototype reset'); };
+
+const sendDialog = byId('sendDialog');
+byId('sendCancel').onclick = () => sendDialog.close();
+byId('sendForm').addEventListener('submit', e => { e.preventDefault(); send(); sendDialog.close(); render(); focusTop(lenaEl); });
+
+const cancelDialog = byId('cancelDialog');
+byId('cancelKeep').onclick = () => cancelDialog.close();
+byId('cancelForm').addEventListener('submit', e => { e.preventDefault(); cancel(); cancelDialog.close(); render(); });
+
+const behalfDialog = byId('behalfDialog');
+byId('behalfCancel').onclick = () => behalfDialog.close();
+byId('behalfForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const items = readItems(behalfDialog, 'b_', null);
+  const missing = items.filter(i => !i.choice);
+  const note = byId('behalfNote').value.trim();
+  const status = byId('behalfStatus');
+  if (missing.length){ status.textContent = `Rate ${names(missing)} to save.`; behalfDialog.querySelector(`input[name="b_${missing[0].id}"]`).focus(); return; }
+  if (!note){ status.textContent = 'Say where this answer came from, then save.'; byId('behalfNote').focus(); return; }
+  answer(items, false, '', 'on_behalf', note);
+  behalfDialog.close(); render();
+});
+
+if (window.innerWidth < 760) document.querySelector('.notes details').removeAttribute('open');
+fresh(); render();
+})();
+</script>
+</body>
+</html>
