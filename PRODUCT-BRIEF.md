@@ -12,7 +12,7 @@ Take-home brief for GlassDollar OS, written on 12 Oct 2026 without access to the
 
 Number 3: "Business units submit a problem and then disappear."
 
-I chose it because the person who stalls is outside the tool, so the fix has to reach into their inbox, and the result can be measured in days.
+I chose it because the person who stalls is outside the tool, and the result can be measured in days.
 
 ## 2. Problem framing
 
@@ -22,15 +22,31 @@ I chose it because the person who stalls is outside the tool, so the fix has to 
 |-----|---------|-----------|
 | Lena Hartmann | Innovation manager, the primary user (GlassDollar's label; venture client manager elsewhere) | In the tool every day, runs many pain points at once, chases owners herself by email |
 | Jonas Keller | Pain point owner, the line manager who raised the problem | Measured on his operation, opens the tool a few times a year, reads email on his phone |
-| Dr. Sabine Koch | Head of the unit | Lena's escalation point, not a user of this release |
+| Dr. Sabine Koch | Head of the unit | Lena's escalation point when an owner stays silent. If the cause turns out to be incentives rather than friction, she is the lever, because she sets what Jonas is measured on. Not a user of this release |
+
+Jonas raised the problem because it costs his operation, and he wants it gone. What answering gets him is a pilot that might fix it, months away, paid for with time he has to find today. That is the trade he makes every time the shortlist email arrives.
 
 ### When it happens
 
 Lena sends Jonas a shortlist and waits. Jonas means to look at it, but his own work comes first and days go by with no answer. Lena follows up by email, then catches him in the corridor. Sometimes the shortlist has gone to the wrong person: Jonas raised the problem, but someone else on his team is the one who can say whether a startup would work.
 
+Today's email asks for the wrong thing. It says "log in and look at the shortlist", with no question, no date and no way to answer without an account. The new one asks for three ratings by a date.
+
+### Why owners go silent
+
+Five reasons Jonas might not answer. This release works on the first one only.
+
+1. Friction and competing work: the ask is open-ended, needs a login, and his own work comes first, which is what heads of venture client units report (Haarmann et al. 2024).
+2. The shortlist does not look credible, or he needs more to judge it.
+3. He has no budget or authority to commit to a pilot.
+4. The problem was solved another way, or went away.
+5. Backing a startup is a political risk in his unit.
+
+The first is the only one the OS can remove on its own, and removing it exposes the others: a request for more information points at 2, a rejection with a reason at 2 or 4, and silence after a bounded ask with a date at 3 or 5, which is Sabine's conversation, not the tool's.
+
 ### What it costs
 
-- Business unit disengagement is a known top barrier. In Innovation Leader's 2019 survey of 115 large companies, 39% named lack of business unit alignment a top challenge. At a 2019 Mind the Bridge forum, 41% of 36 innovation heads cited scarce business unit involvement. Heads of venture client units say owners are keen but the day job comes first (Haarmann et al. 2024).
+- Lena's own cost is the one nobody measures: shortlists per quarter, times days waiting, times chases per waiting day, times minutes per chase. The four-week chase log before launch fills this in, and it becomes the baseline for No manual chase.
 - Startups feel it too. Half name slow corporate decisions as a top barrier (Nesta 2016, n=134).
 - Each waiting day defers a pilot (about EUR 25,000, Gimmy) and a possible adoption (claimed EUR 2 to 3 million a year, 27pilots, a marketing figure; about a quarter of pilots adopt, Holcim). Value is deferred rather than lost, and the odds at shortlist stage are lower than at pilot stage.
 - No source measures response time at the shortlist step itself.
@@ -43,12 +59,12 @@ We would watch four numbers, all pulled from the event log. Days to answer is th
 |------|------------|
 | Days to answer | Median days from sent to answered, with unanswered requests counted as misses, and the share answered by the day 7 due date |
 | First touch | Share of owners who rate at least one startup or ask for information within one working day |
-| No manual chase | Share of requests answered before Lena presses Remind now. Lena logs her chases for four weeks before launch to give the baseline |
+| No manual chase | Share of requests answered before Lena chases by hand. Lena logs her chases for four weeks before launch to give the baseline |
 | Late rate | Share of requests open for longer than 1.2 times the unit's median wait |
 
 Three rules stop the numbers being gamed:
 
-1. Need more info counts as a first touch but does not stop the clock.
+1. A request for more information counts as a first touch but does not stop the clock.
 2. An answer has to carry a reason, or one click would count as an answer.
 3. Reports go by request, and owners' names stay out of them until the works council question is answered.
 
@@ -60,6 +76,8 @@ Three rules stop the numbers being gamed:
 | Lena needs the owner's answer and cannot pick alone | None | Ask Lena which decisions truly need the owner | 1 hour |
 | Emailed links survive enterprise mail gateways and SSO | Microsoft Safe Links opens links before delivery. Some tenants enforce SSO on outside links | Send to 10 addresses at one customer and ask IT | 1 week |
 | A bounded ask with a date gets an answer where an open-ended one does not | Mixed. Shorter asks get more replies (Edwards et al. 2009). A stated time cost and a deadline showed no effect in the same review | 5 owner interviews, then a prototype test | 2 weeks |
+
+The second assumption has no evidence yet. I could not ask Lena for this brief, so that hour is the first hour of the project, before the link test. If most shortlists turn out not to need the owner, the first request type moves to the decision after a pilot, where the owner's answer is unavoidable.
 
 Four more wait for live data:
 
@@ -83,7 +101,7 @@ These patterns come from tools that already get busy outsiders to respond. The d
 
 ## 4. Scope
 
-The first release is 5 to 7 engineer-weeks. Before any of it is built, we test the link and SSO at one real customer.
+The first release is 5 to 7 engineer-weeks. Before any of it is built, we ask Lena which decisions need the owner and test the link and SSO at one real customer.
 
 | In the first release | Later or out |
 |---|---|
@@ -98,7 +116,7 @@ The first release is 5 to 7 engineer-weeks. Before any of it is built, we test t
 
 Each item is in because without it the request still stalls, Lena still chases, or we cannot measure the result. Everything else is ranked by value against effort under What comes next.
 
-Email is the channel because every owner already has it and it fits the estimate. The difference is what the email asks for. Today's email says "log in and look at the shortlist". The new one asks for three ratings by a date, and Lena hears on day 8 if nothing comes back. If an owner ignores that too, the problem is incentives. This release will show that, but it cannot fix it.
+Email is the channel because every owner already has it and it fits the estimate. Lena hears on day 8 if nothing comes back. If an owner ignores a bounded ask with a date too, the problem is incentives. This release will show that, but it cannot fix it.
 
 ## 5. Prototype
 
