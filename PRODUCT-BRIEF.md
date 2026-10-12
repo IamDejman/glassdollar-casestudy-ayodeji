@@ -123,7 +123,7 @@ Email is the channel because every owner already has it and it fits the estimate
 
 ## 5. Prototype
 
-The [clickable prototype](https://iamdejman.github.io/glassdollar-casestudy-ayodeji/) covers the main flow end to end: Lena sends one request from the shortlist, Jonas answers on his phone with no login, and Lena tracks everything in one list. It has a clock to jump to day 3, 7, 8 and 13, and a switch for Jonas being out of office. Screenshots are at the end of [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md).
+The [clickable prototype](https://iamdejman.github.io/glassdollar-casestudy-ayodeji/) covers the main flow end to end: Lena sends one request from the shortlist, Jonas answers on his phone with no login, and Lena tracks everything in one list. It has a clock to jump to day 3, 7, 8 and 13, and a Pause reminders button for when Jonas is away. Screenshots are at the end of [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md).
 
 ## 6. Tickets
 
