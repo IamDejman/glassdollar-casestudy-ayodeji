@@ -20,9 +20,9 @@ Build and deploy them in this order. Nothing is useful before DR-3 is live: DR-1
 | DR-4 | Remind the owner and mark requests Late | Two reminders, skipped if the owner was active in the last 24 hours. Late on day 8 with one alert to the user. Pause and resume, and a pending handoff pauses | Notifications | Backend (scheduled jobs) | M | DR-1, DR-2 | Waits on DR-2 |
 | DR-5 | List open requests and measure the wait | The list of open requests with Remind now, Cancel, Answer on behalf, Pause and Resume. The two measures as queries over the event log | Pain points, Reports | Frontend, backend (permissions), SQL | M | DR-3, DR-4 | Waits on DR-4 |
 
-Sizes are t-shirt sizes. The whole release is about 3 to 4 engineer-weeks. Each ticket is split into sub-issues, numbered DR-x.y in build order. Each has a story, what to build and acceptance criteria. A sub-issue is done when its acceptance criteria pass against the sample data, and a ticket when all its sub-issues are.
+Sizes are t-shirt sizes. The whole release is about 3 to 4 engineer-weeks. Each ticket is split into sub-issues, numbered DR-x.y in build order. Each has a story, what to build and acceptance criteria. A sub-issue is done when its acceptance criteria pass against the sample data, and a ticket when all its sub-issues are. Acceptance criteria count in days from the send, day 0, and name a date only where the sample data's today or a weekend is the point.
 
-Test against the sample data at https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/data/sample-data.json. In the sample data, today is 12 Oct 2026. It is test data, not a baseline. Read as requests, it has a median wait of 7 days and 8 of 13 shortlists answered by day 7, which is the brief's switch condition, so a test run exercises that condition too.
+Test against the sample data at https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/data/sample-data.json. In the sample data, today is 12 Oct 2026. It is invented test data, not a baseline, and these tickets read it one way only: each shortlist is a chain of one request, sent_to_owner_at is created, owner_feedback_at is answered when the status is complete, partial means still open, and reminders_sent counts chases. Read that way it has a median wait of 7 days over 11 answered and 8 of 13 answered by day 7. That happens to meet the brief's switch condition, so a test run exercises that condition too.
 
 ## Rules for all five tickets
 
@@ -75,7 +75,7 @@ Listed so the cut is explicit. Nothing here is in scope for the first release.
 
 - Auto-reply and bounce detection, with reminders that pause on their own
 - Link renewal after day 14
-- One-click send-on with a fresh link, and contacts for people outside the OS
+- Forwarding to a colleague with a fresh link in one step, and contacts for people outside the OS
 - Answered and Cancelled tabs, and a unit-wide view of the list
 - Merged reminder emails for one owner
 - Suggested stage change
@@ -119,7 +119,7 @@ Writes: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request
 
 **Acceptance criteria**
 
-- The user sends the load planning request on 29 Sep 2026. The request is Waiting, due 6 Oct at 23:59 Europe/Berlin, the link expires 13 Oct at 23:59, the snapshot holds Pallet.ai, Cargonaut Labs and Parcelgrid with descriptions and comments, and created is logged.
+- The user sends the load planning request. The request is Waiting, due on day 7 at 23:59 Europe/Berlin, the link expires on day 14 at 23:59, the snapshot holds Pallet.ai, Cargonaut Labs and Parcelgrid with descriptions and comments, and created is logged.
 - A shortlist has 2 startups. The button is disabled and reads "Needs 3 to 5 startups".
 - The user picks another OS user instead of the owner and sends. The request's recipient is that person.
 - The pain point's owner is not an OS user. The dialog opens with no recipient and says so.
@@ -139,7 +139,7 @@ Writes: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request
 
 **Acceptance criteria**
 
-- A second user opens the load planning shortlist on 12 Oct 2026. The header shows the Late label and "{owner}, day 13" with "Cancel request", and there is no send button. The supplier onboarding shortlist shows day 24 the same way.
+- The sample data on 12 Oct 2026. A second user opens the load planning shortlist. The header shows the Late label and "{owner}, day 13" with "Cancel request", and there is no send button. The supplier onboarding shortlist shows day 24 the same way.
 - The request was sent today. Every user who can see the pain point sees the Waiting label and "{owner}, day 0" within the minute, and no email leaves the OS until DR-2 is built.
 - The pain point's owner changes while a request is open: the request keeps its recipient and the header does not change. The user can cancel and send to the new owner.
 
@@ -156,7 +156,7 @@ Writes: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request
 **Acceptance criteria**
 
 - The user cancels the load planning request with the reason "Owner is on leave". The state is Cancelled, the reason is stored, cancelled is logged, the owner gets no email, and the send button is back.
-- The shortlist is finalised on 12 Oct 2026 while the request is open. The request is Cancelled with the reason "finalised", cancelled is logged, the owner gets no email, and the button does not come back.
+- The shortlist is finalised while the request is open. The request is Cancelled with the reason "finalised", cancelled is logged, the owner gets no email, and the button does not come back.
 - Cancel on a request that was answered a second earlier: refuse with "Already answered". The answer stands.
 
 #### DR-1.4 Enable the user to resend to the person the owner named
@@ -170,7 +170,7 @@ Writes: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request
 
 **Acceptance criteria**
 
-- The load planning owner named someone else on 1 Oct 2026. The user presses "Resend to {named person}" and sends. The old request is Cancelled, the new one is Waiting for the named person from 1 Oct with due_at 8 Oct, reminders_sent 0 and parent_request_id set to the old one.
+- The load planning owner named someone else on day 2. The user presses "Resend to {named person}" and sends. The old request is Cancelled, the new one is Waiting for the named person from that day with its own day 7 due date, reminders_sent 0 and parent_request_id set to the old one.
 - Send, resend and cancel on one shortlist in a row. The shortlist never has two open requests, each request has its own id, the resend's parent_request_id points at the cancelled one, the event log reads created, cancelled, created in that order, and every event carries the id of the user who acted.
 - The named person is the sender, or is not an OS user: open the dialog with no recipient and say why, so the user picks someone.
 - The new recipient already has a request open on another shortlist: allowed. The limit is one open request per shortlist, not per person.
@@ -197,13 +197,13 @@ Writes: token_hash, confirmed_at. Events: link_opened, identity_confirmed, not_m
 
 **What to build**
 
-- Send the email when DR-1.1 creates the request. From "GlassDollar for {customer}" at a GlassDollar address. Reply-To is the user's address, so a human reply, an auto-reply or a bounce reaches the user and not the OS.
+- Send the email when DR-1.1 creates the request. From "GlassDollar for {customer}" at a GlassDollar address. Reply-To is the user's address, so a human reply or an out-of-office reply reaches the user and not the OS. Bounces go to the sending address, which nobody reads in this release, so a wrong address shows up only as Late on day 8.
 - Subject: "{pain point}: {user} needs your view on {n} startups". Body: who asks, what for, "about 3 minutes", the user's note if there is one, and the due date. One text button, "Review {n} startups", with the full URL in plain text under it. No startup names in the email.
 - Set up SPF, DKIM and DMARC on the sending domain. Add "allowlist the sender" to the customer setup checklist.
 
 **Acceptance criteria**
 
-- The load planning email contains "Review 3 startups", "about 3 minutes" and 6 Oct 2026. It does not contain Pallet.ai, Cargonaut Labs or Parcelgrid.
+- The load planning email contains "Review 3 startups", "about 3 minutes" and the due date written out. It does not contain Pallet.ai, Cargonaut Labs or Parcelgrid.
 - The user's note "Call me if anything is unclear." appears in the body. With no note, the body has no empty note block.
 - Images are blocked. The button is readable text and the URL is visible under it.
 - The owner replies to the email. The reply lands in the user's inbox.
@@ -222,7 +222,7 @@ Writes: token_hash, confirmed_at. Events: link_opened, identity_confirmed, not_m
 
 **Acceptance criteria**
 
-- The same link works on 30 Sep 2026, on 6 Oct from a reminder, and on 13 Oct. On 14 Oct the page reads "This link has expired. Ask {user} for a new one." and nothing is sent.
+- The same link works on day 1, on day 7 from a reminder, and on day 14. On day 15 the page reads "This link has expired. Ask {user} for a new one." and nothing is sent.
 - The user cancelled the load planning request. The owner opens the link and sees "{user} no longer needs this", with no identity page.
 - The request was cancelled and resent to a named person (DR-1.4). The old link shows "{user} no longer needs this" and the new link works.
 - The database holds no plain token.
@@ -243,7 +243,7 @@ Writes: token_hash, confirmed_at. Events: link_opened, identity_confirmed, not_m
 - The owner taps the email button. The first tap shows the identity page, "Yes, I am {owner}" opens the answer page (a placeholder until DR-3), and confirmed_at is set once.
 - Scanners fetch a new link ten times from three user agents with no tap. The request is still Waiting, confirmed_at is empty, link_opened is logged ten times, and no owner activity is logged.
 - Nothing in the email, the token or any page reveals a startup name before the identity tap.
-- The owner taps on a phone on 1 Oct 2026 and opens the link on a laptop on 2 Oct. The laptop shows the identity page once, then the answer page. confirmed_at stays 1 Oct.
+- The owner taps on a phone on day 2 and opens the link on a laptop on day 3. The laptop shows the identity page once, then the answer page. confirmed_at stays day 2.
 - Someone else taps "Not me" on a forwarded email. That person sees no startup. The user is told "Someone other than {owner} opened the {pain point} link". A second "Not me" tells the user nothing more.
 - A sandbox presses "Yes, I am {owner}": confirmed_at is set. Nothing more can happen without choices, and the measures count answers, not taps.
 - Accepted risk, to be signed off by the innovation manager before launch: anyone holding the email can tap "Yes, I am {owner}" and see the startup names, descriptions and the user's comments. That is the trade for no login. "Not me" tells the user, and the link expires after 14 days.
@@ -281,7 +281,7 @@ Writes: answered_at, via, rated, handoff_name. Events: answered, handoff, paused
 
 - After the tap, the owner sees Pallet.ai, Cargonaut Labs and Parcelgrid with three choices each, the user's note, and no navigation.
 - The owner rates 2 of 3, or ticks None of these fit without a comment, or sets Need more info without a comment, and presses Send. Nothing is sent. The page says what is missing and focus moves there.
-- The owner sets Pallet.ai to Interested and the others to Not now and sends on 12 Oct 2026. The request is Answered, via is magic_link, rated is true, and answered is logged.
+- The owner sets Pallet.ai to Interested and the others to Not now and sends. The request is Answered, via is magic_link, rated is true, and answered is logged.
 - All three are Need more info, each with a comment. The request is Answered and rated is false.
 - The owner ticks None of these fit with the comment "All three are consumer tools" and sends. The request is Answered and rated is true.
 - Five startups in the snapshot: five cards, same rules.
@@ -304,7 +304,7 @@ Writes: answered_at, via, rated, handoff_name. Events: answered, handoff, paused
 
 **Acceptance criteria**
 
-- The owner answers the load planning request on 12 Oct 2026 with one Interested and two Not now. Within the minute the shortlist shows "{owner}, 12 Oct 2026, via link" with the three choices, the user has one notification and one email, the request is Answered with rated true, and the button reads "Ask {owner} again".
+- The owner answers the load planning request with one Interested and two Not now. Within the minute the shortlist shows "{owner}, {date}, via link" with the day's date and the three choices, the user has one notification and one email, the request is Answered with rated true, and the button reads "Ask {owner} again".
 - All three are Need more info. The notification reads "{owner} needs more information on 3 startups" and the shortlist shows "Not rated: needs more information".
 - The user presses "Ask {owner} again" and sends. The new request is Waiting with parent_request_id set to the answered one, and the earlier answer stays visible under it.
 - The shortlist is finalised at 10:00:00 and the owner's Send, started before, lands at 10:00:02. Nothing is stored, the request stays Cancelled with the reason "finalised", and the owner sees "{user} no longer needs this".
@@ -320,11 +320,13 @@ Writes: answered_at, via, rated, handoff_name. Events: answered, handoff, paused
 - Tell {user} stores handoff_name, logs handoff with the name, sets the request to Paused with the reason handoff (the DR-4.3 pause: no reminders and no Late while the user decides), and tells the user once: "{owner} says {named person} should answer {pain point}". The owner sees "Sent to {user}. They will send {pain point} to {named person}."
 - On the shortlist header this shows as "Resend to {named person}" (DR-1.4). Resend or Resume ends the pause.
 - If the owner answers after a handoff, the answer wins and handoff_name is cleared.
+- A handoff on a Late request stays Late: handoff is logged, the header shows "Resend to {named person}", and nothing else changes.
 
 **Acceptance criteria**
 
-- The owner sends a handoff on 1 Oct 2026. The request is Paused with the reason handoff, handoff is logged, the user is told once, no reminder goes out on 2 Oct, and reopening the link shows "Sent to {user}" with the named person.
-- The owner then rates all three on 2 Oct. The request is Answered, handoff_name is cleared, and the header no longer offers "Resend to {named person}".
+- The owner sends a handoff on day 2. The request is Paused with the reason handoff, handoff is logged, the user is told once, no reminder goes out on day 3, and reopening the link shows "Sent to {user}" with the named person.
+- The owner sends a handoff on day 9, when the request is Late. It stays Late, handoff is logged, the user is told once, and the header shows "Resend to {named person}".
+- The owner then rates all three on day 3. The request is Answered, handoff_name is cleared, and the header no longer offers "Resend to {named person}".
 - The name field is empty and the owner presses Tell {user}. Nothing is sent and the field is marked.
 - A handoff never closes the request and an answer always does, in whichever order they happen.
 - The owner names the user: store it and tell the user anyway. The user decides.
@@ -359,10 +361,10 @@ Writes: reminders_sent, the states Late and Paused. Events: reminder_sent, remin
 
 **Acceptance criteria**
 
-- Sent 29 Sep 2026, no answer. Reminders go out on 2 Oct and 6 Oct at 09:00, and reminders_sent is 2.
-- The owner opened the page on 2 Oct at 08:10. The 09:00 job sends nothing and logs reminder_skipped. The day 7 reminder still goes out on 6 Oct.
-- The user pressed Remind now on 30 Sep. reminders_sent stays 0. The reminders still go out on 2 Oct and 6 Oct.
-- The shortlist is finalised on 5 Oct. The request is Cancelled and no reminder goes out on 6 Oct.
+- No answer. Reminders go out on day 3 and day 7 at 09:00, and reminders_sent is 2.
+- The owner opened the page on day 3 at 08:10. The 09:00 job sends nothing and logs reminder_skipped. The day 7 reminder still goes out.
+- The user pressed Remind now on day 1. reminders_sent stays 0. The reminders still go out on day 3 and day 7.
+- The shortlist is finalised on day 6. The request is Cancelled and no reminder goes out on day 7.
 - The sample data on 12 Oct 2026. The job sends nothing.
 - No reminder goes out for a request that is Paused, Late, Answered or Cancelled, or whose pain point has left Shortlist.
 - The owner answers between the check and the send: abort.
@@ -381,7 +383,7 @@ Writes: reminders_sent, the states Late and Paused. Events: reminder_sent, remin
 
 **Acceptance criteria**
 
-- Sent 29 Sep 2026, no answer. On 7 Oct at 09:00 the state is Late, late is logged, the user gets one in-app notification and one email, and the event log reads created, reminder_sent 1, reminder_sent 2, late.
+- No answer. On day 8 at 09:00 the state is Late, late is logged, the user gets one in-app notification and one email, and the event log reads created, reminder_sent 1, reminder_sent 2, late.
 - The sample data on 12 Oct 2026. The load planning request stays Late and the user is not told again.
 - Day 8 falls on a Sunday: Late on Monday.
 - The owner answers on day 9: Answered. The Late state stays in the event log.
@@ -399,10 +401,10 @@ Writes: reminders_sent, the states Late and Paused. Events: reminder_sent, remin
 
 **Acceptance criteria**
 
-- The user pauses on 3 Oct 2026. The state is Paused, paused is logged with the reason user, and no day 7 reminder goes out.
-- The user resumes on 4 Oct: Waiting, and the day 7 reminder goes out on 6 Oct.
-- The user resumes on 9 Oct: Late at once, told once.
-- The owner sends a handoff on 1 Oct and the user does nothing. No reminder on 2 Oct or 6 Oct, never Late. The user presses Resume on 9 Oct: Late at once, told once.
+- The user pauses on day 4. The state is Paused, paused is logged with the reason user, and no day 7 reminder goes out.
+- The user resumes on day 5: Waiting, and the day 7 reminder goes out.
+- The user resumes on day 10: Late at once, told once.
+- The owner sends a handoff on day 2 and the user does nothing. No reminder on day 3 or day 7, never Late. The user presses Resume on day 10: Late at once, told once.
 - Resume before day 7: send day 7, skip the missed day 3.
 - Pause and resume on the same day: nothing is sent or skipped.
 
@@ -447,7 +449,7 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 
 **What to build**
 
-- Row actions for Waiting and Late: Open shortlist, Remind now, Cancel, Answer on behalf, Pause reminders, and "Resend to {named person}" when the owner has named someone. Paused: the same with Resume reminders instead of Pause, and Remind now warns "Reminders are paused".
+- Row actions for Waiting: Open shortlist, Remind now, Cancel, Answer on behalf, Pause reminders, and "Resend to {named person}" when the owner has named someone. Late: the same without Pause reminders, since there is nothing left to pause. Paused: the Waiting set with Resume reminders instead of Pause, and Remind now warns "Reminders are paused".
 - Remind now sends the DR-4.1 reminder email now, adds 1 to chases, and logs remind_now. It never uses up an automatic reminder. Then show "Reminded today" on the row for 24 hours.
 - Cancel is DR-1.3's cancel. Pause and Resume are DR-4.3's. "Resend to {named person}" is DR-1.4's resend.
 - Answer on behalf opens the DR-3.1 form for the user with a required note, default "Recorded by {user} from a call on {date}". Set via on_behalf. Send no email to the owner. The owner's link then shows "Already answered by {user}".
@@ -455,10 +457,11 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 
 **Acceptance criteria**
 
-- The user presses Remind now on the load planning request on 12 Oct 2026. reminders_sent stays 2, chases is 1, the Reminders cell reads "2 +1 manual", remind_now is logged, the owner gets the email, and the button reads "Reminded today" for 24 hours.
+- The sample data on 12 Oct 2026. The user presses Remind now on the load planning request. reminders_sent stays 2, chases is 1, the Reminders cell reads "2 +1 manual", remind_now is logged, the owner gets the email, and the button reads "Reminded today" for 24 hours.
 - The user answers on behalf for the load planning request with the default note. Answered, via on_behalf, the note is on the shortlist, the owner gets no email, and the owner's link shows "Already answered by {user}".
-- The load planning request has a handoff. The user presses "Resend to {named person}" on 1 Oct and sends. The old request is Cancelled, the new one is Waiting for the named person from 1 Oct, the named person gets the DR-2.1 email, and the old owner gets nothing.
-- The user pauses the load planning request from the list on 3 Oct and resumes on 9 Oct: Paused, then Late at once, told once.
+- The load planning request has a handoff. The user presses "Resend to {named person}" on day 2 and sends. The old request is Cancelled, the new one is Waiting for the named person from that day, the named person gets the DR-2.1 email, and the old owner gets nothing.
+- The user pauses the load planning request from the list on day 4 and resumes on day 10: Paused, then Late at once, told once.
+- A Late row offers no Pause reminders. A Waiting row does.
 - A second user opens the load planning shortlist and presses Remind now there: remind_now is logged under that user's name.
 - Every row action completes without leaving the list and writes the same record and event as the same action from the shortlist header.
 - A user without edit rights on a pain point sees none of its row actions.
@@ -472,18 +475,18 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 **What to build**
 
 - Event types in the table: created, link_opened, identity_confirmed, not_me, reminder_sent, reminder_skipped, remind_now, paused, resumed, late, handoff, answered, cancelled. Every sub-issue above writes its own.
-- Two queries over the chains whose first request was created in a period. No screen yet. Cancelled chains are left out. No query returns an owner's name or user id; results go by request id and business unit.
+- Two queries over the chains whose first request was created in a period. No screen yet. A chain cancelled before its due date is left out. A chain cancelled after day 7 with no rated answer counts as a miss for the day 7 share and is not in the median, so cancelling a late request does not hide it. No query returns an owner's name or user id; results go by request id and business unit.
   - Days to answer: the median days from the chain's first created to answered, over chains answered with rated true only, and the share of chains with a rated answer by day 7, where a chain without one counts as a miss once its due_at has passed.
   - No manual chase: the share of answered chains with no remind_now and no on_behalf answer. Follow-ups outside the product are not recorded and do not count.
 - A chain is resolved by a rated answer or a cancel. A chain whose last request is Answered with rated false stays unresolved, and its clock runs until a rated answer.
 
 **Acceptance criteria**
 
-- The sample data read as chains of one request each (sent_to_owner_at is created, owner_feedback_at is answered when complete, partial is open, the sample data's reminders_sent are chases): a median of 7 days over 11 answered, 8 of 13 by day 7, and 9 of 11 without a chase.
-- A chain of two requests, the first sent 29 Sep 2026 and resent 1 Oct, answered 3 Oct: Days to answer counts 4 days, not 2.
-- The owner answers all three with Need more info on 2 Oct 2026 and the user never presses Ask again. On 12 Oct the chain is a miss for the day 7 share and it is not in the median.
+- The sample data, read as described under The five tickets: a median of 7 days over 11 answered, 8 of 13 by day 7, and 9 of 11 without a chase.
+- A chain of two requests, the first sent on day 0 and resent on day 2, answered on day 4: Days to answer counts 4 days, not 2.
+- The owner answers all three with Need more info on day 3 and the user never presses Ask again. On day 13 the chain is a miss for the day 7 share and it is not in the median.
 - A query result lists chains by request id and business unit. No column holds an owner's name or user id.
-- A chain whose last request is cancelled with no answer: left out of both measures.
+- A chain cancelled on day 4 with no answer: left out of both measures. A chain cancelled on day 9 with no rated answer: a miss for the day 7 share, not in the median, and not in No manual chase.
 
 ---
 

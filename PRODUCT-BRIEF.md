@@ -8,7 +8,7 @@ Take-home brief for GlassDollar OS
 |------|------------|
 | Functional prototype | [Live prototype](https://iamdejman.github.io/glassdollar-casestudy-ayodeji/) and [code](https://github.com/IamDejman/glassdollar-casestudy-ayodeji) |
 | Five tickets | [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md) is the source of truth, mirrored to [Linear GLA-5](https://linear.app/glassdollar-case/issue/GLA-5) (invite needed) |
-| Brief | This document, sections 1 to 5 |
+| Brief | This document, sections 1 to 6 |
 | Supporting notes | [SUPPORTING-NOTES.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/SUPPORTING-NOTES.md): what was cut from this brief, with sources |
 
 Context: Nordwind Industrial AG and its people, Lena Hartmann, Jonas Keller and Dr. Sabine Koch, are invented so the examples can be concrete. Where a figure comes from an outside source, the source is named. The rest is assumption.
@@ -33,39 +33,37 @@ I chose it because the person who stalls is outside the tool, and the result can
 
 Lena sends Jonas a shortlist and waits. Jonas raised the problem because it costs his operation and he wants it gone, but answering costs him time now, and what he gets back is a pilot months away that might not work. His own work comes first and days go by. Lena follows up by email, then catches him in the corridor. Sometimes the shortlist went to the wrong person: Jonas raised the problem, but someone on his team is the one who can judge the startups.
 
-I have not seen the current GlassDollar email. This brief assumes it says "log in and look at the shortlist", with no question, no date and no way to answer without an account. The new one asks for three ratings by a date.
+I have not seen the current GlassDollar email. This brief assumes it says "log in and look at the shortlist", with no question, no date and no way to answer without an account. The new one asks for three ratings with a deadline attached.
 
 Friction is one of five reasons an owner might go silent, and the only one the OS can reduce. The supporting notes have all five. Once the ask is short, Jonas's reply shows what else is wrong. Asking for more information means the shortlist was not convincing enough. A rejection with a reason means the startups or the problem have changed. Silence even now points at budget or backing, which is Sabine's conversation.
 
 ### What it costs
 
-Nobody measures response time at the shortlist step or what a day of delay costs. Each waiting day delays the evaluation and the pilot after it. For example, if the manager sends 10 shortlists a quarter and each waits 6 extra days, that is 60 days of delayed pilots every quarter. The manager's chasing time is unmeasured too, so she logs her chases for four weeks before launch. The formula is in the supporting notes.
+Nobody measures response time at the shortlist step or what a day of delay costs. Each waiting day delays the evaluation and the pilot after it, and the manager's chasing time goes uncounted, so she logs her chases for four weeks before launch.
 
 ### How we would know it is solved
 
-Two numbers from the event log. Days to answer is the main one, and No manual chase shows whether the manager stopped chasing. Nobody tracks this step today. The two-day check under Assumptions gives a first baseline from past dates, and targets come after a quarter of live data.
-
 | Measure | Definition |
 |------|------------|
-| Days to answer | Two numbers. The median days from the first send to a rated answer, over rated answers only and counted across resends and Ask again. And the share of requests answered by the day 7 due date, where a request without a rated answer counts as a miss once its due date has passed. A rated answer gives Interested or Not now on at least one startup, or says None of these fit with a reason. All Need more info is not rated |
+| Days to answer | The median days from the first send to a rated answer, counted across resends and Ask again, and the share answered by the day 7 due date. A rated answer gives Interested or Not now on at least one startup, or None of these fit with a reason |
 | No manual chase | Share of answered requests where nobody pressed Remind now or answered on behalf. It counts follow-ups made in the product. Emails and calls outside it are not recorded |
 
 Three rules stop the numbers being gamed:
 
-1. Need more info on every startup is not a rated answer. The request closes as Answered, but the Days to answer clock runs on until the manager's Ask again gets a rated answer. A resend keeps the first send date. If the manager never asks again, the request stays unresolved: a miss after day 7, and never in the median.
+1. Need more info on every startup is not a rated answer. The request closes as Answered, but the clock runs until the manager's Ask again gets a rated answer. If the manager never asks again, the request is a miss after day 7 and never in the median.
 2. An answer is a choice for every startup, and Need more info and None of these fit carry a reason, so one click cannot count as an answer.
 3. Reports go by request and business unit, and owners' names stay out of them until the works council question in the supporting notes is answered.
 
 ### Assumptions to validate first
 
-| Assumption | Evidence today | How to validate | Time |
-|-----------|-------------|-----------|---|
-| Owners stall at the shortlist step | Nobody measures it today | Pull past send and answer dates from the OS | 2 days |
-| The manager needs the owner's answer and cannot pick alone | None | Ask the manager which decisions truly need the owner | 1 hour |
-| Emailed links survive enterprise mail gateways and SSO | Microsoft Safe Links opens links before delivery. Some tenants enforce SSO on outside links | Send to 10 addresses at one customer and ask IT | 1 week |
-| A short ask with a date gets an answer where an open-ended one does not | Mixed. Shorter asks get more replies (Edwards et al. 2009). A stated time cost and a deadline showed no effect in the same review | 5 owner interviews, then a prototype test | 2 weeks |
+| Assumption | Evidence today | How to validate | Time | If it fails |
+|-----------|-------------|-----------|---|---|
+| Owners stall at the shortlist step | Nobody measures it today | Pull past send and answer dates from the OS | 2 days | Owners already answer within a week, so there is no wait to shorten here |
+| The manager needs the owner's answer and cannot pick alone | None | Ask the manager which decisions truly need the owner | 1 hour | The manager can pick alone, so the owner is not the one to ask here |
+| Emailed links survive enterprise mail gateways and SSO | Microsoft Safe Links opens links before delivery. Some tenants enforce SSO on outside links | Send to 10 addresses at one customer and ask IT | 1 week | The customer's IT allowlists the sender before launch. If SSO blocks outside links, the owner needs an OS account and the no-login promise goes |
+| A short ask with a date gets an answer where an open-ended one does not | Mixed. Shorter asks get more replies (Edwards et al. 2009). A stated time cost and a deadline showed no effect in the same review | 5 owner interviews, then a prototype test | 2 weeks | Friction was not the cause. The owners' replies and the chase log point at what is: the shortlist, budget or authority |
 
-The second has no evidence, and I could not ask the manager for this brief, so that hour comes right after the two-day check. If most shortlists do not need the owner, the first request type becomes the decision after a pilot, where the owner has to answer. Four smaller assumptions need live data and are in the supporting notes.
+The second has no evidence, and I could not ask the manager for this brief, so that hour comes right after the two-day check. If either of the first two fails, the first request type becomes the decision after a pilot, where the owner has to answer. Four smaller assumptions need live data and are in the supporting notes, with the questions behind each check.
 
 ## 3. Look around
 
@@ -92,12 +90,12 @@ The first release is about 3 to 4 engineer-weeks. Before DR-1, we pull past send
 | Reminders on days 3 and 7, Late on day 8, and Pause when the manager knows the owner is away | Voting by several stakeholders |
 | A Waiting on others list of open requests, where each row has Remind now, Cancel and Answer on behalf actions | Auto-reply and bounce detection |
 | An event log behind the measures | Link renewal after day 14 |
-| | One-click send-on with a fresh link, and contacts outside the OS |
+| | Forwarding to a colleague with a fresh link in one step, and contacts outside the OS |
 | | Answered and Cancelled tabs, and a unit-wide view |
 
 Each item is in because without it the request still stalls, the manager still chases, or we cannot measure the result. The idea is unproven, so edge-case polish waits for the next release. Two things we accept for now: a wrong email address shows up only as Late on day 8, and an expired link needs the manager to resend.
 
-Email is the channel because every owner already has it and it fits the estimate. The manager hears on day 8 if nothing comes back. If the owner still does not respond, the shorter ask was not enough, and the manager looks into what remains: competing priorities, missing information or authority.
+Email is the channel because every owner already has it and it fits the estimate.
 
 ## 5. Prototype
 
@@ -115,18 +113,15 @@ After launch, in order of value against effort:
 2. A view for the two measures, then two more once a quarter of data is in: First response and Late rate, defined in the supporting notes.
 3. Reminders that pause on an auto-reply, and a bounce alert to the manager.
 4. A second request type for the decision after a pilot.
-5. One-click send-on with a fresh link when the owner names someone else.
+5. Forwarding to the person the owner names, with a fresh link, in one step.
 6. Two-line plain-language summaries per startup, approved by the manager.
 7. Link renewal, the Answered and Cancelled tabs, and a unit-wide view.
 
-Three decisions sit with GlassDollar:
+Two decisions sit with GlassDollar:
 
-1. Which decisions need the owner at all.
-2. Whether days 3, 7 and 8 are calendar or working days.
-3. Whether the OS should store each owner's manager, which escalation would need.
-
-If the baseline shows most shortlists are already answered within a week, the first request type moves to the decision after a pilot instead.
+1. Whether days 3, 7 and 8 are calendar or working days.
+2. Whether the OS should store each owner's manager, which escalation would need.
 
 ## AI tools used
 
-Claude Code wrote the research notes, built the prototype over many rounds and kept the sample data consistent across the files. It paraphrased two survey figures wrongly and once used the invented company data as evidence, both caught when I read the brief. The detail is in the supporting notes.
+Claude Code drafted the brief, the tickets and the research notes, built the prototype over many rounds and kept the sample data consistent across the files. The decisions are mine: the pain point, the scope cuts, the measures and what moved to the notes, and I edited every draft. I also had each draft reviewed against the assignment's rubric, fourteen passes, and applied what I agreed with. It paraphrased two survey figures wrongly and once used the invented company data as evidence, both caught when I read the drafts. Every figure that remains has its source named next to it. The detail is in the supporting notes.

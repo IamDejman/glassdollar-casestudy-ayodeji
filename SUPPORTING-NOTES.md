@@ -31,6 +31,18 @@ The four assumptions in the brief can be checked before the build. These four ne
 3. Whether two reminders and a personal nudge is the right amount of chasing. In one survey the first reminder added 10.3 points on a 6.2% invite response, the second 8.6 and a late third 6.1 ([Van Mol 2014](https://www.nidi.nl/shared/content/output/papers/nidi-wp-2014-15.pdf), 15,651 students).
 4. Whether a German works council allows measuring wait time per named owner. This is the works council question the brief and the tickets refer to. Until it is answered, reports go by request and business unit.
 
+## Questions behind the checks
+
+The three checks before the build and the owner interviews each have three questions to answer.
+
+**The two-day pull of past dates.** How many days pass between a shortlist going to the owner and the first answer, as a median and a spread? How many shortlists have no answer after 14 days? Does the wait differ by business unit or by who raised the pain point?
+
+**The hour with the manager.** Of the last ten shortlists, which ones needed the owner's view and which could she have decided alone? When the owner did answer, what did the answer change? Who else in the owner's unit could judge the startups?
+
+**The week-long link test.** Does the link arrive, and does the mail client rewrite it? Does a scanner open it before the owner does, and how many times? Does the tenant force a login on outside links?
+
+**The five owner interviews.** When a shortlist arrived, what did you do first, and what stopped you answering the same day? What would you need to see to pick one startup over another? Who in your unit would you hand this to, and when?
+
 ## Look around, all six patterns
 
 The brief keeps the first, second and fifth rows. The sources are the pages I read.
@@ -44,7 +56,7 @@ The brief keeps the first, second and fifth rows. The sources are the pages I re
 | CRMs (Pipedrive, HubSpot) | A deal turns red after a set number of inactive days and sorts first. Email sequences stop on a reply or a bounce, and pause on out-of-office | The request turns Late on day 8, and Late rows sort first. Reminders stop on an answer. The manager can pause them, and pausing on an auto-reply waits for the next release | https://support.pipedrive.com/en/article/the-rotting-feature and https://knowledge.hubspot.com/sequences/unenroll-from-sequence |
 | Survey research (Edwards et al. 2009, Van Mol 2014) | Shorter asks get more replies (odds 1.64). Personalised asks a little more (1.14). The first reminder adds the most. A stated time cost and a deadline showed no effect | Three ratings, "about 3 minutes" as a label only, two reminders at most, the owner addressed by name | https://researchonline.lshtm.ac.uk/id/eprint/5119 and https://www.nidi.nl/shared/content/output/papers/nidi-wp-2014-15.pdf |
 
-Enterprise email, the second assumption in the brief: Microsoft Defender's Safe Links scans a URL before delivery, whether or not it rewrites the link, so at least one automated request hits the link before the owner does. A link that is spent on first open would be spent by the scanner. The answer page therefore does nothing until the owner taps a button on it. Source: https://learn.microsoft.com/en-us/defender-office-365/safe-links-about.
+Enterprise email, the third assumption in the brief: Microsoft Defender's Safe Links scans a URL before delivery, whether or not it rewrites the link, so at least one automated request hits the link before the owner does. A link that is spent on first open would be spent by the scanner. The answer page therefore does nothing until the owner taps a button on it. Source: https://learn.microsoft.com/en-us/defender-office-365/safe-links-about.
 
 ## Two measures kept for later
 
@@ -71,4 +83,4 @@ A sub-issue is done when its acceptance criteria pass against the sample data, a
 
 | Tool | Used for | Where it helped | Where it got in the way |
 |---|---|---|---|
-| Claude Code | The research notes, the prototype and the sample data | It built and fixed the prototype over many rounds, and kept the sample data consistent across the files | Two survey figures were paraphrased wrongly and an early pass used the invented company data as evidence. Both were caught when I read the brief |
+| Claude Code | Drafts of the brief, the tickets and the research notes, the prototype, the sample data, and fourteen review passes against the assignment's rubric | It built and fixed the prototype over many rounds, kept the sample data consistent across the files, and the rubric reviews caught gaps between the brief, the tickets and the prototype | Two survey figures were paraphrased wrongly and an early pass used the invented company data as evidence. Both were caught when I read the drafts. The reviews also pushed for additions that would have made the brief longer, which I turned down |
