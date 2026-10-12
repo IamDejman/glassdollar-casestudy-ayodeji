@@ -35,15 +35,15 @@ Lena sends Jonas a shortlist and waits. Jonas raised the problem because it cost
 
 I have not seen the current GlassDollar email. This brief assumes it says "log in and look at the shortlist", with no question, no date and no way to answer without an account. The new one asks for three ratings by a date.
 
-Friction is one of five reasons an owner might go silent, and the only one the OS can reduce. The supporting notes have all five and how the owner's reply points at each.
+Friction is one of five reasons an owner might go silent, and the only one the OS can reduce. The supporting notes have all five. Once the ask is short, Jonas's reply shows what else is wrong. Asking for more information means the shortlist was not convincing enough. A rejection with a reason means the startups or the problem have changed. Silence even now points at budget or backing, which is Sabine's conversation.
 
 ### What it costs
 
-Nobody measures response time at the shortlist step or what a day of delay costs. Each waiting day delays the evaluation and the pilot after it. The manager's chasing time is unmeasured too, so she logs her chases for four weeks before launch. The formula is in the supporting notes.
+Nobody measures response time at the shortlist step or what a day of delay costs. Each waiting day delays the evaluation and the pilot after it. For example, if the manager sends 10 shortlists a quarter and each waits 6 extra days, that is 60 days of delayed pilots every quarter. The manager's chasing time is unmeasured too, so she logs her chases for four weeks before launch. The formula is in the supporting notes.
 
 ### How we would know it is solved
 
-Four numbers from the event log. Days to answer is the main one and the other three explain it. Nobody measures this step today, so the first quarter sets the baseline and targets come after.
+Four numbers from the event log. Days to answer is the main one and the other three explain it. Nobody tracks this step today. The two-day check under Assumptions gives a first baseline from past dates, and targets come after a quarter of live data.
 
 | Measure | Definition |
 |------|------------|
@@ -62,11 +62,12 @@ Three rules stop the numbers being gamed:
 
 | Assumption | Evidence today | How to validate | Time |
 |-----------|-------------|-----------|---|
+| Owners stall at the shortlist step | Nobody measures it today | Pull past send and answer dates from the OS | 2 days |
 | The manager needs the owner's answer and cannot pick alone | None | Ask the manager which decisions truly need the owner | 1 hour |
 | Emailed links survive enterprise mail gateways and SSO | Microsoft Safe Links opens links before delivery. Some tenants enforce SSO on outside links | Send to 10 addresses at one customer and ask IT | 1 week |
 | A short ask with a date gets an answer where an open-ended one does not | Mixed. Shorter asks get more replies (Edwards et al. 2009). A stated time cost and a deadline showed no effect in the same review | 5 owner interviews, then a prototype test | 2 weeks |
 
-The first has no evidence, and I could not ask the manager for this brief, so that hour comes first. If most shortlists do not need the owner, the first request type becomes the decision after a pilot, where the owner has to answer. The premise that owners stall at this step, and four smaller assumptions, need live data and are in the supporting notes.
+The second has no evidence, and I could not ask the manager for this brief, so that hour comes right after the two-day check. If most shortlists do not need the owner, the first request type becomes the decision after a pilot, where the owner has to answer. Four smaller assumptions need live data and are in the supporting notes.
 
 ## 3. Look around
 
@@ -75,12 +76,12 @@ Three patterns from tools that get busy outsiders to respond. Three more, and th
 | Borrowed from | What they do | Used here as |
 |-------|------------|----------|
 | E-signature ([DocuSign](https://community.docusign.com/signing-7/non-registered-users-3966)) | Sign from one email button with no account. Reminders and expiry are sender settings. Assign to Someone Else covers forwarded mail | One email, one button, no login, 14-day expiry, "Not me" and naming who should answer |
-| Code review ([Microsoft's Nudge](https://arxiv.org/abs/2011.12468), Maddila et al.) | An automated nudge after 24 hours of inactivity cut the mean overdue pull request lifetime from 197 hours to 78 | Automatic reminders and a Waiting on others list |
+| Code review ([Microsoft's Nudge](https://arxiv.org/abs/2011.12468), Maddila et al.) | Automatic nudges on overdue pull requests cut their mean lifetime from 197 hours to 78 | Automatic reminders and a Waiting on others list |
 | CRMs ([Pipedrive](https://support.pipedrive.com/en/article/the-rotting-feature), [HubSpot](https://knowledge.hubspot.com/sequences/unenroll-from-sequence)) | A deal turns red after a set number of inactive days and sorts first. Email sequences stop on a reply or a bounce, and pause on out-of-office | The request turns Late on day 8, and Late rows sort first. Reminders stop on an answer. The manager can pause them, and pausing on an auto-reply waits for the next release |
 
 ## 4. Scope
 
-The first release is about 3 to 4 engineer-weeks. Before DR-1, we ask the manager which decisions need the owner. Before DR-2, we test the link and SSO at one real customer. The tickets deploy in order, and nothing is useful before DR-3 is live.
+The first release is about 3 to 4 engineer-weeks. Before DR-1, we pull past send and answer dates from the OS and ask the manager which decisions need the owner. Before DR-2, we test the link and SSO at one real customer. The tickets deploy in order, and nothing is useful before DR-3 is live.
 
 | In the first release | Later or out |
 |---|---|
@@ -98,7 +99,7 @@ The first release is about 3 to 4 engineer-weeks. Before DR-1, we ask the manage
 
 Each item is in because without it the request still stalls, the manager still chases, or we cannot measure the result. The idea is unproven, so edge-case polish waits for the next release. Two things we accept for now: a wrong email address shows up only as Late on day 8, and an expired link needs the manager to resend.
 
-Email is the channel because every owner already has it and it fits the estimate. The manager hears on day 8 if nothing comes back. If the owner still does not respond, the shorter ask was not enough, and the manager looks into what remains: friction, competing priorities, missing information or authority.
+Email is the channel because every owner already has it and it fits the estimate. The manager hears on day 8 if nothing comes back. If the owner still does not respond, the shorter ask was not enough, and the manager looks into what remains: competing priorities, missing information or authority.
 
 ## 5. Prototype
 
@@ -106,7 +107,7 @@ The [clickable prototype](https://iamdejman.github.io/glassdollar-casestudy-ayod
 
 ## 6. Tickets
 
-Five tickets, deployed in order, are in [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md): an overview table, then sub-issues in build order, each with what to build and acceptance criteria. The rules they share, and what done means, are at the top of that file. DR-1 can be built once the one-hour owner check is done, DR-2 waits for the link test as well, and every other open question has a default and blocks nothing.
+Five tickets, deployed in order, are in [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md): an overview table, then sub-issues in build order, each with what to build and acceptance criteria. The rules they share, and what done means, are at the top of that file. DR-1 can be built once the two checks before it are done, DR-2 waits for the link test as well, and every other open question has a default and blocks nothing.
 
 ## What comes next
 

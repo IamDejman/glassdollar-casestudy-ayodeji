@@ -24,16 +24,10 @@ No source observes the disappearing itself. The nearest evidence is that follow-
 
 ## Assumptions that need live data
 
-The three assumptions in the brief can be checked before the build. These need the product running.
-
-| Assumption | Evidence today | How to validate | Time |
-|-----------|-------------|-----------|---|
-| Owners stall at the shortlist step | The literature measures losses after the pilot. Nobody measures the shortlist step | Sent and answered timestamps for two quarters at two customers | 2 days |
-
-Four more:
+The four assumptions in the brief can be checked before the build. These four need the product running.
 
 1. How often the raiser cannot judge the shortlist.
-2. Whether no login raises completion. Forced account creation drives 18% of consumer checkout abandonments ([Baymard 2025](https://baymard.com/lists/cart-abandonment-rate), 1,026 US adults, self-reported; the survey year is not stated and 2025 is the page date).
+2. Whether no login raises completion. 18% of US online shoppers say they have abandoned an order because they did not want to create an account ([Baymard 2025](https://baymard.com/lists/cart-abandonment-rate), 1,026 US adults).
 3. Whether two reminders and a personal nudge is the right amount of chasing. In one survey the first reminder added 10.3 points on a 6.2% invite response, the second 8.6 and a late third 6.1 ([Van Mol 2014](https://www.nidi.nl/shared/content/output/papers/nidi-wp-2014-15.pdf), 15,651 students).
 4. Whether a German works council allows measuring wait time per named owner. This is the works council question the brief and the tickets refer to. Until it is answered, reports go by request and business unit.
 
@@ -62,7 +56,7 @@ All five tickets follow the rules at the top of [TICKETS.md](https://github.com/
 4. A request closes only when a person answers or cancels it.
 5. One event table.
 
-A sub-issue is done when its acceptance criteria pass against the sample data, and a ticket when all its sub-issues are. Two checks come before the build: ask the manager at the pilot customer which decisions need the owner (one hour, before DR-1), and send a test link to 10 addresses at that customer to see whether it survives the mail gateway and SSO (one week, before DR-2).
+A sub-issue is done when its acceptance criteria pass against the sample data, and a ticket when all its sub-issues are. Three checks come before the build: pull past send and answer dates from the OS to see whether owners stall at the shortlist step (two days, before DR-1), ask the manager at the pilot customer which decisions need the owner (one hour, before DR-1), and send a test link to 10 addresses at that customer to see whether it survives the mail gateway and SSO (one week, before DR-2).
 
 ## AI tools used
 
