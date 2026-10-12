@@ -34,7 +34,7 @@ Jonas raised the problem because it costs his operation, and he wants it gone. B
 
 Lena sends Jonas a shortlist and waits. Jonas means to look at it, but his own work comes first and days go by with no answer. Lena follows up by email, then catches him in the corridor. Sometimes the shortlist has gone to the wrong person: Jonas raised the problem, but someone else on his team is the one who can judge the startups.
 
-Today's email asks for the wrong thing. It says "log in and look at the shortlist", with no question, no date and no way to answer without an account. The new one asks for three ratings by a date.
+I have not seen the current GlassDollar email. This brief assumes it says "log in and look at the shortlist", with no question, no date and no way to answer without an account. The new one asks for three ratings by a date.
 
 ### Why owners go silent
 
@@ -46,12 +46,12 @@ Five reasons Jonas might not answer. This release works on the first one only.
 4. The problem was solved another way, or went away.
 5. Backing a startup is a political risk in his unit.
 
-The OS can only remove the first. Once it is gone, the owner's reply gives a clue to the others: a request for more information points at 2, a rejection with a reason at 2 or 4. Silence after a short ask with a date rules out friction but could still be any of 2 to 5. Incentives is the one to take to Sabine.
+The OS can only reduce the first. Once the ask is short, the owner's reply gives a clue to the others: a request for more information points at 2, a rejection with a reason at 2 or 4. If the owner still does not respond, the shorter ask was not enough. Lena then looks into remaining friction, competing priorities, missing information or authority, and takes incentives to Sabine.
 
 ### What it costs
 
-- Nobody measures response time at the shortlist step, so the cost below is an estimate, not a measurement.
-- Each waiting day pushes back a pilot worth about EUR 25,000 (Gimmy), and whatever rollout follows it. The money is delayed, not lost, and not every shortlist leads to a pilot. The wait hurts startups too: half name slow corporate decisions as a top barrier (Nesta 2016, n=134).
+- Nobody measures response time at the shortlist step, and nobody has measured what a day of delay costs. Both costs below are unmeasured.
+- Each waiting day delays the evaluation and whatever pilot follows it. What a day of delay costs is unknown. The wait hurts startups too: half name slow corporate decisions as a top barrier (Nesta 2016, n=134).
 - Nobody counts Lena's own time. The formula is shortlists per quarter, times days waiting, times chases per waiting day, times minutes per chase. Lena logs her chases for four weeks before launch to fill it in. That log is the baseline for her time, not for the No manual chase measure, which only sees what happens in the product.
 
 ### How we would know it is solved
@@ -60,14 +60,14 @@ Four numbers, all from the event log. Days to answer is the main one and the oth
 
 | Measure | Definition |
 |------|------------|
-| Days to answer | Two numbers. The median days from the first send to a rated answer, over rated answers only and counted across resends and Ask again. And the share of requests answered by the day 7 due date, where an open request counts as a miss once its due date has passed. A rated answer gives Interested or Not now on at least one startup, or says None of these fit with a reason. All Need more info is not rated |
+| Days to answer | Two numbers. The median days from the first send to a rated answer, over rated answers only and counted across resends and Ask again. And the share of requests answered by the day 7 due date, where a request without a rated answer counts as a miss once its due date has passed. A rated answer gives Interested or Not now on at least one startup, or says None of these fit with a reason. All Need more info is not rated |
 | First response | Share of requests with a submitted answer within one working day, including an answer that only asks for more information |
 | No manual chase | Share of answered requests where nobody pressed Remind now or answered on behalf. It counts follow-ups made in the product. Emails and calls outside it are not recorded |
-| Late rate | Share of requests, open or answered, whose wait is more than 1.2 times the business unit's median, or more than 8 days until the business unit has 10 answered requests |
+| Late rate | Share of requests whose wait, counted to the rated answer or to today if there is none, is more than 1.2 times the business unit's median, or more than 8 days until the business unit has 10 rated answers |
 
 Three rules stop the numbers being gamed:
 
-1. Need more info on every startup counts as a first response, not as a rated answer. The request closes as Answered, but the Days to answer clock runs on until Lena's Ask again gets a rated answer. A resend keeps the first send date.
+1. Need more info on every startup counts as a first response, not as a rated answer. The request closes as Answered, but the Days to answer clock runs on until Lena's Ask again gets a rated answer. A resend keeps the first send date. If Lena never asks again, the request stays unresolved for the measures: a miss after day 7, counted in Late rate with the clock still running, and never in the median.
 2. An answer is a choice for every startup, and Need more info and None of these fit carry a reason, so one click cannot count as an answer.
 3. Reports go by request and business unit, and owners' names stay out of them until the works council question under Assumptions is answered.
 
@@ -104,7 +104,7 @@ These patterns come from tools that already get busy outsiders to respond. The d
 
 ## 4. Scope
 
-The first release is about 3 to 4 engineer-weeks. Before any of it is built, we ask Lena which decisions need the owner and test the link and SSO at one real customer. The tickets deploy in order. Nothing is useful before DR-3 is live: DR-1 alone records a request, and DR-2 alone sends a link to an empty page.
+The first release is about 3 to 4 engineer-weeks. Before DR-1 is built, we ask Lena which decisions need the owner. Before DR-2, we test the link and SSO at one real customer. The tickets deploy in order. Nothing is useful before DR-3 is live: DR-1 alone records a request, and DR-2 alone sends a link to an empty page.
 
 | In the first release | Later or out |
 |---|---|
@@ -122,7 +122,7 @@ The first release is about 3 to 4 engineer-weeks. Before any of it is built, we 
 
 Each item is in because without it the request still stalls, Lena still chases, or we cannot measure the result. Everything else is ranked by value against effort under What comes next. The idea is unproven, so edge-case polish waits for the next release. Two things we accept for now: a wrong email address shows up only as Late on day 8, and an expired link needs Lena to resend.
 
-Email is the channel because every owner already has it and it fits the estimate. Lena hears on day 8 if nothing comes back. If an owner ignores a short ask with a date too, friction was not the reason. It could be incentives, authority, competing work or missing information. This release cannot tell them apart. It shows where to look, and incentives is the one to raise with Sabine.
+Email is the channel because every owner already has it and it fits the estimate. Lena hears on day 8 if nothing comes back. If the owner still does not respond, the shorter ask was not enough, and Lena looks into what remains: friction, competing priorities, missing information or authority.
 
 ## 5. Prototype
 
@@ -130,7 +130,7 @@ The [clickable prototype](https://iamdejman.github.io/glassdollar-casestudy-ayod
 
 ## 6. Tickets
 
-There are five tickets, deployed in order, and nothing is useful before DR-3 is live. The overview table and the full specs are in [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md). Each ticket has acceptance criteria for the whole flow and is split into sub-issues in build order, each with its own what to build and acceptance criteria. The tickets say user and owner where this brief says Lena and Jonas. DR-1 has no dependencies and is ready to pick up.
+There are five tickets, deployed in order, and nothing is useful before DR-3 is live. The overview table and the full specs are in [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md). Each ticket has acceptance criteria for the whole flow and is split into sub-issues in build order, each with its own what to build and acceptance criteria. The tickets say user and owner where this brief says Lena and Jonas. DR-1 has no ticket dependencies. It is specified and can be built once the one-hour owner check is done, and DR-2 waits for the link test as well. The other open questions have defaults and block nothing.
 
 All five follow the rules at the top of TICKETS.md:
 
