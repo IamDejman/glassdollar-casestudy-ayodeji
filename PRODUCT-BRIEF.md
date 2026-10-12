@@ -1,6 +1,4 @@
-# Business units go quiet after the shortlist. One email asking for three ratings by a date gets the answer back.
-
-Decision requests are the proposal: one email that asks the owner for three ratings by a date, answered on a phone with no login, with automatic reminders and one list for the innovation manager of everything still waiting. The first release is about 3 to 4 engineer-weeks, after two checks that take an hour and a week. The checks and the three calls I need from GlassDollar are under What I need from you, below the deliverables.
+# Decision requests: getting business units to answer startup shortlists
 
 This brief reads best on a desktop screen. The tables do not fit a phone.
 
