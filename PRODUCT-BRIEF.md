@@ -35,7 +35,7 @@ Lena sends Jonas a shortlist and waits. Jonas raised the problem because it cost
 
 I have not seen the current GlassDollar email. This brief assumes it says "log in and look at the shortlist", with no question, no date and no way to answer without an account. The new one asks for three ratings with a deadline attached.
 
-Friction is one of five reasons an owner might go silent, and the only one the OS can reduce. The supporting notes have all five. Once the ask is short, Jonas's reply shows what else is wrong. Asking for more information means the shortlist was not convincing enough. A rejection with a reason means the startups or the problem have changed. Silence even now points at budget or backing, which is Sabine's conversation.
+Friction is one of five reasons an owner might go silent, and the only one the OS can reduce. The supporting notes have all five. Once the ask is short, Jonas's reply shows what else is wrong. Asking for more information means the shortlist was not convincing enough. A rejection with a reason means the startups or the problem have changed. Silence even now points at budget or backing. Only Sabine can fix that.
 
 ### What it costs
 
@@ -60,8 +60,8 @@ Three rules stop the numbers being gamed:
 |-----------|-------------|-----------|---|---|
 | Owners stall at the shortlist step | Nobody measures it today | Pull past send and answer dates from the OS | 2 days | Owners already answer within a week, so there is no wait to shorten here |
 | The manager needs the owner's answer and cannot pick alone | None | Ask the manager which decisions truly need the owner | 1 hour | The manager can pick alone, so the owner is not the one to ask here |
-| Emailed links survive enterprise mail gateways and SSO | Microsoft Safe Links opens links before delivery. Some tenants enforce SSO on outside links | Send to 10 addresses at one customer and ask IT | 1 week | The customer's IT allowlists the sender before launch. If SSO blocks outside links, the owner needs an OS account and the no-login promise goes |
-| A short ask with a date gets an answer where an open-ended one does not | Mixed. Shorter asks get more replies (Edwards et al. 2009). A stated time cost and a deadline showed no effect in the same review | 5 owner interviews, then a prototype test | 2 weeks | Friction was not the cause. The owners' replies and the chase log point at what is: the shortlist, budget or authority |
+| Emailed links survive enterprise mail gateways and SSO | Microsoft Safe Links opens links before delivery. Some tenants enforce SSO on outside links | Send to 10 addresses at one customer and ask IT | 1 week | IT allowlists the sender before launch. If SSO blocks outside links, owners need an OS account and the no-login design fails |
+| A short ask with a date gets an answer where an open-ended one does not | Mixed. Shorter asks get more replies (Edwards et al. 2009). A stated time cost and a deadline showed no effect in the same review | 5 owner interviews, then a prototype test | 2 weeks | Friction was not the cause. The replies and the chase log show whether it is the shortlist, budget or authority |
 
 The second has no evidence, and I could not ask the manager for this brief, so that hour comes right after the two-day check. If either of the first two fails, the first request type becomes the decision after a pilot, where the owner has to answer. Four smaller assumptions need live data and are in the supporting notes, with the questions behind each check.
 
@@ -107,7 +107,7 @@ Five tickets, deployed in order, are in [TICKETS.md](https://github.com/IamDejma
 
 ## What comes next
 
-After launch, in order of value against effort:
+After launch, most valuable first:
 
 1. A daily "what is waiting" email to the manager, only on days when something is waiting.
 2. A view for the two measures, then two more once a quarter of data is in: First response and Late rate, defined in the supporting notes.
@@ -124,4 +124,4 @@ Two decisions sit with GlassDollar:
 
 ## AI tools used
 
-Claude Code drafted the brief, the tickets and the research notes, built the prototype over many rounds and kept the sample data consistent across the files. The decisions are mine: the pain point, the scope cuts, the measures and what moved to the notes, and I edited every draft. I also had each draft reviewed against the assignment's rubric, fourteen passes, and applied what I agreed with. It paraphrased two survey figures wrongly and once used the invented company data as evidence, both caught when I read the drafts. Every figure that remains has its source named next to it. The detail is in the supporting notes.
+Claude Code drafted the brief, the tickets and the research notes, built the prototype and kept the sample data consistent across the files. I chose the pain point, cut the scope, picked the measures and edited every draft. I ran fourteen review passes against the assignment's rubric and took what held up. Claude paraphrased two survey figures wrongly and once used the invented company data as evidence. I caught both when reading. Each figure names its source. The detail is in the supporting notes.

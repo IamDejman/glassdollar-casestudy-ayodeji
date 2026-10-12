@@ -20,9 +20,9 @@ Build and deploy them in this order. Nothing is useful before DR-3 is live: DR-1
 | DR-4 | Remind the owner and mark requests Late | Two reminders, skipped if the owner was active in the last 24 hours. Late on day 8 with one alert to the user. Pause and resume, and a pending handoff pauses | Notifications | Backend (scheduled jobs) | M | DR-1, DR-2 | Waits on DR-2 |
 | DR-5 | List open requests and measure the wait | The list of open requests with Remind now, Cancel, Answer on behalf, Pause and Resume. The two measures as queries over the event log | Pain points, Reports | Frontend, backend (permissions), SQL | M | DR-3, DR-4 | Waits on DR-4 |
 
-Sizes are t-shirt sizes. The whole release is about 3 to 4 engineer-weeks. Each ticket is split into sub-issues, numbered DR-x.y in build order. Each has a story, what to build and acceptance criteria. A sub-issue is done when its acceptance criteria pass against the sample data, and a ticket when all its sub-issues are. Acceptance criteria count in days from the send, day 0, and name a date only where the sample data's today or a weekend is the point.
+Sizes are t-shirt sizes. The whole release is about 3 to 4 engineer-weeks. Each ticket is split into sub-issues, numbered DR-x.y in build order. Each has a story, what to build and acceptance criteria. A sub-issue is done when its acceptance criteria pass against the sample data, and a ticket when all its sub-issues are. Acceptance criteria count days from the send, day 0. A date appears only where the sample data's today matters.
 
-Test against the sample data at https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/data/sample-data.json. In the sample data, today is 12 Oct 2026. It is invented test data, not a baseline, and these tickets read it one way only: each shortlist is a chain of one request, sent_to_owner_at is created, owner_feedback_at is answered when the status is complete, partial means still open, and reminders_sent counts chases. Read that way it has a median wait of 7 days over 11 answered and 8 of 13 answered by day 7. That happens to meet the brief's switch condition, so a test run exercises that condition too.
+Test against the sample data at https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/data/sample-data.json. In the sample data, today is 12 Oct 2026. It is invented test data, not a baseline. The tickets read it one way: each shortlist is a chain of one request, sent_to_owner_at is created, owner_feedback_at is answered when the status is complete, partial means still open, and reminders_sent counts chases. Read that way it has a median wait of 7 days over 11 answered and 8 of 13 answered by day 7. That meets the brief's switch condition, so a test run exercises it too.
 
 ## Rules for all five tickets
 
@@ -449,7 +449,7 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 
 **What to build**
 
-- Row actions for Waiting: Open shortlist, Remind now, Cancel, Answer on behalf, Pause reminders, and "Resend to {named person}" when the owner has named someone. Late: the same without Pause reminders, since there is nothing left to pause. Paused: the Waiting set with Resume reminders instead of Pause, and Remind now warns "Reminders are paused".
+- Row actions for Waiting: Open shortlist, Remind now, Cancel, Answer on behalf, Pause reminders, and "Resend to {named person}" when the owner has named someone. Late: the same without Pause reminders. Paused: the Waiting set with Resume reminders instead of Pause, and Remind now warns "Reminders are paused".
 - Remind now sends the DR-4.1 reminder email now, adds 1 to chases, and logs remind_now. It never uses up an automatic reminder. Then show "Reminded today" on the row for 24 hours.
 - Cancel is DR-1.3's cancel. Pause and Resume are DR-4.3's. "Resend to {named person}" is DR-1.4's resend.
 - Answer on behalf opens the DR-3.1 form for the user with a required note, default "Recorded by {user} from a call on {date}". Set via on_behalf. Send no email to the owner. The owner's link then shows "Already answered by {user}".
