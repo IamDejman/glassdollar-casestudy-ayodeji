@@ -2,15 +2,15 @@
 
 ## The problem
 
-A user sends the pain point owner a shortlist and waits. The owner has no GlassDollar login, the user chases by email, and the pain point sits in Shortlist for weeks. The goal is fewer days between the send and the answer.
+A user sends the pain point owner a shortlist and waits. The owner rarely opens the tool, the user chases by email, and the pain point sits in Shortlist for weeks. The goal is fewer days between the send and the answer.
 
 ## What we are building
 
-Decision requests. The user asks one question from the shortlist. The owner gets an email with one button and answers on one page in about three minutes, with no login. The OS reminds the owner twice and marks the request Late on day 8. The owner can name someone else, and the user resends to that person. One list shows the user every open request.
+Decision requests. The user asks one question from the shortlist. The owner gets an email with one button and answers on one page in about three minutes, with no login. The OS reminds the owner twice and marks the request Late on day 8. The owner can name someone else, and the user resends to that person. We also show every open request as a list to the user.
 
 ## The five tickets
 
-Build and deploy them in this order. Nothing is useful before DR-3 is live: DR-1 alone records a request, and DR-2 alone sends a link to an empty page. Two checks come before DR-1: pull past send and answer dates from the OS to see whether owners stall at the shortlist step (two days), and ask the innovation manager at the pilot customer which decisions need the owner (one hour). One more comes before DR-2: send a test link to 10 addresses at that customer to see whether it survives the mail gateway and SSO (one week).
+Build and deploy them in this order. Nothing is useful before DR-3 is live: DR-1 alone records a request, and DR-2 sends a link to an empty page. Two checks come before DR-1: pull past Send and Answer dates from the OS to see whether owners stall at the shortlist step (two days), and ask the innovation manager at the pilot customer which decisions need the owner (one hour). Before DR-2, we also need to send a test link to 10 email addresses that belong to the customer to see whether it survives the mail gateway and SSO (one week).
 
 | Ticket | Title | What it delivers | Area | Skills | Size | Depends on | Status |
 |---|---|---|---|---|---|---|---|
@@ -22,7 +22,7 @@ Build and deploy them in this order. Nothing is useful before DR-3 is live: DR-1
 
 Sizes are t-shirt sizes. The whole release is about 3 to 4 engineer-weeks. Each ticket is split into sub-issues, numbered DR-x.y in build order. Each has a story, what to build and acceptance criteria. A sub-issue is done when its acceptance criteria pass against the sample data, and a ticket when all its sub-issues are. Acceptance criteria count days from the send, day 0. A date appears only where the sample data's today matters.
 
-Test against the sample data at https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/data/sample-data.json. In the sample data, today is 12 Oct 2026. It is invented test data, not a baseline. The tickets read it one way: each shortlist is a chain of one request, sent_to_owner_at is created, owner_feedback_at is answered when the status is complete, partial means still open, and reminders_sent counts chases. Read that way it has a median wait of 7 days over 11 answered and 8 of 13 answered by day 7. That meets the brief's switch condition, so a test run exercises it too.
+Test against the sample data at https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/data/sample-data.json. In the sample data, today is 12 Oct 2026. It is mocked test data. The tickets read it one way: each shortlist is a chain of one request, sent_to_owner_at is created, owner_feedback_at is answered when the status is complete, partial means still open, and reminders_sent counts chases. When read that way, it has a median wait of 7 days over 11 answered and 8 of 13 answered by day 7. That meets the brief's switch condition, so a test run exercises it too.
 
 ## Rules for all five tickets
 
@@ -32,13 +32,13 @@ Test against the sample data at https://github.com/IamDejman/glassdollar-casestu
 - Copy in quotes is a template. {user} is the sender's full name, {owner} the recipient's full name, {named person} the person an owner names instead, {pain point} the pain point id, {due date} the due date, {date} a date, {n} a number.
 - A request is one question from a user to one owner about one shortlist. This release has one question: rate this shortlist.
 - States: Waiting, Paused, Late, Answered, Cancelled. Waiting, Paused and Late are open. An open request can become Answered or Cancelled. Those two are final.
-- A chain is a request and its resends. Resend to a named person and Ask again both create a new request with parent_request_id set to the old one. The list's Age column is per request. The measures count chains from the first request's created, so the clock never stops across a resend.
+- A chain is a request and its resends. Resend to a named person and Ask again both create a new request with parent_request_id set to the old one. The list's Age column is per request. The metrics count chains from the first request's created, so the clock never stops across a resend.
 - Owner activity means identity_confirmed, a view of the answer page with a session, handoff and answered. link_opened is logged for every fetch, scanners included, and is not activity. Activity drives the reminder skip in DR-4.1 and the Last owner action column in DR-5.1.
 
 **Rules**
 
 - One open request per shortlist. Enforce it in the database.
-- Days are calendar days from the send date, in Europe/Berlin. Sent 29 Sep 2026: day 3 is 2 Oct, due 6 Oct at 23:59, link expires 13 Oct at 23:59. Age never resets.
+- Days are calendar days from the send date, in Europe/Berlin. Sent 29 Sep 2026: day 3 is 2 Oct, due 6 Oct at 23:59, link expires 13 Oct at 23:59.
 - Jobs run at 09:00 on weekdays. Anything due on a weekend runs on Monday.
 - Anyone who can edit the pain point can send, cancel, remind, pause, resume or answer on behalf. The event log records who.
 - "Tell the user" means one in-app notification and one email. That is the workspace default in the sample data.
@@ -55,8 +55,6 @@ Test against the sample data at https://github.com/IamDejman/glassdollar-casestu
 
 ## Open questions
 
-None of these blocks a build. The three checks that do are above, under The five tickets. Each question here has a default the tickets follow until it is answered. "The innovation manager" is the one at the pilot customer.
-
 - Who can the user send to? Default: any OS user with an email address, the owner preselected. Ask the innovation manager how often the right person is outside the OS.
 - Should finalising cancel the request? Default: yes, so nothing stays open on a closed pain point. Ask the innovation manager whether late answers are worth keeping.
 - Does the pilot customer force SSO on outside links? Default: assume not, and the one-week link test settles it. Ask the customer's IT.
@@ -71,8 +69,6 @@ None of these blocks a build. The three checks that do are above, under The five
 
 ## Not in this release
 
-Listed so the cut is explicit. Nothing here is in scope for the first release.
-
 - Auto-reply and bounce detection, with reminders that pause on their own
 - Link renewal after day 14
 - Forwarding to a colleague with a fresh link in one step, and contacts for people outside the OS
@@ -81,7 +77,7 @@ Listed so the cut is explicit. Nothing here is in scope for the first release.
 - Suggested stage change
 - Editing a request after sending
 - Cancel and resend in one step when the shortlist or the pain point's owner changes. The user cancels and sends again
-- First response and Late rate as measures. They wait until a quarter of data is in
+- First response and Late rate as metrics. They wait until a quarter of data is in
 - The closing-the-loop email
 - The daily digest
 
@@ -243,7 +239,7 @@ Writes: token_hash, confirmed_at. Events: link_opened, identity_confirmed, not_m
 - Nothing in the email, the token or any page reveals a startup name before the identity tap.
 - The owner taps on a phone on day 2 and opens the link on a laptop on day 3. The laptop shows the identity page once, then the answer page. confirmed_at stays day 2.
 - Someone else taps "Not me" on a forwarded email. That person sees no startup. The user is told "Someone other than {owner} opened the {pain point} link". A second "Not me" tells the user nothing more.
-- A sandbox presses "Yes, I am {owner}": confirmed_at is set. Nothing more can happen without choices, and the measures count answers, not taps.
+- A sandbox presses "Yes, I am {owner}": confirmed_at is set. Nothing more can happen without choices, and the metrics count answers, not taps.
 - Accepted risk, to be signed off by the innovation manager before launch: anyone holding the email can tap "Yes, I am {owner}" and see the startup names, descriptions and the user's comments. That is the trade for no login. "Not me" tells the user, and the link expires after 14 days.
 
 ---
@@ -412,7 +408,7 @@ Writes: reminders_sent, the states Late and Paused. Events: reminder_sent, remin
 
 #### Description
 
-The user needs one place that shows every request still waiting on someone and lets them act from there. The product team needs to know whether any of this worked, so the same ticket adds the two measures as queries over the event log.
+The user needs one place that shows every request still waiting on someone and lets them act from there. The product team needs to know whether any of this worked, so the same ticket adds the two metrics as queries over the event log.
 
 Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 
@@ -420,7 +416,7 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 |---|---|---|---|
 | DR-5.1 | Show the user a list of open requests | S | DR-4.3 |
 | DR-5.2 | Enable the user to act on a request from the list | S | DR-5.1 |
-| DR-5.3 | Compute the two measures from the event log | S | DR-5.2 |
+| DR-5.3 | Compute the two metrics from the event log | S | DR-5.2 |
 
 #### DR-5.1 Show the user a list of open requests
 
@@ -466,9 +462,9 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 - Two users act on the same request at once: the first wins, the second sees "Already answered".
 - Remind now on a Paused request: the warning shows and nothing is sent until the user confirms.
 
-#### DR-5.3 Compute the two measures from the event log
+#### DR-5.3 Compute the two metrics from the event log
 
-**Story.** As the product team, we want the two measures as queries, so that after a quarter we know whether the wait got shorter.
+**Story.** As the product team, we want the two metrics as queries, so that after a quarter we know whether the wait got shorter.
 
 **What to build**
 
@@ -484,7 +480,7 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 - A chain of two requests, the first sent on day 0 and resent on day 2, answered on day 4: Days to answer counts 4 days, not 2.
 - The owner answers all three with Need more info on day 3 and the user never presses Ask again. On day 13 the chain is a miss for the day 7 share and it is not in the median.
 - A query result lists chains by request id and business unit. No column holds an owner's name or user id.
-- A chain cancelled on day 4 with no answer: left out of both measures. A chain cancelled on day 9 with no rated answer: a miss for the day 7 share, not in the median, and not in No manual chase.
+- A chain cancelled on day 4 with no answer: left out of both metrics. A chain cancelled on day 9 with no rated answer: a miss for the day 7 share, not in the median, and not in No manual chase.
 
 ---
 
