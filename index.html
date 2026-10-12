@@ -354,8 +354,8 @@ label.field{display:grid;gap:6px}
       <summary>See the email</summary>
       <div class="preview" aria-label="Email preview">
         <div><b>To</b> <span id="pvTo">jonas.keller@nordwind.example</span></div>
-        <div><b>Subject</b> PP-034: Lena Hartmann needs your view on 3 startups</div>
-        <p id="pvBody">Hi Jonas, you raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by 6 Oct 2026. It takes about 3 minutes.</p>
+        <div><b>Subject</b> Reduce manual load planning for outbound trucks: Lena Hartmann needs your view on 3 startups</div>
+        <p id="pvBody">Hi Jonas, you raised the problem of manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by 6 Oct 2026. It takes about 3 minutes.</p>
         <p id="pvNote" class="mail-note" hidden></p>
         <span class="cta" aria-hidden="true">Review 3 startups</span>
       </div>
@@ -403,8 +403,8 @@ const fmt = d => { const x = new Date(BASE); x.setUTCDate(x.getUTCDate() + d); r
 const DUE_DAY = 7, LATE_DAY = 8;
 const STARTUPS = [
   { id:'pallet', name:'Pallet.ai', ini:'PA', hue:'#0F2A1C', desc:'Load planning software that builds mixed pallets and truck loads.', lena:'Closest to the problem as you described it.' },
-  { id:'cargonaut', name:'Cargonaut Labs', ini:'CL', hue:'#128AA0', desc:'Route and load planning for hub-and-spoke freight networks.', lena:'Already piloting at the hub on PP-030, so onboarding would be quick.' },
-  { id:'parcelgrid', name:'Parcelgrid', ini:'PG', hue:'#2F6FDB', desc:'Dynamic slotting that re-sorts outbound pallets in mid-size distribution centers.', lena:'Ran the PP-024 pilot this summer. Stopped, but the scope was different.' }
+  { id:'cargonaut', name:'Cargonaut Labs', ini:'CL', hue:'#128AA0', desc:'Route and load planning for hub-and-spoke freight networks.', lena:'Already piloting at the hub on another problem, so onboarding would be quick.' },
+  { id:'parcelgrid', name:'Parcelgrid', ini:'PG', hue:'#2F6FDB', desc:'Dynamic slotting that re-sorts outbound pallets in mid-size distribution centers.', lena:'Ran a pilot here this summer. Stopped, but the scope was different.' }
 ];
 const PEOPLE = [
   { name:'Jonas Keller', first:'Jonas', email:'jonas.keller@nordwind.example' },
@@ -444,7 +444,7 @@ function send(){
   const prev = S.req && S.req.answer ? { answer:S.req.answer, owner:S.req.owner } : null;
   S.req = { state:'Waiting', sentDay:S.day, owner:who, note, reminders:0, answer:null, events:[], mails:[], openedDay:null, handoff:null, reassigned:null, prev };
   log('created', `Request sent to ${who}`);
-  if (who === JONAS) S.req.mails.push({ id:'m0', day:S.day, kind:'request', subject:'PP-034: Lena Hartmann needs your view on 3 startups' });
+  if (who === JONAS) S.req.mails.push({ id:'m0', day:S.day, kind:'request', subject:'Reduce manual load planning for outbound trucks: Lena Hartmann needs your view on 3 startups' });
   live(`Request sent to ${who}`);
 }
 function pause(){
@@ -476,20 +476,20 @@ function previewSend(){
   byId('pvName').textContent = who.first; byId('pvDue').textContent = due;
   byId('pvR1').textContent = short(S.day + 3); byId('pvR2').textContent = short(S.day + 7); byId('pvLate').textContent = short(S.day + LATE_DAY);
   byId('pvTo').textContent = who.email;
-  byId('pvBody').textContent = `Hi ${who.first}, ${who.name === JONAS ? 'you' : JONAS} raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by ${due}. It takes about 3 minutes.`;
+  byId('pvBody').textContent = `Hi ${who.first}, ${who.name === JONAS ? 'you' : JONAS} raised the problem of manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by ${due}. It takes about 3 minutes.`;
   const noteNow = byId('noteInput').value.trim();
   byId('pvNote').textContent = noteNow; byId('pvNote').hidden = !noteNow;
 }
 function markLate(){
   S.req.state = 'Late';
   log('late', 'Day 8, still no answer. Lena notified.');
-  notify('late', `${S.req.owner} has not answered PP-034 (day 8).`, [['remind', 'Remind now'], ['waiting', 'Open Waiting on others']]);
+  notify('late', `${S.req.owner} has not answered "Reduce manual load planning for outbound trucks" (day 8).`, [['remind', 'Remind now'], ['waiting', 'Open Waiting on others']]);
 }
 function handoff(name){
   S.req.handoff = { name, day:S.day };
   log('handoff', `Jonas Keller says ${name} should answer`);
   if (S.req.state === 'Waiting'){ S.req.state = 'Paused'; log('paused', 'Reminders paused while Lena decides who should answer'); }
-  notify('pause', `Jonas Keller says ${name} should answer PP-034.`);
+  notify('pause', `Jonas Keller says ${name} should answer "Reduce manual load planning for outbound trucks".`);
   live('Sent to Lena Hartmann');
 }
 function jumpTo(d){
@@ -503,7 +503,7 @@ function jumpTo(d){
       } else {
         S.req.reminders++;
         log('reminder_sent', `Reminder ${S.req.reminders} of 2 sent`);
-        if (S.req.owner === JONAS) S.req.mails.push({ id:'r'+S.req.reminders, day, kind:'reminder', n:S.req.reminders, subject:'Reminder: PP-034, Lena Hartmann needs your view by ' + fmt(S.req.sentDay + DUE_DAY) });
+        if (S.req.owner === JONAS) S.req.mails.push({ id:'r'+S.req.reminders, day, kind:'reminder', n:S.req.reminders, subject:'Reminder: Reduce manual load planning for outbound trucks, Lena Hartmann needs your view by ' + fmt(S.req.sentDay + DUE_DAY) });
       }
     }
     if (age === LATE_DAY) markLate();
@@ -514,7 +514,7 @@ function jumpTo(d){
 function remindNow(){
   S.req.reminders++; S.remindNowDay = S.day;
   log('remind_now', 'Lena sent a reminder by hand');
-  if (S.req.owner === JONAS) S.req.mails.push({ id:'h'+S.day, day:S.day, kind:'manual', subject:'Lena Hartmann: can you look at PP-034 today?' });
+  if (S.req.owner === JONAS) S.req.mails.push({ id:'h'+S.day, day:S.day, kind:'manual', subject:'Lena Hartmann: can you look at the load planning shortlist today?' });
   live('Reminder sent to ' + S.req.owner);
 }
 function cancel(){
@@ -525,7 +525,7 @@ function answer(items, noneFit, noneFitText, via, note){
   S.req.state = 'Answered';
   const rated = noneFit || items.some(i => i.choice !== 'need_info');
   log('answered', via === 'on_behalf' ? 'Answered on behalf by Lena' : rated ? `${S.req.owner} answered from the link` : `${S.req.owner} asked for more information from the link`);
-  notify('done', rated ? `${S.req.owner} answered PP-034 on ${fmt(S.day)}.` : `${S.req.owner} needs more information on ${items.length} startups.`);
+  notify('done', rated ? `${S.req.owner} answered "Reduce manual load planning for outbound trucks" on ${fmt(S.day)}.` : `${S.req.owner} needs more information on ${items.length} startups.`);
   live('Answer sent to Lena Hartmann');
 }
 
@@ -612,7 +612,7 @@ function guide(){
   else {
     if (r.state === 'Cancelled') text = 'Request cancelled. If Jonas opens the link now he sees that Lena no longer needs it. Press Start over to begin again.';
     else if (r.state === 'Answered') text = 'Answered. If Jonas needs to look again, press \u201cAsk Jonas Keller again\u201d. Or press Start over.';
-    else if (r.owner !== JONAS) text = `PP-034 now waits on ${r.owner} from ${fmt(r.sentDay)}. This prototype shows only Jonas\u2019s phone, so use the clock to send reminders, or press Start over.`;
+    else if (r.owner !== JONAS) text = `The request now waits on ${r.owner} from ${fmt(r.sentDay)}. This prototype shows only Jonas\u2019s phone, so use the clock to send reminders, or press Start over.`;
     else {
       text = 'Jump ahead to day 3 and 7 to send reminders. Day 8 marks it Late. Press \u201cPause reminders\u201d if you know Jonas is away. Open \u201cWaiting on others\u201d to remind, cancel or answer for him.';
       if (r.state === 'Waiting' && S.day < 3) target = '[data-day="3"]';
@@ -649,7 +649,7 @@ function renderLena(){
   return `<div class="wrap">
     ${banners}
     <div class="tabs" role="tablist" aria-label="Lena's views">
-      <button class="tab" role="tab" id="tab-shortlist" aria-controls="panel" aria-selected="${S.tab === 'shortlist'}" tabindex="${S.tab === 'shortlist' ? 0 : -1}" data-tab="shortlist">PP-034 shortlist</button>
+      <button class="tab" role="tab" id="tab-shortlist" aria-controls="panel" aria-selected="${S.tab === 'shortlist'}" tabindex="${S.tab === 'shortlist' ? 0 : -1}" data-tab="shortlist">Shortlist</button>
       <button class="tab" role="tab" id="tab-waiting" aria-controls="panel" aria-selected="${S.tab === 'waiting'}" tabindex="${S.tab === 'waiting' ? 0 : -1}" data-tab="waiting">Waiting on others (${openCount})</button>
     </div>
     <div id="panel" role="tabpanel" aria-labelledby="tab-${S.tab}">${S.tab === 'shortlist' ? renderShortlist() : renderWaiting()}</div>
@@ -687,7 +687,7 @@ function renderShortlist(){
   const noneFit = r && r.answer && r.answer.noneFit ? `<div class="card"><b>None of these fit.</b> ${esc(r.answer.noneFitText)}</div>` : '';
   const behalf = r && r.answer && r.answer.note ? `<p class="muted small">${esc(r.answer.note)}</p>` : '';
   const events = r ? `<details class="log"><summary>Events for this request (${r.events.length})</summary><table><thead><tr><th>Date</th><th>Event</th></tr></thead><tbody>${r.events.map(e => `<tr><td class="num">${fmt(e.day)}</td><td>${esc(e.text)}</td></tr>`).join('')}</tbody></table></details>` : '';
-  return `<div class="head"><div><h1>PP-034 Reduce manual load planning for outbound trucks</h1><p class="meta small">Raised by Jonas Keller, logistics process lead at the Hamburg hub. Three startups on the shortlist.</p></div><div class="actions">${status}${action}</div></div>
+  return `<div class="head"><div><h1>Reduce manual load planning for outbound trucks</h1><p class="meta small">Raised by Jonas Keller, logistics process lead at the Hamburg hub. Three startups on the shortlist.</p></div><div class="actions">${status}${action}</div></div>
     <div class="stack">${noneFit}<div class="stack startups">${cards}</div></div>${behalf}${events}`;
 }
 
@@ -707,10 +707,10 @@ function renderWaiting(){
     }
     return `<button type="button" class="btn small menu-btn" popovertarget="menu-${k}-${x.id}">Actions</button><div class="menu-items" id="menu-${k}-${x.id}" popover>${items.join('')}</div>`;
   };
-  const reqCell = x => x.fixed ? `<b>${x.id}</b>` : `<button type="button" class="linkish" data-act="open">${x.id}</button>`;
+  const reqCell = x => x.fixed ? `<b>${x.title}</b>` : `<button type="button" class="linkish" data-act="open">${x.title}</button>`;
   const table = rows.length ? `<div class="tablecard"><table class="list"><thead><tr><th>Request</th><th>Owner</th><th>Age</th><th>Due</th><th>State</th><th>Reminders</th><th>Last owner action</th><th>Actions</th></tr></thead><tbody>
-    ${rows.map(x => `<tr><td>${reqCell(x)}<br><span class="small muted">${x.title}</span></td><td>${esc(x.owner)}</td><td class="num">${x.age} days</td><td class="num">${x.due}</td><td>${pill(x.state)}</td><td class="num">${x.reminders}</td><td>${esc(x.last)}</td><td>${actions(x, 't') || '-'}</td></tr>`).join('')}</tbody></table></div>
-    <div class="rows">${rows.map(x => `<div class="card row-card"><div class="row-head"><b>${reqCell(x)} ${x.title}</b>${pill(x.state)}</div>
+    ${rows.map(x => `<tr><td>${reqCell(x)}</td><td>${esc(x.owner)}</td><td class="num">${x.age} days</td><td class="num">${x.due}</td><td>${pill(x.state)}</td><td class="num">${x.reminders}</td><td>${esc(x.last)}</td><td>${actions(x, 't') || '-'}</td></tr>`).join('')}</tbody></table></div>
+    <div class="rows">${rows.map(x => `<div class="card row-card"><div class="row-head"><b>${reqCell(x)}</b>${pill(x.state)}</div>
       <div class="kv"><span>Owner</span><b>${esc(x.owner)}</b><span>Age</span><b>${x.age} days</b><span>Due</span><b>${x.due}</b><span>Reminders</span><b>${x.reminders}</b><span>Last action</span><b>${esc(x.last)}</b></div><div class="actions">${actions(x, 'c')}</div></div>`).join('')}</div>`
     : `<div class="card empty">Nothing is waiting on anyone.</div>`;
   return `<div class="head"><div><h1>Waiting on others</h1></div></div>${table}`;
@@ -726,29 +726,29 @@ function renderJonas(){
     const m = r.mails.find(x => x.id === S.openMail);
     const due = fmt(r.sentDay + DUE_DAY);
     const text = m.kind === 'request'
-      ? `<p>Hi Jonas, you raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by ${due}. It takes about 3 minutes.</p>`
+      ? `<p>Hi Jonas, you raised the problem of manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by ${due}. It takes about 3 minutes.</p>`
       : m.kind === 'reminder'
-      ? `<p>Hi Jonas, a quick reminder that I still need your view on 3 startups for PP-034 by ${due}. It takes about 3 minutes. This is reminder ${m.n} of 2.</p>`
-      : `<p>Hi Jonas, could you look at PP-034 today? It's three startups and takes about 3 minutes. I'd like to brief the Hamburg team this week.</p>`;
+      ? `<p>Hi Jonas, a quick reminder that I still need your view on the 3 startups for manual load planning by ${due}. It takes about 3 minutes. This is reminder ${m.n} of 2.</p>`
+      : `<p>Hi Jonas, could you look at the load planning shortlist today? It's three startups and takes about 3 minutes. I'd like to brief the Hamburg team this week.</p>`;
     body = `<button class="btn quiet" data-screen="inbox">Back to inbox</button>
       <div class="mail"><div class="email"><div class="hdr"><b>${esc(m.subject)}</b><span>Lena Hartmann via GlassDollar, ${fmt(m.day)}</span><span>To jonas.keller@nordwind.example</span></div>
       ${text}${r.note && m.kind !== 'manual' ? `<p class="mail-note">${esc(r.note)}</p>` : ''}<button class="cta" data-screen="identity">Review 3 startups</button>
       <p class="url">If the button doesn't work, copy this link: https://os.glassdollar.com/r/7Qk2mN9x</p>
       <p class="small">Reply to this email to reach me.<br>Lena Hartmann, Nordwind Venture Client Unit</p></div></div>`;
   } else if (S.screen === 'identity'){
-    body = `<div class="page"><h1>Review 3 startups for PP-034</h1><p class="lead">This link was sent to jonas.keller@nordwind.example. Confirm it's you and we'll show the startups.</p>
+    body = `<div class="page"><h1>Review 3 startups</h1><p class="lead">This link was sent to jonas.keller@nordwind.example. Confirm it's you and we'll show the startups.</p>
       <button class="btn primary" data-screen="answer">Yes, I am Jonas Keller</button><button class="btn" data-screen="notme">Not me</button>
       <button class="btn quiet" data-screen="whoelse">I'm not the right person for this</button></div>`;
   } else if (S.screen === 'whoelse'){
-    body = `<div class="page"><h1>Who should answer instead?</h1><p class="lead">Lena will send PP-034 to them. Nothing goes to them until she does.</p>
+    body = `<div class="page"><h1>Who should answer instead?</h1><p class="lead">Lena will send the request to them. Nothing goes to them until she does.</p>
       <label class="field">Their name<input type="text" id="handoffName" name="handoffName" autocomplete="off" maxlength="80"></label>
       <p class="err" id="handoffErr" hidden>Say who should answer.</p>
       <div class="actions"><button class="btn primary" type="button" id="handoffSend">Tell Lena</button><button class="btn" data-screen="identity">Back</button></div></div>`;
   } else if (S.screen === 'notme'){
     body = `<div class="page"><h1>Thanks, we've told Lena Hartmann</h1><p class="lead">Someone else opened this link, so no startups were shown. If you need your own request, ask her for a link.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
   } else if (S.screen === 'answer'){
-    if (r.state === 'Cancelled') body = `<div class="page"><h1>Lena no longer needs this</h1><p class="lead">Lena cancelled the request for PP-034 on ${fmt(r.events.find(e => e.type === 'cancelled').day)}. There's nothing you need to do.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
-    else if (r.reassigned) body = `<div class="page"><h1>Lena no longer needs this</h1><p class="lead">Lena sent PP-034 to ${esc(r.owner)} on ${fmt(r.reassigned.day)} instead. There's nothing you need to do.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
+    if (r.state === 'Cancelled') body = `<div class="page"><h1>Lena no longer needs this</h1><p class="lead">Lena cancelled the request on ${fmt(r.events.find(e => e.type === 'cancelled').day)}. There's nothing you need to do.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
+    else if (r.reassigned) body = `<div class="page"><h1>Lena no longer needs this</h1><p class="lead">Lena sent the request to ${esc(r.owner)} on ${fmt(r.reassigned.day)} instead. There's nothing you need to do.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
     else if (r.handoff) body = renderHandoff(true);
     else if (r.answer) body = renderDone(true);
     else body = renderForm();
@@ -768,7 +768,7 @@ function renderForm(){
     <button class="btn quiet small" type="button" data-note="${s.id}">Add a note for Lena</button>
     <label class="field small" id="l_${s.id}" hidden>Note for Lena<textarea id="n_${s.id}" name="n_${s.id}" autocomplete="off" maxlength="1000" placeholder="Anything Lena should know"></textarea></label></fieldset>`).join('');
   return `<form class="page" id="answerForm" novalidate>
-    <div><h1>PP-034 Reduce manual load planning for outbound trucks</h1><p class="lead">Lena needs your view on each by ${fmt(r.sentDay + DUE_DAY)}.</p></div>
+    <div><h1>Reduce manual load planning for outbound trucks</h1><p class="lead">Lena needs your view on each by ${fmt(r.sentDay + DUE_DAY)}.</p></div>
     ${r.note ? `<p class="lena-note"><span class="lena-label">Lena's note:</span> ${esc(r.note)}</p>` : ''}
     ${cards}
     <label class="check"><input type="checkbox" id="noneFit" name="noneFit"><span>None of these fit</span></label>
@@ -782,7 +782,7 @@ function renderForm(){
 }
 function renderHandoff(reopened){
   const n = esc(S.req.handoff.name);
-  return `<div class="page"><h1>${reopened ? 'Already sent to Lena Hartmann' : 'Sent to Lena Hartmann'}</h1><p class="lead">She'll send PP-034 to ${n}. You can close this page.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
+  return `<div class="page"><h1>${reopened ? 'Already sent to Lena Hartmann' : 'Sent to Lena Hartmann'}</h1><p class="lead">She'll send the request to ${n}. You can close this page.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
 }
 
 function renderDone(reopened){
@@ -887,7 +887,7 @@ function bind(){
     const to = b.dataset.screen;
     if (to === 'identity' && !S.req.events.some(e => e.type === 'link_opened')) log('link_opened', 'Link opened from the email');
     if (to === 'answer'){ S.req.openedDay = S.day; if (!S.req.events.some(e => e.type === 'identity_confirmed')) log('identity_confirmed', 'Jonas Keller confirmed it\'s him and opened the page'); }
-    if (to === 'notme' && !S.req.events.some(e => e.type === 'not_me')){ log('not_me', 'Someone pressed Not me on the link'); notify('pause', 'Someone other than Jonas Keller opened the PP-034 link.'); }
+    if (to === 'notme' && !S.req.events.some(e => e.type === 'not_me')){ log('not_me', 'Someone pressed Not me on the link'); notify('pause', 'Someone other than Jonas Keller opened the "Reduce manual load planning for outbound trucks" link.'); }
     S.screen = to; render(); focusTop(jonasEl);
   });
   const form = main.querySelector('#answerForm');
