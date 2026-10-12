@@ -523,7 +523,7 @@ function answer(items, noneFit, noneFitText, via, note){
   S.req.answer = { items, noneFit, noneFitText, via, note, day:S.day };
   S.req.state = 'Answered';
   const rated = noneFit || items.some(i => i.choice !== 'need_info');
-  log('answered', via === 'on_behalf' ? 'Answered on behalf by Lena' : `${S.req.owner} answered from the link`);
+  log('answered', via === 'on_behalf' ? 'Answered on behalf by Lena' : rated ? `${S.req.owner} answered from the link` : `${S.req.owner} asked for more information from the link`);
   notify('done', rated ? `${S.req.owner} answered PP-034 on ${fmt(S.day)}.` : `${S.req.owner} needs more information on ${items.length} startups.`);
   live('Answer sent to Lena Hartmann');
 }
@@ -667,7 +667,7 @@ function renderShortlist(){
     status = `${pill(r.state)} <span>Waiting for ${esc(r.owner)}, day ${S.day - r.sentDay}</span>`;
     action = (r.state === 'Paused' ? `<button class="btn" data-act="resume">Resume reminders</button>` : r.state === 'Waiting' ? `<button class="btn" data-act="pause">Pause reminders</button>` : '') + `<button class="btn" data-act="cancel" data-id="PP-034">Cancel request</button>`;
   } else if (r.state === 'Answered'){
-    status = `${pill('Answered')} <span>${esc(r.owner)}, ${fmt(r.answer.day)}, ${r.answer.via === 'on_behalf' ? 'recorded by Lena' : 'via link'}</span>`;
+    status = `${pill('Answered')} <span>${esc(r.owner)}, ${fmt(r.answer.day)}, ${r.answer.via === 'on_behalf' ? 'recorded by Lena' : 'via link'}${r.answer.noneFit || r.answer.items.some(i => i.choice !== 'need_info') ? '' : '. Not rated: needs more information, so the clock runs on'}</span>`;
     action = `<button class="btn primary" id="askBtn">Ask ${esc(r.owner)} again</button>`;
   } else {
     status = pill('Cancelled');
