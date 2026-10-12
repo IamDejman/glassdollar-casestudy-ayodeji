@@ -1,8 +1,8 @@
 # Decision requests: getting business units to answer startup shortlists
 
-This brief reads best on a desktop screen. The tables do not fit a phone.
+Take-home brief for GlassDollar OS
 
-Take-home brief for GlassDollar OS, written on 12 Oct 2026 without access to the product, its users or its data.
+12 Oct 2026
 
 | Deliverable | Where |
 |------|------------|
