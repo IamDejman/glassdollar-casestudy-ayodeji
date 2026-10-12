@@ -37,7 +37,7 @@ Lena sends Jonas a shortlist and waits. Jonas means to look at it, but his own w
 
 ### How we would know it is solved
 
-Four measures, all read from the event log. Nobody measures this step today, so targets are set after one quarter of baseline.
+We would watch four numbers, all pulled from the event log. Nobody measures this step today, so the first quarter is for finding the baseline. Targets come after that.
 
 | Measure | Definition |
 |------|------------|
