@@ -38,7 +38,7 @@ Test against the sample data at https://github.com/IamDejman/glassdollar-casestu
 - A request closes only when a person answers or cancels it. Day 14 expires the link and nothing else. A Late request stays Late until the user acts.
 - Finalising the pain point, which means it leaves Shortlist, cancels any open request with the reason "finalised". The owner gets no email, and the link shows "{user} no longer needs this".
 - One event table: request_id, type, at, actor, payload. DR-5.3 lists the types.
-- The request record: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request_id, state, note, created_at, due_at, expires_at, confirmed_at, answered_at, cancelled_at, cancel_reason, via (magic_link or on_behalf), rated, late, handoff_name, reminders_sent (automatic only), chases (Remind now), token_hash, and the snapshot (startups with description and comment). Each ticket names the fields it writes.
+- The request record: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request_id, state, note, created_at, due_at, expires_at, confirmed_at, answered_at, cancelled_at, cancel_reason, via (magic_link or on_behalf), rated, handoff_name, reminders_sent (automatic only), chases (Remind now), token_hash, and the snapshot (startups with description and comment). Each ticket names the fields it writes.
 - Event payloads: created {recipient_id, parent_request_id}, link_opened {user_agent}, identity_confirmed {}, not_me {}, reminder_sent {n}, reminder_skipped {reason}, remind_now {}, paused {reason: user or handoff}, resumed {}, late {}, handoff {name}, answered {via, rated, choices}, cancelled {reason}.
 - A chain is a request and its resends. Cancel and resend, Resend to a named person and Ask again all create a new request with parent_request_id set to the old one. The list's Age column is per request. The measures count chains from the first request's created, so the clock never stops across a resend.
 - Owner activity means identity_confirmed, a view of the answer page with a session, handoff and answered. link_opened is logged for every fetch, scanners included, and is not activity. Activity drives the reminder skip in DR-4.1 and the Last owner action column in DR-5.1.
@@ -281,7 +281,7 @@ Writes: token_hash, confirmed_at. Events: link_opened, identity_confirmed, not_m
 
 After the identity tap the owner gets one page with the shortlisted startups and three choices each. The owner picks, adds a note where one is needed, and sends. The user sees the answers on the shortlist and gets one notification. The owner can also say that someone else should answer.
 
-Writes: answered_at, via, rated, late, handoff_name. Events: answered, handoff, paused with the reason handoff.
+Writes: answered_at, via, rated, handoff_name. Events: answered, handoff, paused with the reason handoff.
 
 | Sub-issue | Title | Size | Depends on |
 |---|---|---|---|
@@ -333,14 +333,14 @@ Writes: answered_at, via, rated, late, handoff_name. Events: answered, handoff, 
 - On the shortlist, show each startup's choice and comment, with who answered, when and how: "{owner}, {date}, via link". When rated is false, add "Not rated: needs more information".
 - Tell the user once: "{owner} answered {pain point}", or "{owner} needs more information on {n} startups" when rated is false.
 - Replace the state header with the button "Ask {owner} again". It opens the DR-1.1 dialog, and the new request gets parent_request_id set to the answered one. This is the follow-up to Need more info. The information itself goes by email or a call.
-- An answer that lands after the pain point left Shortlist, which happens only when Send and the finalise cross: store it, set late true, and show "received after shortlist was finalised".
+- An answer that lands after the pain point left Shortlist, which happens only when Send and the finalise cross, follows the cancellation rule: nothing is stored, and the owner sees "{user} no longer needs this".
 
 **Acceptance criteria**
 
 - The owner answers the load planning request on 12 Oct 2026 with one Interested and two Not now. The shortlist shows "{owner}, 12 Oct 2026, via link" with the three choices, the user is told once, and the button reads "Ask {owner} again".
 - All three are Need more info. The notification reads "{owner} needs more information on 3 startups" and the shortlist shows "Not rated: needs more information".
 - The user presses "Ask {owner} again" and sends. The new request is Waiting with parent_request_id set to the answered one, and the earlier answer stays visible under it.
-- The shortlist is finalised at 10:00:00 and the owner's Send, started before, lands at 10:00:02. The answer is stored, late is true, and the shortlist shows "received after shortlist was finalised".
+- The shortlist is finalised at 10:00:00 and the owner's Send, started before, lands at 10:00:02. Nothing is stored, the request stays Cancelled with the reason "finalised", and the owner sees "{user} no longer needs this".
 
 **Edge cases**
 
@@ -451,8 +451,8 @@ Writes: reminders_sent, the states Late and Paused. Events: reminder_sent, remin
 
 - The user pauses on 3 Oct 2026. The state is Paused, paused is logged with the reason user, and no day 7 reminder goes out.
 - The user resumes on 4 Oct: Waiting, and the day 7 reminder goes out on 6 Oct.
-- The user resumes on 9 Oct: Late at the next run, told once.
-- The owner sends a handoff on 1 Oct and the user does nothing. No reminder on 2 Oct or 6 Oct, never Late. The user presses Resume on 9 Oct: Late at the next run, told once.
+- The user resumes on 9 Oct: Late at once, told once.
+- The owner sends a handoff on 1 Oct and the user does nothing. No reminder on 2 Oct or 6 Oct, never Late. The user presses Resume on 9 Oct: Late at once, told once.
 
 **Edge cases**
 
@@ -521,7 +521,7 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 - The user presses Remind now on the load planning request on 12 Oct 2026. reminders_sent stays 2, chases is 1, the Reminders cell reads "2 +1 manual", remind_now is logged, the owner gets the email, and the button reads "Reminded today" for 24 hours.
 - The user answers on behalf for the load planning request with the default note. Answered, via on_behalf, the note is on the shortlist, the owner gets no email, and the owner's link shows "Already answered by {user}".
 - The load planning request has a handoff. The user presses "Resend to {named person}" on 1 Oct and sends. The old request is Cancelled, the new one is Waiting for the named person from 1 Oct, the named person gets the DR-2.1 email, and the old owner gets nothing.
-- The user pauses the load planning request from the list on 3 Oct and resumes on 9 Oct: Paused, then Late at the next run, told once.
+- The user pauses the load planning request from the list on 3 Oct and resumes on 9 Oct: Paused, then Late at once, told once.
 - A second user opens the load planning shortlist and presses Remind now there: remind_now is logged under that user's name.
 
 **Edge cases**
@@ -537,9 +537,9 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 
 - Event types in the table: created, link_opened, identity_confirmed, not_me, reminder_sent, reminder_skipped, remind_now, paused, resumed, late, handoff, answered, cancelled. Every sub-issue above writes its own.
 - Four queries over the chains whose first request was created in a period. No screen yet. Cancelled chains are left out. No query returns an owner's name or user id; results go by request id and business unit.
-  - Days to answer: the median days from the chain's first created to answered over chains answered with rated true, and the share of chains answered by day 7, with open chains counted as misses.
-  - First touch: the share of chains answered within one working day of the first created. This is the one measure in working days, as the brief defines it.
-  - No manual chase: the share of answered chains with no remind_now and no on_behalf answer.
+  - Days to answer: the median days from the chain's first created to answered, over chains answered with rated true only, and the share of chains answered by day 7, where an open chain counts as a miss once its due_at has passed.
+  - First response: the share of chains with an answered event within one working day of the first created, rated or not. This is the one measure in working days, as the brief defines it.
+  - No manual chase: the share of answered chains with no remind_now and no on_behalf answer. Follow-ups outside the product are not recorded and do not count.
   - Late rate: the share of chains whose wait (answered minus first created, or today minus first created while open) is more than 1.2 times the business unit's median, or more than 8 days until the business unit has 10 answered chains.
 
 **Acceptance criteria**

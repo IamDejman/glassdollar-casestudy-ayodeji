@@ -46,13 +46,13 @@ Five reasons Jonas might not answer. This release works on the first one only.
 4. The problem was solved another way, or went away.
 5. Backing a startup is a political risk in his unit.
 
-The OS can only remove the first. Once it is gone, the owner's reply tells us which of the others is in play: a request for more information means 2, a rejection with a reason means 2 or 4, and silence after a short ask with a date means 3 or 5. Those two are for Sabine to sort out, not the tool.
+The OS can only remove the first. Once it is gone, the owner's reply gives a clue to the others: a request for more information points at 2, a rejection with a reason at 2 or 4. Silence after a short ask with a date rules out friction but could still be any of 2 to 5. Incentives is the one to take to Sabine.
 
 ### What it costs
 
 - Nobody measures response time at the shortlist step, so the cost below is an estimate, not a measurement.
 - Each waiting day pushes back a pilot worth about EUR 25,000 (Gimmy), and whatever rollout follows it. The money is delayed, not lost, and not every shortlist leads to a pilot. The wait hurts startups too: half name slow corporate decisions as a top barrier (Nesta 2016, n=134).
-- Nobody counts Lena's own time. The formula is shortlists per quarter, times days waiting, times chases per waiting day, times minutes per chase. Lena logs her chases for four weeks before launch to fill it in, and that log is the baseline for No manual chase.
+- Nobody counts Lena's own time. The formula is shortlists per quarter, times days waiting, times chases per waiting day, times minutes per chase. Lena logs her chases for four weeks before launch to fill it in. That log is the baseline for her time, not for the No manual chase measure, which only sees what happens in the product.
 
 ### How we would know it is solved
 
@@ -60,14 +60,14 @@ Four numbers, all from the event log. Days to answer is the main one and the oth
 
 | Measure | Definition |
 |------|------------|
-| Days to answer | Median days from the first send to a rated answer, counted across resends and Ask again, with unanswered requests counted as misses, and the share answered by the day 7 due date. A rated answer rates every startup, or says None of these fit with a reason |
-| First touch | Share of owners who rate at least one startup or ask for information within one working day |
-| No manual chase | Share of requests answered before Lena chases by hand. Lena logs her chases for four weeks before launch to give the baseline |
+| Days to answer | Two numbers. The median days from the first send to a rated answer, over rated answers only and counted across resends and Ask again. And the share of requests answered by the day 7 due date, where an open request counts as a miss once its due date has passed. A rated answer gives Interested or Not now on at least one startup, or says None of these fit with a reason. All Need more info is not rated |
+| First response | Share of requests with a submitted answer within one working day, including an answer that only asks for more information |
+| No manual chase | Share of answered requests where nobody pressed Remind now or answered on behalf. It counts follow-ups made in the product. Emails and calls outside it are not recorded |
 | Late rate | Share of requests, open or answered, whose wait is more than 1.2 times the business unit's median, or more than 8 days until the business unit has 10 answered requests |
 
 Three rules stop the numbers being gamed:
 
-1. Need more info counts as a first touch, not as a rated answer. The request closes as Answered, but the Days to answer clock runs on until Lena's Ask again gets a rated answer. A resend keeps the first send date.
+1. Need more info on every startup counts as a first response, not as a rated answer. The request closes as Answered, but the Days to answer clock runs on until Lena's Ask again gets a rated answer. A resend keeps the first send date.
 2. An answer is a choice for every startup, and Need more info and None of these fit carry a reason, so one click cannot count as an answer.
 3. Reports go by request and business unit, and owners' names stay out of them until the works council question under Assumptions is answered.
 
@@ -98,7 +98,7 @@ These patterns come from tools that already get busy outsiders to respond. The d
 | E-signature (DocuSign) | Sign from one email button with no account. Reminders and expiry are sender settings. Assign to Someone Else covers forwarded mail | One email, one button, no login, 14-day expiry, "Not me" and naming who should answer |
 | Code review (Microsoft's Nudge, Maddila et al.) | An automated nudge after 24 hours of inactivity cut the mean overdue pull request lifetime from 197 hours to 78 | Automatic reminders and a Waiting on others list |
 | Scheduling (Doodle, Calendly) | Reply without an account, give a name and email, see a confirmation on screen | One-page form on the phone, then a confirmation that says what happens next |
-| Service desks (Jira Service Management, Zendesk) | The clock stops at "Waiting for customer". First reply time excludes automated replies | Need more info counts as a first touch but, on purpose, does not stop the clock. Auto-replies never count as an answer |
+| Service desks (Jira Service Management, Zendesk) | The clock stops at "Waiting for customer". First reply time excludes automated replies | Need more info counts as a first response but, on purpose, does not stop the clock. Auto-replies never count as an answer |
 | CRMs (Pipedrive, HubSpot) | A deal turns red after a set number of inactive days and sorts first. Email sequences stop on a reply or a bounce, and pause on out-of-office | The request turns Late on day 8, and Late rows sort first. Reminders stop on an answer. Lena can pause them, and pausing on an auto-reply waits for the next release |
 | Survey research (Edwards et al. 2009, Van Mol 2014) | Shorter asks get more replies. The first reminder adds the most | Three ratings, "about 3 minutes", two reminders at most |
 
@@ -122,7 +122,7 @@ The first release is about 3 to 4 engineer-weeks. Before any of it is built, we 
 
 Each item is in because without it the request still stalls, Lena still chases, or we cannot measure the result. Everything else is ranked by value against effort under What comes next. The idea is unproven, so edge-case polish waits for the next release. Two things we accept for now: a wrong email address shows up only as Late on day 8, and an expired link needs Lena to resend.
 
-Email is the channel because every owner already has it and it fits the estimate. Lena hears on day 8 if nothing comes back. If an owner ignores a short ask with a date too, the problem is incentives. This release shows that. Only Sabine can fix it.
+Email is the channel because every owner already has it and it fits the estimate. Lena hears on day 8 if nothing comes back. If an owner ignores a short ask with a date too, friction was not the reason. It could be incentives, authority, competing work or missing information. This release cannot tell them apart. It shows where to look, and incentives is the one to raise with Sabine.
 
 ## 5. Prototype
 
