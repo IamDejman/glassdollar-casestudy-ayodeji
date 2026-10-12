@@ -5,7 +5,7 @@ Take-home brief for GlassDollar OS, written on 12 Oct 2026 without access to the
 | Deliverable | Where |
 |------|------------|
 | Functional prototype | [Live prototype](https://iamdejman.github.io/glassdollar-casestudy-ayodeji/) and [code](https://github.com/IamDejman/glassdollar-casestudy-ayodeji) |
-| Five tickets | Section 6 below, [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md) and [Linear GLA-5](https://linear.app/glassdollar-case/issue/GLA-5) (invite needed) |
+| Five tickets | [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md) and [Linear GLA-5](https://linear.app/glassdollar-case/issue/GLA-5) (invite needed) |
 | Brief | This document, sections 1 to 5 |
 
 ## 1. Pain point
@@ -102,31 +102,11 @@ Email is the channel because every owner already has it and it fits the estimate
 
 ## 5. Prototype
 
-This is the main flow end to end, taken from the [clickable prototype](https://iamdejman.github.io/glassdollar-casestudy-ayodeji/). It has a clock to jump to day 3, 7, 8 and 13, and a switch for Jonas being out of office.
-
-**Lena sends one request from the shortlist.** The dialog says the due date, the reminder days and when the request goes late.
-
-<img src="images/send-dialog.png" width="560" alt="The send dialog: Ask Jonas Keller to rate this shortlist, with the due date, the reminder days, a note field and a Send request button">
-
-**Jonas answers on his phone with no login.** He gets one email with one button. A tap to confirm it is him stops mail scanners from answering for him. Then he rates each startup with one of three choices.
-
-<img src="images/jonas-flow.png" width="900" alt="Three phone screens: the email with a Review 3 startups button, the identity page, and the answer page with three choices per startup">
-
-**Lena tracks everything in one list.** On day 8 the request goes Late and she hears about it once. Each row shows owner, age, due date, state and reminders, with Remind now, Cancel and Answer on behalf.
-
-<img src="images/waiting-on-others.png" width="900" alt="The Waiting on others list on day 8: PP-040 and PP-034 both Late, with the notice that Jonas Keller has not answered PP-034">
+The [clickable prototype](https://iamdejman.github.io/glassdollar-casestudy-ayodeji/) covers the main flow end to end: Lena sends one request from the shortlist, Jonas answers on his phone with no login, and Lena tracks everything in one list. It has a clock to jump to day 3, 7, 8 and 13, and a switch for Jonas being out of office. Screenshots are at the end of [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md).
 
 ## 6. Tickets
 
-There are five tickets, built in order, and each one ships on its own. The full specs, with what to build, user stories, acceptance criteria and edge cases, are in [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md). DR-1 has no dependencies and is ready to pick up.
-
-| Ticket | Title | What it delivers | Skills | Size | Depends on | Status |
-|----|---------|------------------------|-----------|---|------|-------|
-| DR-1 | Send and cancel a request from the shortlist | One button opens a dialog with an optional note. Send creates a Waiting request and snapshots the shortlist. The header shows state and age. Cancel takes a reason | Backend, frontend | M | Nothing | Ready |
-| DR-2 | The email, and a link that survives mail scanners | One email, one button, a plain-text link. A hashed token that lasts 14 days. Nothing counts until "Yes, I am Jonas Keller" is tapped. Expired links renew up to three times | Backend, email deliverability (SPF, DKIM, DMARC), security | L | DR-1 | Waits on DR-1 |
-| DR-3 | Jonas answers on one page, Lena sees it on the shortlist | Phone-first page with three choices per startup, or "None of these fit" with a reason. Answers land on the shortlist with one notification. The owner can name who should answer instead | Frontend (phone-first form, accessibility), backend | L | DR-1, DR-2 | Waits on DR-2 |
-| DR-4 | Reminders on days 3 and 7, pause when away, Late on day 8 | Two reminders, skipped if the owner was active in the last 24 hours. Pause on an auto-reply or a bounce. Late on day 8 with one alert to Lena | Backend (scheduled jobs), inbound email parsing | L | DR-1, DR-2 | Waits on DR-2 |
-| DR-5 | The Waiting on others list and the four measures | The list with Open, Answered and Cancelled tabs and row actions Remind now, Cancel, Answer on behalf and Send to someone else. The four measures as queries over the event log | Frontend, backend (permissions, reassignment), SQL | L | DR-3, DR-4 | Waits on DR-4 |
+There are five tickets, built in order, and each one ships on its own. The overview table and the full specs, with what to build, user stories, acceptance criteria and edge cases, are in [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md). DR-1 has no dependencies and is ready to pick up.
 
 All five follow the rules at the top of TICKETS.md:
 

@@ -12,13 +12,13 @@ We are building one list for Lena of everything still waiting on someone, filled
 
 Build them in this order. Each one ships on its own.
 
-| Ticket | What it delivers | Size | Needs | Area |
-|---|---|---|---|---|
-| DR-1 | Lena sends and cancels a request from the shortlist | M | nothing | Pain points |
-| DR-2 | The email, and a link that survives mail scanners | L | DR-1 | Notifications, Shared |
-| DR-3 | Jonas answers on one page, Lena sees it on the shortlist | L | DR-1, DR-2 | Pain points, Shared |
-| DR-4 | Reminders on days 3 and 7, pause when away, Late on day 8 | L | DR-1, DR-2 | Notifications |
-| DR-5 | The Waiting on others list and the four measures | L | DR-3, DR-4 | Pain points, Reports |
+| Ticket | Title | What it delivers | Area | Skills | Size | Depends on | Status |
+|---|---|---|---|---|---|---|---|
+| DR-1 | Send and cancel a request from the shortlist | One button opens a dialog with an optional note. Send creates a Waiting request and snapshots the shortlist. The header shows state and age. Cancel takes a reason | Pain points | Backend, frontend | M | Nothing | Ready |
+| DR-2 | The email, and a link that survives mail scanners | One email, one button, a plain-text link. A hashed token that lasts 14 days. Nothing counts until "Yes, I am Jonas Keller" is tapped. Expired links renew up to three times | Notifications, Shared | Backend, email deliverability (SPF, DKIM, DMARC), security | L | DR-1 | Waits on DR-1 |
+| DR-3 | Jonas answers on one page, Lena sees it on the shortlist | Phone-first page with three choices per startup, or "None of these fit" with a reason. Answers land on the shortlist with one notification. The owner can name who should answer instead | Pain points, Shared | Frontend (phone-first form, accessibility), backend | L | DR-1, DR-2 | Waits on DR-2 |
+| DR-4 | Reminders on days 3 and 7, pause when away, Late on day 8 | Two reminders, skipped if the owner was active in the last 24 hours. Pause on an auto-reply or a bounce. Late on day 8 with one alert to Lena | Notifications | Backend (scheduled jobs), inbound email parsing | L | DR-1, DR-2 | Waits on DR-2 |
+| DR-5 | The Waiting on others list and the four measures | The list with Open, Answered and Cancelled tabs and row actions Remind now, Cancel, Answer on behalf and Send to someone else. The four measures as queries over the event log | Pain points, Reports | Frontend, backend (permissions, reassignment), SQL | L | DR-3, DR-4 | Waits on DR-4 |
 
 Sizes are t-shirt sizes. The whole release is 5 to 7 engineer-weeks.
 
@@ -278,3 +278,20 @@ Lena needs one place that shows everything still waiting on someone and lets her
 - Remind now at 08:59 and the job at 09:00: skip the automatic reminder.
 - The new owner may already have another request open. The limit is per shortlist, not per owner.
 
+---
+
+## Prototype screenshots
+
+From the [live prototype](https://iamdejman.github.io/glassdollar-casestudy-ayodeji/).
+
+**Lena sends one request from the shortlist.** The dialog says the due date, the reminder days and when the request goes late.
+
+<img src="images/send-dialog.png" width="560" alt="The send dialog: Ask Jonas Keller to rate this shortlist, with the due date, the reminder days, a note field and a Send request button">
+
+**Jonas answers on his phone with no login.** He gets one email with one button. A tap to confirm it is him stops mail scanners from answering for him. Then he rates each startup with one of three choices.
+
+<img src="images/jonas-flow.png" width="900" alt="Three phone screens: the email with a Review 3 startups button, the identity page, and the answer page with three choices per startup">
+
+**Lena tracks everything in one list.** On day 8 the request goes Late and she hears about it once. Each row shows owner, age, due date, state and reminders, with Remind now, Cancel and Answer on behalf.
+
+<img src="images/waiting-on-others.png" width="900" alt="The Waiting on others list on day 8: PP-040 and PP-034 both Late, with the notice that Jonas Keller has not answered PP-034">
