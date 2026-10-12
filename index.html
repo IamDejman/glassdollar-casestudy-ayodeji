@@ -252,6 +252,16 @@ label.field{display:grid;gap:6px}
 .peek .preview{margin-top:10px}
 .dlg .actions{justify-content:flex-end}
 
+/* Design pass, 12 Oct 2026: stacked choices on the phone, startup cards in a row, the clock in its own bar */
+.page .opts{grid-template-columns:1fr;gap:8px}
+.page .opts label{justify-content:flex-start;gap:12px;padding:10px 14px;text-align:left;min-height:52px;font-size:16px}
+.page .opts input{position:static;inset:auto;opacity:1;width:20px;height:20px;margin:0;flex:none;accent-color:var(--accent)}
+.stack.startups{grid-template-columns:repeat(3,minmax(0,1fr))}
+@container lena (max-width:700px){.stack.startups{grid-template-columns:1fr}}
+.lena-label{font-weight:600;color:var(--ink)}
+.controls{width:100%;margin-left:0;background:#fff;border:1px solid var(--note-line);border-radius:var(--radius-s);padding:8px 12px}
+#resetGroup{margin-left:auto}
+.list th:last-child{text-align:right}
 @media (prefers-reduced-motion:reduce){*{transition:none !important}}
 </style>
 </head>
@@ -273,9 +283,9 @@ label.field{display:grid;gap:6px}
         <button class="btn" id="roleJonas" aria-pressed="false">Jonas Keller</button>
       </div>
     </div>
+    <div class="group" id="todayGroup"><span>Today is <span class="day" id="today">29 Sep 2026, day 0</span></span></div>
     <div class="group" id="clockGroup" role="group" aria-label="Clock">
-      <span>Today <span class="day" id="today">29 Sep 2026, day 0</span></span>
-      <span class="days"><span>Jump ahead to</span>
+      <span class="days" role="group" aria-label="Jump ahead to a day">
       <button class="btn small" data-day="3">Day 3</button>
       <button class="btn small" data-day="7">Day 7</button>
       <button class="btn small" data-day="8">Day 8</button>
@@ -628,13 +638,13 @@ function renderShortlist(){
       const it = r.answer.items.find(i => i.id === s.id);
       ans = `<div class="answer-line"><span class="pill ${it.choice === 'interested' ? 'done' : ''}">${label(it.choice)}</span>${it.comment ? `<span>${esc(it.comment)}</span>` : ''}</div>`;
     }
-    return `<div class="card startup"><div class="s-head"><span class="avatar" style="background:${s.hue}" aria-hidden="true">${s.ini}</span><h3>${s.name}</h3></div><p>${s.desc}</p><p class="note">Lena: ${s.lena}</p>${ans}</div>`;
+    return `<div class="card startup"><div class="s-head"><span class="avatar" style="background:${s.hue}" aria-hidden="true">${s.ini}</span><h3>${s.name}</h3></div><p>${s.desc}</p><p class="note"><span class="lena-label">Lena's note:</span> ${s.lena}</p>${ans}</div>`;
   }).join('');
   const noneFit = r && r.answer && r.answer.noneFit ? `<div class="card"><b>None of these fit.</b> ${esc(r.answer.noneFitText)}</div>` : '';
   const behalf = r && r.answer && r.answer.note ? `<p class="muted small">${esc(r.answer.note)}</p>` : '';
   const events = r ? `<details class="log"><summary>Events for this request (${r.events.length})</summary><table><thead><tr><th>Date</th><th>Event</th></tr></thead><tbody>${r.events.map(e => `<tr><td class="num">${fmt(e.day)}</td><td>${esc(e.text)}</td></tr>`).join('')}</tbody></table></details>` : '';
   return `<div class="head"><div><h1>PP-034 Reduce manual load planning for outbound trucks</h1><p class="meta small">Raised by Jonas Keller, logistics process lead at the Hamburg hub. Three startups on the shortlist.</p></div><div class="actions">${status}${action}</div></div>
-    <div class="stack">${noneFit}${cards}</div>${behalf}${events}`;
+    <div class="stack">${noneFit}<div class="stack startups">${cards}</div></div>${behalf}${events}`;
 }
 
 function renderWaiting(){
@@ -658,8 +668,8 @@ function renderWaiting(){
     return `<button type="button" class="btn small menu-btn" popovertarget="menu-${k}-${x.id}">Actions</button><div class="menu-items" id="menu-${k}-${x.id}" popover>${items.join('')}</div>`;
   };
   const reqCell = x => x.fixed ? `<b>${x.id}</b>` : `<button type="button" class="linkish" data-act="open">${x.id}</button>`;
-  const table = rows.length ? `<div class="tablecard"><table class="list"><thead><tr><th>Request</th><th>Owner</th><th>Age</th><th>Due</th><th>State</th><th>Reminders</th><th>Last owner action</th><th><span class="sr-only">Actions</span></th></tr></thead><tbody>
-    ${rows.map(x => `<tr><td>${reqCell(x)}<br><span class="small muted">${x.title}</span></td><td>${esc(x.owner)}</td><td class="num">${x.age} days</td><td class="num">${x.due}</td><td>${pill(x.state)}</td><td class="num">${x.reminders}</td><td>${esc(x.last)}</td><td>${actions(x, 't')}</td></tr>`).join('')}</tbody></table></div>
+  const table = rows.length ? `<div class="tablecard"><table class="list"><thead><tr><th>Request</th><th>Owner</th><th>Age</th><th>Due</th><th>State</th><th>Reminders</th><th>Last owner action</th><th>Actions</th></tr></thead><tbody>
+    ${rows.map(x => `<tr><td>${reqCell(x)}<br><span class="small muted">${x.title}</span></td><td>${esc(x.owner)}</td><td class="num">${x.age} days</td><td class="num">${x.due}</td><td>${pill(x.state)}</td><td class="num">${x.reminders}</td><td>${esc(x.last)}</td><td>${actions(x, 't') || '-'}</td></tr>`).join('')}</tbody></table></div>
     <div class="rows">${rows.map(x => `<div class="card row-card"><div class="row-head"><b>${reqCell(x)} ${x.title}</b>${pill(x.state)}</div>
       <div class="kv"><span>Owner</span><b>${esc(x.owner)}</b><span>Age</span><b>${x.age} days</b><span>Due</span><b>${x.due}</b><span>Reminders</span><b>${x.reminders}</b><span>Last action</span><b>${esc(x.last)}</b></div><div class="actions">${actions(x, 'c')}</div></div>`).join('')}</div>`
     : `<div class="card empty">${view === 'open' ? 'Nothing is waiting on anyone.' : view === 'answered' ? 'No answers yet.' : 'Nothing has been cancelled.'}</div>`;
@@ -706,19 +716,19 @@ function renderJonas(){
   } else if (S.screen === 'done'){
     body = renderDone(false);
   }
-  return `<div class="screen"><div class="statusbar" aria-hidden="true"><span>9:41</span><span>${short(S.day)}</span></div>${body}</div>`;
+  return `<div class="screen"><div class="statusbar" aria-hidden="true"><span>9:41</span><span>${fmt(S.day)}</span><span>5G</span></div>${body}</div>`;
 }
 
 function renderForm(){
   const r = S.req;
-  const cards = STARTUPS.map(s => `<fieldset class="choice" data-startup="${s.id}" id="f_${s.id}"><legend>${s.name}</legend><p class="desc">${s.desc}</p><p class="lena">Lena: ${s.lena}</p>
+  const cards = STARTUPS.map(s => `<fieldset class="choice" data-startup="${s.id}" id="f_${s.id}"><legend>${s.name}</legend><p class="desc">${s.desc}</p><p class="lena"><span class="lena-label">Lena's note:</span> ${s.lena}</p>
     <div class="opts">${CHOICES.map(([v, t]) => `<label><input type="radio" name="c_${s.id}" value="${v}"><span>${t}</span></label>`).join('')}</div>
     <p class="err" id="e_${s.id}" hidden>Pick one before you send.</p>
     <button class="btn quiet small" type="button" data-note="${s.id}">Add a note for Lena</button>
     <label class="field small" id="l_${s.id}" hidden>Note for Lena<textarea id="n_${s.id}" name="n_${s.id}" autocomplete="off" maxlength="1000" placeholder="Anything Lena should know…"></textarea></label></fieldset>`).join('');
   return `<form class="page" id="answerForm" novalidate>
     <div><h1>PP-034 Reduce manual load planning for outbound trucks</h1><p class="lead">Lena needs your view on each by ${fmt(r.sentDay + DUE_DAY)}.</p></div>
-    ${r.note ? `<p class="lena-note">Lena: ${esc(r.note)}</p>` : ''}
+    ${r.note ? `<p class="lena-note"><span class="lena-label">Lena's note:</span> ${esc(r.note)}</p>` : ''}
     ${cards}
     <label class="check"><input type="checkbox" id="noneFit" name="noneFit"><span>None of these fit</span></label>
     <label class="field" id="noneFitLabel" hidden>Tell Lena why<textarea id="noneFitText" name="noneFitText" autocomplete="off" maxlength="1000" placeholder="What's missing, or what would fit better…"></textarea></label>
