@@ -4,7 +4,7 @@ This is the prototype from my GlassDollar case study. It tackles the third pain 
 
 Try it here: https://iamdejman.github.io/glassdollar-casestudy-ayodeji/
 
-The brief is in PRODUCT-BRIEF.md. The five engineering tickets are in TICKETS.md, each split into sub-issues in build order with their own acceptance criteria, and mirrored to Linear.
+The brief is in PRODUCT-BRIEF.md, and the detail cut from it is in SUPPORTING-NOTES.md. The five engineering tickets are in TICKETS.md, each split into sub-issues in build order with their own acceptance criteria, and mirrored to Linear.
 
 The whole prototype is a single HTML file. You can open index.html from disk or use the link above.
 
