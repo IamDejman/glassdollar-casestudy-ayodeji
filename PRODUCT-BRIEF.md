@@ -106,7 +106,7 @@ The [clickable prototype](https://iamdejman.github.io/glassdollar-casestudy-ayod
 
 ## 6. Tickets
 
-Five tickets, deployed in order, are in [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md): an overview table, acceptance criteria for the whole flow, and sub-issues in build order with their own criteria. The rules they share, and what done means, are at the top of that file. DR-1 can be built once the one-hour owner check is done, DR-2 waits for the link test as well, and every other open question has a default and blocks nothing.
+Five tickets, deployed in order, are in [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md): an overview table, then sub-issues in build order, each with what to build and acceptance criteria. The rules they share, and what done means, are at the top of that file. DR-1 can be built once the one-hour owner check is done, DR-2 waits for the link test as well, and every other open question has a default and blocks nothing.
 
 ## What comes next
 
