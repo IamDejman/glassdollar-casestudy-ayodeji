@@ -4,25 +4,13 @@ This brief reads best on a desktop screen. The tables do not fit a phone.
 
 Take-home brief for GlassDollar OS, written on 12 Oct 2026 without access to the product, its users or its data.
 
-Nordwind Industrial AG and its people are invented so the examples can be concrete. Where a figure comes from an outside source, the source is named. The rest is assumption.
-
 | Deliverable | Where |
 |------|------------|
 | Functional prototype | [Live prototype](https://iamdejman.github.io/glassdollar-casestudy-ayodeji/) and [code](https://github.com/IamDejman/glassdollar-casestudy-ayodeji) |
 | Five tickets | [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md) is the source of truth, mirrored to [Linear GLA-5](https://linear.app/glassdollar-case/issue/GLA-5) (invite needed) |
 | Brief | This document, sections 1 to 5 |
 
-## What I need from you
-
-Two checks before any build, then three calls. Each call has a default in the tickets, so none of them blocks DR-1.
-
-1. One hour with Lena to confirm which decisions need the owner at all. If most shortlists do not, the first request type moves to the decision after a pilot, where the owner's answer is unavoidable.
-2. One week at one customer: send a test link to 10 addresses and ask IT whether mail scanners and SSO let it through.
-3. Whether days 3, 7 and 8 are calendar or working days. The tickets assume calendar days.
-4. Whether the OS should store each owner's manager. Escalation would need it, and this release does not.
-5. Who at Nordwind answers works council questions, so we learn whether reports may name owners. Until then they go by request and business unit.
-
-DR-1 has no dependencies and can start as soon as the first two are done.
+Context: Nordwind Industrial AG and its people are invented so the examples can be concrete. Lena Hartmann, Jonas Keller and Dr. Sabine Koch all work at Nordwind, the customer in every example. Where a figure comes from an outside source, the source is named. The rest is assumption.
 
 ## 1. Pain point
 
@@ -116,7 +104,7 @@ These patterns come from tools that already get busy outsiders to respond. The d
 
 ## 4. Scope
 
-The first release is about 3 to 4 engineer-weeks. Before any of it is built, the two checks under What I need from you run: an hour with Lena and a one-week link test at one customer. The tickets deploy in order, and DR-1 to DR-3 together are the first slice a user gets value from.
+The first release is about 3 to 4 engineer-weeks. Before any of it is built, we ask Lena which decisions need the owner and test the link and SSO at one real customer. The tickets deploy in order. Nothing is useful before DR-3 is live: DR-1 alone records a request, and DR-2 alone sends a link to an empty page.
 
 | In the first release | Later or out |
 |---|---|
@@ -142,14 +130,14 @@ The [clickable prototype](https://iamdejman.github.io/glassdollar-casestudy-ayod
 
 ## 6. Tickets
 
-There are five tickets, deployed in order. DR-1 to DR-3 together are the first slice a user gets value from. The overview table and the full specs, with what to build, user stories, acceptance criteria and edge cases, are in [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md). DR-1 has no dependencies and is ready to pick up.
+There are five tickets, deployed in order, and nothing is useful before DR-3 is live. The overview table and the full specs are in [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md). Each ticket has acceptance criteria for the whole flow and is split into sub-issues in build order, each with its own what to build and acceptance criteria. The tickets say user and owner where this brief says Lena and Jonas. DR-1 has no dependencies and is ready to pick up.
 
 All five follow the rules at the top of TICKETS.md:
 
 1. One open request per shortlist.
 2. Calendar days in Europe/Berlin.
 3. Jobs at 09:00 on weekdays.
-4. Nothing closes a request on its own.
+4. A request closes only when a person answers or cancels it.
 5. One event table.
 
 A ticket is done when its acceptance criteria pass against the sample data and the edge cases in the spec are handled.
@@ -165,6 +153,12 @@ After launch, in order of value against effort:
 5. One-click send-on with a fresh link when the owner names someone else.
 6. Two-line plain-language summaries per startup, approved by Lena before they go out.
 7. Link renewal, the Answered and Cancelled tabs, and a unit-wide view of the list.
+
+Three decisions sit with GlassDollar:
+
+1. Which decisions need the owner at all.
+2. Whether days 3, 7 and 8 are calendar or working days.
+3. Whether the OS should store each owner's manager, which escalation would need.
 
 If the baseline shows most shortlists are already answered within a week, the first request type moves to the decision after a pilot instead.
 
