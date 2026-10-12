@@ -10,12 +10,12 @@ Decision requests. The user asks one question from the shortlist. The owner gets
 
 ## The five tickets
 
-Build and deploy them in this order. Nothing is useful before DR-3 is live: DR-1 alone records a request, and DR-2 alone sends a link to an empty page. Two checks come before DR-1: ask the innovation manager at the pilot customer which decisions need the owner (one hour), and send a test link to 10 addresses at that customer to see whether mail scanners and SSO let it through (one week).
+Build and deploy them in this order. Nothing is useful before DR-3 is live: DR-1 alone records a request, and DR-2 alone sends a link to an empty page. One check comes before DR-1: ask the innovation manager at the pilot customer which decisions need the owner (one hour). One more comes before DR-2: send a test link to 10 addresses at that customer to see whether it survives the mail gateway and SSO (one week).
 
 | Ticket | Title | What it delivers | Area | Skills | Size | Depends on | Status |
 |---|---|---|---|---|---|---|---|
-| DR-1 | Send and cancel requests from the shortlist | One button opens a dialog with the recipient, the owner preselected, and an optional note. Send creates a Waiting request and snapshots the shortlist. The header shows state and age. Cancel takes a reason. Cancel and resend for a changed shortlist or a named person | Pain points | Backend, frontend | M | Nothing | Ready |
-| DR-2 | Email the owner a link that works without a login | One email, one button, a plain-text link. A hashed token that lasts 14 days. Nothing counts until the owner taps "Yes, I am {owner}". An expired link says to ask the user | Notifications, Shared | Backend, email deliverability (SPF, DKIM, DMARC), security | M | DR-1 | Waits on DR-1 |
+| DR-1 | Send and cancel requests from the shortlist | One button opens a dialog with the recipient, the owner preselected, and an optional note. Send creates a Waiting request and snapshots the shortlist. The header shows state and age. Cancel takes a reason. Cancel and resend for a changed shortlist or a named person | Pain points | Backend, frontend | M | Nothing | Specified. Build after the one-hour owner check |
+| DR-2 | Email the owner a link that works without a login | One email, one button, a plain-text link. A hashed token that lasts 14 days. Nothing counts until the owner taps "Yes, I am {owner}". An expired link says to ask the user | Notifications, Shared | Backend, email deliverability (SPF, DKIM, DMARC), security | M | DR-1 | Waits on DR-1 and the link test |
 | DR-3 | Let the owner answer on one page | A phone-first page with three choices per startup, or None of these fit with a reason. Answers land on the shortlist with one notification. The owner can name who should answer instead | Pain points, Shared | Frontend (phone-first form, accessibility), backend | M | DR-1, DR-2 | Waits on DR-2 |
 | DR-4 | Remind the owner and mark requests Late | Two reminders, skipped if the owner was active in the last 24 hours. Late on day 8 with one alert to the user. Pause and resume, and a pending handoff pauses | Notifications | Backend (scheduled jobs) | M | DR-1, DR-2 | Waits on DR-2 |
 | DR-5 | List open requests and measure the wait | The list of open requests with Remind now, Cancel, Answer on behalf, Pause and Resume. The four measures as queries over the event log | Pain points, Reports | Frontend, backend (permissions), SQL | M | DR-3, DR-4 | Waits on DR-4 |
@@ -47,7 +47,7 @@ Test against the sample data at https://github.com/IamDejman/glassdollar-casestu
 
 ## Open questions
 
-None of these blocks a build. Each has a default the tickets follow until it is answered. "The innovation manager" is the one at the pilot customer.
+None of these blocks a build. The two checks that do are above, under The five tickets. Each question here has a default the tickets follow until it is answered. "The innovation manager" is the one at the pilot customer.
 
 - Who can the user send to? Default: any OS user with an email address, the owner preselected. Ask the innovation manager how often the right person is outside the OS.
 - Should finalising cancel the request? Default: yes, so nothing stays open on a closed pain point. Ask the innovation manager whether late answers are worth keeping.
@@ -537,15 +537,17 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 
 - Event types in the table: created, link_opened, identity_confirmed, not_me, reminder_sent, reminder_skipped, remind_now, paused, resumed, late, handoff, answered, cancelled. Every sub-issue above writes its own.
 - Four queries over the chains whose first request was created in a period. No screen yet. Cancelled chains are left out. No query returns an owner's name or user id; results go by request id and business unit.
-  - Days to answer: the median days from the chain's first created to answered, over chains answered with rated true only, and the share of chains answered by day 7, where an open chain counts as a miss once its due_at has passed.
+  - Days to answer: the median days from the chain's first created to answered, over chains answered with rated true only, and the share of chains with a rated answer by day 7, where a chain without one counts as a miss once its due_at has passed.
   - First response: the share of chains with an answered event within one working day of the first created, rated or not. This is the one measure in working days, as the brief defines it.
   - No manual chase: the share of answered chains with no remind_now and no on_behalf answer. Follow-ups outside the product are not recorded and do not count.
-  - Late rate: the share of chains whose wait (answered minus first created, or today minus first created while open) is more than 1.2 times the business unit's median, or more than 8 days until the business unit has 10 answered chains.
+  - Late rate: the share of chains whose wait (the rated answered minus the first created, or today minus the first created while there is no rated answer) is more than 1.2 times the business unit's median, or more than 8 days until the business unit has 10 chains with a rated answer.
+- A chain is resolved by a rated answer or a cancel. A chain whose last request is Answered with rated false stays unresolved, and its clock runs until a rated answer.
 
 **Acceptance criteria**
 
 - The sample data read as chains of one request each (sent_to_owner_at is created, owner_feedback_at is answered when complete, partial is open, the sample data's reminders_sent are chases): a median of 7 days over 11 answered, 8 of 13 by day 7, 9 of 11 without a chase, and a late rate of 3 of 13.
 - A chain of two requests, the first sent 29 Sep 2026 and resent 1 Oct, answered 3 Oct: Days to answer counts 4 days, not 2.
+- The owner answers all three with Need more info on 2 Oct 2026 and the user never presses Ask again. On 12 Oct the chain is a miss for the day 7 share, its Late rate wait is 13 days and still running, and it is not in the median.
 - A query result lists chains by request id and business unit. No column holds an owner's name or user id.
 
 **Edge cases**
