@@ -85,8 +85,6 @@ Listed so the cut is explicit. Nothing here is in scope for the first release.
 - The closing-the-loop email
 - The daily digest
 
-The brief says why: https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/PRODUCT-BRIEF.md.
-
 ---
 
 ### DR-1: Send and cancel requests from the shortlist
