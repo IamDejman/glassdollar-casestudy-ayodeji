@@ -2,11 +2,11 @@
 
 ## The problem
 
-Lena sends Jonas a shortlist. Two weeks pass. She chases by email, he can't find his login, and the pain point sits in Shortlist. We want to cut the days between "shortlist sent" and "owner answered".
+Lena sends Jonas a shortlist and waits. She chases by email, he cannot find his login, and the pain point sits in Shortlist for weeks. We want to cut the days between "shortlist sent" and "owner answered".
 
 ## What we are building
 
-One list for Lena of everything still waiting on someone. A decision request is what fills it. Lena asks one question from the shortlist. Jonas gets an email with one button and answers on one page in about three minutes. If he goes quiet, the system reminds him. If he is the wrong person, he names the right one and Lena sends it on with one click.
+We are building one list for Lena of everything still waiting on someone, filled by decision requests. Lena asks one question from the shortlist. Jonas gets an email with one button and answers on one page in about three minutes. If he goes quiet, the OS reminds him. If he is the wrong person, he names the right one and Lena sends it on with one click.
 
 ## The five tickets
 
@@ -22,7 +22,7 @@ Build them in this order. Each one ships on its own.
 
 Sizes are t-shirt sizes. The whole release is 5 to 7 engineer-weeks.
 
-Test against the sample data at https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/data/sample-data.json. Today in it is 12 Oct 2026.
+Test against the sample data at https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/data/sample-data.json. In the sample data, today is 12 Oct 2026.
 
 ## Rules for all five tickets
 
@@ -57,7 +57,12 @@ None of these blocks a build. Each has a default the tickets follow until it is 
 
 ## Not in this release
 
-Suggested stage change, editing a request after sending, the closing-the-loop email, the daily digest. The brief says why: https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/PRODUCT-BRIEF.md.
+- Suggested stage change
+- Editing a request after sending
+- The closing-the-loop email
+- The daily digest
+
+The brief says why: https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/PRODUCT-BRIEF.md.
 
 ---
 
@@ -145,7 +150,7 @@ Jonas gets one email with one button. He taps it, confirms it is him, and lands 
 
 #### Description
 
-After the identity tap, Jonas gets one page with the three startups and three choices each. He picks, adds a note if he wants, and sends. Lena sees the answers on the shortlist and gets one notification. Nobody asks twice.
+After the identity tap, Jonas gets one page with the three startups and three choices each. He picks, adds a note if he wants, and sends. Lena sees the answers on the shortlist and gets one notification, so she never has to ask twice.
 
 #### What to build
 
@@ -186,7 +191,7 @@ After the identity tap, Jonas gets one page with the three startups and three ch
 
 #### Description
 
-Today Lena is the reminder system. This ticket moves it into the OS: two automatic reminders, a pause when the out-of-office replies, and a Late mark on day 8 so Lena knows when to step in.
+Today Lena is the reminder system. This ticket moves that into the OS. It sends two automatic reminders, pauses when an out-of-office replies, and marks the request Late on day 8 so Lena knows when to step in.
 
 #### What to build
 
@@ -242,7 +247,7 @@ Lena needs one place that shows everything still waiting on someone and lets her
 - Answer on behalf opens the DR-3 form with a required note, default "recorded by Lena Hartmann from a call". via is on_behalf. No email to the owner. His link then shows "Already answered by Lena Hartmann".
 - "Send to Petra Ahlers instead" moves the request to that person with a fresh link. sent_at and due_at restart, reminders_sent goes to 0, the old owner gets nothing, and the old link shows "This request went to Petra Ahlers". If the handoff matched no user, ask Lena for an email address and store a contact (name, email, no login). Put the same button on the shortlist header.
 - Event types: created, link_opened, identity_confirmed, not_me, link_renewed, reminder_sent, reminder_skipped, remind_now, paused, resumed, late, handoff, reassigned (old owner, new owner), answered, cancelled.
-- Four queries over the requests created in a period. No screen yet.
+- Four queries over the requests created in a period, with no screen yet:
   - Owner wait time: the median days from created to answered over answered requests with rated true, and the share of all requests answered by day 7, with unanswered counted as misses.
   - First touch: the share answered within one working day.
   - No manual chase: the share of answered requests with no remind_now before the answer.
