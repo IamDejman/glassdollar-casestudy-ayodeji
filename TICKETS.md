@@ -14,11 +14,11 @@ Build and deploy them in this order. Nothing is useful before DR-3 is live: DR-1
 
 | Ticket | Title | What it delivers | Area | Skills | Size | Depends on | Status |
 |---|---|---|---|---|---|---|---|
-| DR-1 | Send and cancel requests from the shortlist | One button opens a dialog with the recipient, the owner preselected, and an optional note. Send creates a Waiting request and snapshots the shortlist. The header shows state and age. Cancel takes a reason. Cancel and resend for a changed shortlist or a named person | Pain points | Backend, frontend | M | Nothing | Specified. Build after the stall check and the owner check |
+| DR-1 | Send and cancel requests from the shortlist | One button opens a dialog with the recipient, the owner preselected, and an optional note. Send creates a Waiting request and snapshots the shortlist. The header shows state and age. Cancel takes a reason. Resend to the person the owner named | Pain points | Backend, frontend | M | Nothing | Specified. Build after the stall check and the owner check |
 | DR-2 | Email the owner a link that works without a login | One email, one button, a plain-text link. A hashed token that lasts 14 days. Nothing counts until the owner taps "Yes, I am {owner}". An expired link says to ask the user | Notifications, Shared | Backend, email deliverability (SPF, DKIM, DMARC), security | M | DR-1 | Waits on DR-1 and the link test |
 | DR-3 | Let the owner answer on one page | A phone-first page with three choices per startup, or None of these fit with a reason. Answers land on the shortlist with one notification. The owner can name who should answer instead | Pain points, Shared | Frontend (phone-first form, accessibility), backend | M | DR-1, DR-2 | Waits on DR-2 |
 | DR-4 | Remind the owner and mark requests Late | Two reminders, skipped if the owner was active in the last 24 hours. Late on day 8 with one alert to the user. Pause and resume, and a pending handoff pauses | Notifications | Backend (scheduled jobs) | M | DR-1, DR-2 | Waits on DR-2 |
-| DR-5 | List open requests and measure the wait | The list of open requests with Remind now, Cancel, Answer on behalf, Pause and Resume. The four measures as queries over the event log | Pain points, Reports | Frontend, backend (permissions), SQL | M | DR-3, DR-4 | Waits on DR-4 |
+| DR-5 | List open requests and measure the wait | The list of open requests with Remind now, Cancel, Answer on behalf, Pause and Resume. The two measures as queries over the event log | Pain points, Reports | Frontend, backend (permissions), SQL | M | DR-3, DR-4 | Waits on DR-4 |
 
 Sizes are t-shirt sizes. The whole release is about 3 to 4 engineer-weeks. Each ticket is split into sub-issues, numbered DR-x.y in build order. Each has a story, what to build and acceptance criteria. A sub-issue is done when its acceptance criteria pass against the sample data, and a ticket when all its sub-issues are.
 
@@ -32,7 +32,7 @@ Test against the sample data at https://github.com/IamDejman/glassdollar-casestu
 - Copy in quotes is a template. {user} is the sender's full name, {owner} the recipient's full name, {named person} the person an owner names instead, {pain point} the pain point id, {due date} the due date, {date} a date, {n} a number.
 - A request is one question from a user to one owner about one shortlist. This release has one question: rate this shortlist.
 - States: Waiting, Paused, Late, Answered, Cancelled. Waiting, Paused and Late are open. An open request can become Answered or Cancelled. Those two are final.
-- A chain is a request and its resends. Cancel and resend, Resend to a named person and Ask again all create a new request with parent_request_id set to the old one. The list's Age column is per request. The measures count chains from the first request's created, so the clock never stops across a resend.
+- A chain is a request and its resends. Resend to a named person and Ask again both create a new request with parent_request_id set to the old one. The list's Age column is per request. The measures count chains from the first request's created, so the clock never stops across a resend.
 - Owner activity means identity_confirmed, a view of the answer page with a session, handoff and answered. link_opened is logged for every fetch, scanners included, and is not activity. Activity drives the reminder skip in DR-4.1 and the Last owner action column in DR-5.1.
 
 **Rules**
@@ -80,6 +80,8 @@ Listed so the cut is explicit. Nothing here is in scope for the first release.
 - Merged reminder emails for one owner
 - Suggested stage change
 - Editing a request after sending
+- Cancel and resend in one step when the shortlist or the pain point's owner changes. The user cancels and sends again
+- First response and Late rate as measures. They wait until a quarter of data is in
 - The closing-the-loop email
 - The daily digest
 
@@ -100,7 +102,7 @@ Writes: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request
 | DR-1.1 | Enable the user to send a request from the shortlist | S | - |
 | DR-1.2 | Show the request's state and age on the shortlist | XS | DR-1.1 |
 | DR-1.3 | Enable the user to cancel a request | XS | DR-1.2 |
-| DR-1.4 | Enable the user to cancel and resend when the shortlist or owner changes | S | DR-1.3 |
+| DR-1.4 | Enable the user to resend to the person the owner named | XS | DR-1.3 |
 
 #### DR-1.1 Enable the user to send a request from the shortlist
 
@@ -139,7 +141,7 @@ Writes: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request
 
 - A second user opens the load planning shortlist on 12 Oct 2026. The header shows the Late label and "{owner}, day 13" with "Cancel request", and there is no send button. The supplier onboarding shortlist shows day 24 the same way.
 - The request was sent today. Every user who can see the pain point sees the Waiting label and "{owner}, day 0" within the minute, and no email leaves the OS until DR-2 is built.
-- The pain point's owner changes while a request is open: the request keeps its recipient. The header adds "Owner is now {named person}", and DR-1.4 adds the resend.
+- The pain point's owner changes while a request is open: the request keeps its recipient and the header does not change. The user can cancel and send to the new owner.
 
 #### DR-1.3 Enable the user to cancel a request
 
@@ -157,22 +159,19 @@ Writes: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request
 - The shortlist is finalised on 12 Oct 2026 while the request is open. The request is Cancelled with the reason "finalised", cancelled is logged, the owner gets no email, and the button does not come back.
 - Cancel on a request that was answered a second earlier: refuse with "Already answered". The answer stands.
 
-#### DR-1.4 Enable the user to cancel and resend when the shortlist or owner changes
+#### DR-1.4 Enable the user to resend to the person the owner named
 
-**Story.** As a user, I want to resend a changed shortlist, or send it to the person the owner named, without typing the request again.
+**Story.** As a user, I want to send the request to the person the owner named without typing it again.
 
 **What to build**
 
-- When a startup is added or removed while a request is open, show the banner "Shortlist changed since the request" with the button "Cancel and resend".
-- Cancel and resend cancels the open request with the reason "resent" and reopens the send dialog with the note filled in. Send creates a new request with parent_request_id set to the cancelled one. The old link then shows "{user} no longer needs this" (DR-2.2).
-- When the owner has named someone else (DR-3.3), show "Resend to {named person}" in the header. It is the same cancel and resend with that person preselected.
-- When the pain point's owner changes while a request is open, show "Resend to {named person}" the same way, with the new owner preselected.
+- When the owner has named someone else (DR-3.3), show "Resend to {named person}" in the header.
+- Resend cancels the open request with the reason "resent" and reopens the send dialog with that person preselected and the note filled in. Send creates a new request with parent_request_id set to the cancelled one. The old link then shows "{user} no longer needs this" (DR-2.2).
 
 **Acceptance criteria**
 
-- The user adds a fourth startup while the load planning request is open. The banner shows. Cancel and resend cancels the old request and opens the dialog with the note. Send creates a new Waiting request with 4 startups and parent_request_id set to the old one.
 - The load planning owner named someone else on 1 Oct 2026. The user presses "Resend to {named person}" and sends. The old request is Cancelled, the new one is Waiting for the named person from 1 Oct with due_at 8 Oct, reminders_sent 0 and parent_request_id set to the old one.
-- Send, cancel and resend on one shortlist in a row. The shortlist never has two open requests, each request has its own id, the resend's parent_request_id points at the cancelled one, the event log reads created, cancelled, created in that order, and every event carries the id of the user who acted.
+- Send, resend and cancel on one shortlist in a row. The shortlist never has two open requests, each request has its own id, the resend's parent_request_id points at the cancelled one, the event log reads created, cancelled, created in that order, and every event carries the id of the user who acted.
 - The named person is the sender, or is not an OS user: open the dialog with no recipient and say why, so the user picks someone.
 - The new recipient already has a request open on another shortlist: allowed. The limit is one open request per shortlist, not per person.
 
@@ -219,7 +218,7 @@ Writes: token_hash, confirmed_at. Events: link_opened, identity_confirmed, not_m
 
 - The link carries a random token of 32 bytes or more. Store only its hash in token_hash, tied to the request and the recipient's address. Log link_opened with the user agent on every fetch.
 - The token is valid until expires_at. The same link works from reminders, other devices and later days.
-- Expired link: "This link has expired. Ask {user} for a new one." The user's cancel and resend (DR-1.4) issues the new one. Answered request: "Your answer was sent on {date}". Cancelled request: "{user} no longer needs this". None of these pages shows a startup.
+- Expired link: "This link has expired. Ask {user} for a new one." The user cancels and sends again (DR-1.3, DR-1.1) to issue a new one. Answered request: "Your answer was sent on {date}". Cancelled request: "{user} no longer needs this". None of these pages shows a startup.
 
 **Acceptance criteria**
 
@@ -289,7 +288,7 @@ Writes: answered_at, via, rated, handoff_name. Events: answered, handoff, paused
 - No path to Answered stores a partial answer, including answer on behalf (DR-5.2): every startup has a choice or None of these fit is ticked, and every required comment is there.
 - Every text on the owner's pages takes the user's and owner's names from the request. No name is hard-coded.
 - Two tabs submit: the second sees "Already sent".
-- Opened after a cancel, including a cancel and resend: "{user} no longer needs this". After an answer on behalf (DR-5.2): "Already answered by {user}".
+- Opened after a cancel, including a resend to a named person: "{user} no longer needs this". After an answer on behalf (DR-5.2): "Already answered by {user}".
 - The user answers on behalf at 10:00 and the owner presses Send at 10:01: the owner sees "Already answered by {user}". The user's answer stands.
 
 #### DR-3.2 Show the answer on the shortlist and notify the user
@@ -413,7 +412,7 @@ Writes: reminders_sent, the states Late and Paused. Events: reminder_sent, remin
 
 #### Description
 
-The user needs one place that shows every request still waiting on someone and lets them act from there. The product team needs to know whether any of this worked, so the same ticket adds the four measures as queries over the event log.
+The user needs one place that shows every request still waiting on someone and lets them act from there. The product team needs to know whether any of this worked, so the same ticket adds the two measures as queries over the event log.
 
 Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 
@@ -421,7 +420,7 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 |---|---|---|---|
 | DR-5.1 | Show the user a list of open requests | S | DR-4.3 |
 | DR-5.2 | Enable the user to act on a request from the list | S | DR-5.1 |
-| DR-5.3 | Compute the four measures from the event log | S | DR-5.2 |
+| DR-5.3 | Compute the two measures from the event log | S | DR-5.2 |
 
 #### DR-5.1 Show the user a list of open requests
 
@@ -450,7 +449,7 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 
 - Row actions for Waiting and Late: Open shortlist, Remind now, Cancel, Answer on behalf, Pause reminders, and "Resend to {named person}" when the owner has named someone. Paused: the same with Resume reminders instead of Pause, and Remind now warns "Reminders are paused".
 - Remind now sends the DR-4.1 reminder email now, adds 1 to chases, and logs remind_now. It never uses up an automatic reminder. Then show "Reminded today" on the row for 24 hours.
-- Cancel is DR-1.3's cancel. Pause and Resume are DR-4.3's. "Resend to {named person}" is DR-1.4's cancel and resend.
+- Cancel is DR-1.3's cancel. Pause and Resume are DR-4.3's. "Resend to {named person}" is DR-1.4's resend.
 - Answer on behalf opens the DR-3.1 form for the user with a required note, default "Recorded by {user} from a call on {date}". Set via on_behalf. Send no email to the owner. The owner's link then shows "Already answered by {user}".
 - Any user who can edit the pain point can take these actions. The event log records who.
 
@@ -466,28 +465,25 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 - Two users act on the same request at once: the first wins, the second sees "Already answered".
 - Remind now on a Paused request: the warning shows and nothing is sent until the user confirms.
 
-#### DR-5.3 Compute the four measures from the event log
+#### DR-5.3 Compute the two measures from the event log
 
-**Story.** As the product team, we want the four measures as queries, so that after a quarter we know whether the wait got shorter.
+**Story.** As the product team, we want the two measures as queries, so that after a quarter we know whether the wait got shorter.
 
 **What to build**
 
 - Event types in the table: created, link_opened, identity_confirmed, not_me, reminder_sent, reminder_skipped, remind_now, paused, resumed, late, handoff, answered, cancelled. Every sub-issue above writes its own.
-- Four queries over the chains whose first request was created in a period. No screen yet. Cancelled chains are left out. No query returns an owner's name or user id; results go by request id and business unit.
+- Two queries over the chains whose first request was created in a period. No screen yet. Cancelled chains are left out. No query returns an owner's name or user id; results go by request id and business unit.
   - Days to answer: the median days from the chain's first created to answered, over chains answered with rated true only, and the share of chains with a rated answer by day 7, where a chain without one counts as a miss once its due_at has passed.
-  - First response: the share of chains with an answered event within one working day of the first created, rated or not. This is the one measure in working days, as the brief defines it.
   - No manual chase: the share of answered chains with no remind_now and no on_behalf answer. Follow-ups outside the product are not recorded and do not count.
-  - Late rate: the share of chains whose wait (the rated answered minus the first created, or today minus the first created while there is no rated answer) is more than 1.2 times the business unit's median, or more than 8 days until the business unit has 10 chains with a rated answer.
 - A chain is resolved by a rated answer or a cancel. A chain whose last request is Answered with rated false stays unresolved, and its clock runs until a rated answer.
 
 **Acceptance criteria**
 
-- The sample data read as chains of one request each (sent_to_owner_at is created, owner_feedback_at is answered when complete, partial is open, the sample data's reminders_sent are chases): a median of 7 days over 11 answered, 8 of 13 by day 7, 9 of 11 without a chase, and a late rate of 3 of 13.
+- The sample data read as chains of one request each (sent_to_owner_at is created, owner_feedback_at is answered when complete, partial is open, the sample data's reminders_sent are chases): a median of 7 days over 11 answered, 8 of 13 by day 7, and 9 of 11 without a chase.
 - A chain of two requests, the first sent 29 Sep 2026 and resent 1 Oct, answered 3 Oct: Days to answer counts 4 days, not 2.
-- The owner answers all three with Need more info on 2 Oct 2026 and the user never presses Ask again. On 12 Oct the chain is a miss for the day 7 share, its Late rate wait is 13 days and still running, and it is not in the median.
+- The owner answers all three with Need more info on 2 Oct 2026 and the user never presses Ask again. On 12 Oct the chain is a miss for the day 7 share and it is not in the median.
 - A query result lists chains by request id and business unit. No column holds an owner's name or user id.
-- A chain whose last request is cancelled with no answer: left out of all four measures.
-- A business unit with fewer than 10 answered chains: Late rate uses the 8-day cutoff.
+- A chain whose last request is cancelled with no answer: left out of both measures.
 
 ---
 

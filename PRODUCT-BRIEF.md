@@ -43,18 +43,16 @@ Nobody measures response time at the shortlist step or what a day of delay costs
 
 ### How we would know it is solved
 
-Four numbers from the event log. Days to answer is the main one and the other three explain it. Nobody tracks this step today. The two-day check under Assumptions gives a first baseline from past dates, and targets come after a quarter of live data.
+Two numbers from the event log. Days to answer is the main one, and No manual chase shows whether the manager stopped chasing. Nobody tracks this step today. The two-day check under Assumptions gives a first baseline from past dates, and targets come after a quarter of live data.
 
 | Measure | Definition |
 |------|------------|
 | Days to answer | Two numbers. The median days from the first send to a rated answer, over rated answers only and counted across resends and Ask again. And the share of requests answered by the day 7 due date, where a request without a rated answer counts as a miss once its due date has passed. A rated answer gives Interested or Not now on at least one startup, or says None of these fit with a reason. All Need more info is not rated |
-| First response | Share of requests with a submitted answer within one working day, including an answer that only asks for more information |
 | No manual chase | Share of answered requests where nobody pressed Remind now or answered on behalf. It counts follow-ups made in the product. Emails and calls outside it are not recorded |
-| Late rate | Share of requests whose wait, counted to the rated answer or to today if there is none, is more than 1.2 times the business unit's median, or more than 8 days until the business unit has 10 rated answers |
 
 Three rules stop the numbers being gamed:
 
-1. Need more info on every startup counts as a first response, not as a rated answer. The request closes as Answered, but the Days to answer clock runs on until the manager's Ask again gets a rated answer. A resend keeps the first send date. If the manager never asks again, the request stays unresolved for the measures: a miss after day 7, counted in Late rate with the clock still running, and never in the median.
+1. Need more info on every startup is not a rated answer. The request closes as Answered, but the Days to answer clock runs on until the manager's Ask again gets a rated answer. A resend keeps the first send date. If the manager never asks again, the request stays unresolved: a miss after day 7, and never in the median.
 2. An answer is a choice for every startup, and Need more info and None of these fit carry a reason, so one click cannot count as an answer.
 3. Reports go by request and business unit, and owners' names stay out of them until the works council question in the supporting notes is answered.
 
@@ -114,7 +112,7 @@ Five tickets, deployed in order, are in [TICKETS.md](https://github.com/IamDejma
 After launch, in order of value against effort:
 
 1. A daily "what is waiting" email to the manager, only on days when something is waiting.
-2. A view for the four measures.
+2. A view for the two measures, then two more once a quarter of data is in: First response and Late rate, defined in the supporting notes.
 3. Reminders that pause on an auto-reply, and a bounce alert to the manager.
 4. A second request type for the decision after a pilot.
 5. One-click send-on with a fresh link when the owner names someone else.
