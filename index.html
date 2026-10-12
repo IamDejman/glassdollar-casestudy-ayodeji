@@ -36,6 +36,7 @@ button,input,textarea,select{font:inherit;color:inherit}
 button,label,a,summary{touch-action:manipulation}
 button{cursor:pointer}
 :focus-visible{outline:none;box-shadow:var(--focus)}
+#main:focus-visible{box-shadow:none}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .skip{position:absolute;left:8px;top:-48px;background:#fff;padding:8px 12px;border:1px solid var(--line-2);border-radius:var(--radius-s);z-index:10}
 .skip:focus{top:8px}
@@ -58,7 +59,6 @@ a{color:var(--accent-ink)}
 .guide-row{display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;justify-content:space-between;margin-top:8px}
 .guide-now{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;font-size:15px}
 .guide-now .guide-step{font-weight:600;color:var(--accent-ink);white-space:nowrap}
-.guide-now p{max-width:70ch}
 .controls{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;margin-left:auto}
 .controls .group{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .days{display:inline-flex;flex-wrap:wrap;gap:6px;align-items:center}
@@ -126,7 +126,8 @@ main{display:grid;gap:16px;align-items:start}
   main{grid-template-columns:minmax(0,1fr) 414px;padding:16px}
   .pane{display:block}
   .controls .role{display:none}
-  .pane.lena{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;min-height:720px}
+  .pane.lena{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+  .shell{min-height:720px}
   .pane-head{padding:0 0 10px}
   .pane.dim{opacity:.55;transition:opacity .2s}
   .jonas .device{width:414px;border:10px solid #141A16;border-radius:44px;background:#141A16;box-shadow:0 20px 50px rgba(0,29,15,.2);position:sticky;top:calc(var(--guide-h,0px) + 16px)}
@@ -712,7 +713,7 @@ function renderWaiting(){
     <div class="rows">${rows.map(x => `<div class="card row-card"><div class="row-head"><b>${reqCell(x)} ${x.title}</b>${pill(x.state)}</div>
       <div class="kv"><span>Owner</span><b>${esc(x.owner)}</b><span>Age</span><b>${x.age} days</b><span>Due</span><b>${x.due}</b><span>Reminders</span><b>${x.reminders}</b><span>Last action</span><b>${esc(x.last)}</b></div><div class="actions">${actions(x, 'c')}</div></div>`).join('')}</div>`
     : `<div class="card empty">Nothing is waiting on anyone.</div>`;
-  return `<div class="head"><div><h1>Waiting on others</h1><p class="meta small">Open requests, Late first. Answered and cancelled requests are on their shortlists.</p></div></div>${table}`;
+  return `<div class="head"><div><h1>Waiting on others</h1></div></div>${table}`;
 }
 
 function renderJonas(){
