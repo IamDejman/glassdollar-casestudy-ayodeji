@@ -62,7 +62,7 @@ All five tickets follow the rules at the top of [TICKETS.md](https://github.com/
 4. A request closes only when a person answers or cancels it.
 5. One event table.
 
-A ticket is done when its acceptance criteria pass against the sample data and the edge cases in the spec are handled. Two checks come before the build: ask the manager at the pilot customer which decisions need the owner (one hour, before DR-1), and send a test link to 10 addresses at that customer to see whether it survives the mail gateway and SSO (one week, before DR-2).
+A sub-issue is done when its acceptance criteria pass against the sample data, and a ticket when all its sub-issues are. Two checks come before the build: ask the manager at the pilot customer which decisions need the owner (one hour, before DR-1), and send a test link to 10 addresses at that customer to see whether it survives the mail gateway and SSO (one week, before DR-2).
 
 ## AI tools used
 
