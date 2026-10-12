@@ -151,6 +151,7 @@ main{display:grid;gap:16px;align-items:start}
 @container lena (max-width:700px){.head{flex-wrap:wrap}.head .actions{padding-top:0;width:100%}.head .actions .btn.primary{width:100%}}
 .head>*{min-width:0}
 .head .meta{margin:4px 0 0;color:var(--ink-2)}
+.head .req-status{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:0 1px 2px rgba(0,29,15,.04)}
 .s-head{display:flex;gap:10px;align-items:center}
 .avatar{width:24px;height:24px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;flex:none}
@@ -225,6 +226,7 @@ textarea{width:100%;min-height:64px;padding:10px;border:1px solid var(--line-2);
 input[type=text],select{width:100%;min-height:40px;padding:8px 10px;border:1px solid var(--line-2);border-radius:var(--radius-s);background:#fff}
 .handoff{display:grid;gap:10px;padding-top:8px;border-top:1px solid var(--line)}
 .handoff .err{color:var(--late);font-size:14px}
+#handoffBox{display:grid;gap:12px}
 .linkish{all:unset;cursor:pointer;font-weight:700;color:var(--ink)}
 .linkish:hover{text-decoration:underline}
 .linkish:focus-visible{box-shadow:var(--focus);border-radius:4px}
@@ -346,7 +348,7 @@ label.field{display:grid;gap:6px}
     <label class="field">Who should answer
       <select id="recipient" name="recipient"></select>
     </label>
-    <p><span id="pvName">Jonas</span> has until <span id="pvDue">6 Oct 2026</span>. If there is no answer, a reminder goes out on <span id="pvR1">2 Oct</span> and another on <span id="pvR2">6 Oct</span>. From <span id="pvLate">7 Oct</span> the request is late and you hear about it.</p>
+    <p><span id="pvName">Jonas</span> has until <span id="pvDue">6 Oct 2026</span>. If <span id="pvName2">Jonas</span> has not answered, a reminder goes out on <span id="pvR1">2 Oct</span> and another on <span id="pvR2">6 Oct</span>. From <span id="pvLate">7 Oct</span> the request turns Late in your list.</p>
     <label class="field">Note (optional)
       <textarea id="noteInput" name="note" autocomplete="off" maxlength="1000" rows="2"></textarea>
     </label>
@@ -473,7 +475,7 @@ function openSend(to){
 function previewSend(){
   const who = PEOPLE.find(x => x.name === byId('recipient').value) || PEOPLE[0];
   const due = fmt(S.day + DUE_DAY);
-  byId('pvName').textContent = who.first; byId('pvDue').textContent = due;
+  byId('pvName').textContent = who.first; byId('pvName2').textContent = who.first; byId('pvDue').textContent = due;
   byId('pvR1').textContent = short(S.day + 3); byId('pvR2').textContent = short(S.day + 7); byId('pvLate').textContent = short(S.day + LATE_DAY);
   byId('pvTo').textContent = who.email;
   byId('pvBody').textContent = `Hi ${who.first}, ${who.name === JONAS ? 'you' : JONAS} raised the problem of manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by ${due}. It takes about 3 minutes.`;
@@ -665,7 +667,7 @@ function renderShortlist(){
     status = `${pill(r.state)} <span>Jonas Keller says ${esc(r.handoff.name)} should answer</span>`;
     action = `<button class="btn primary" id="reassignBtn">Resend to ${esc(r.handoff.name)}</button><button class="btn" data-act="cancel" data-id="PP-034">Cancel request</button>`;
   } else if (isOpen(r.state)){
-    status = `${pill(r.state)} <span>Waiting for ${esc(r.owner)}, day ${S.day - r.sentDay}</span>`;
+    status = `${pill(r.state)} <span>${esc(r.owner)}, day ${S.day - r.sentDay}</span>`;
     action = (r.state === 'Paused' ? `<button class="btn" data-act="resume">Resume reminders</button>` : r.state === 'Waiting' ? `<button class="btn" data-act="pause">Pause reminders</button>` : '') + `<button class="btn" data-act="cancel" data-id="PP-034">Cancel request</button>`;
   } else if (r.state === 'Answered'){
     status = `${pill('Answered')} <span>${esc(r.owner)}, ${fmt(r.answer.day)}, ${r.answer.via === 'on_behalf' ? 'recorded by Lena' : 'via link'}${r.answer.noneFit || r.answer.items.some(i => i.choice !== 'need_info') ? '' : '. Not rated: needs more information, so the clock runs on'}</span>`;
@@ -687,7 +689,7 @@ function renderShortlist(){
   const noneFit = r && r.answer && r.answer.noneFit ? `<div class="card"><b>None of these fit.</b> ${esc(r.answer.noneFitText)}</div>` : '';
   const behalf = r && r.answer && r.answer.note ? `<p class="muted small">${esc(r.answer.note)}</p>` : '';
   const events = r ? `<details class="log"><summary>Events for this request (${r.events.length})</summary><table><thead><tr><th>Date</th><th>Event</th></tr></thead><tbody>${r.events.map(e => `<tr><td class="num">${fmt(e.day)}</td><td>${esc(e.text)}</td></tr>`).join('')}</tbody></table></details>` : '';
-  return `<div class="head"><div><h1>Reduce manual load planning for outbound trucks</h1><p class="meta small">Raised by Jonas Keller, logistics process lead at the Hamburg hub. Three startups on the shortlist.</p></div><div class="actions">${status}${action}</div></div>
+  return `<div class="head"><div><h1>Reduce manual load planning for outbound trucks</h1><p class="meta small">Raised by Jonas Keller, logistics process lead at the Hamburg hub. Three startups on the shortlist.</p>${status ? `<p class="req-status">${status}</p>` : ''}</div><div class="actions">${action}</div></div>
     <div class="stack">${noneFit}<div class="stack startups">${cards}</div></div>${behalf}${events}`;
 }
 
@@ -778,7 +780,7 @@ function renderForm(){
     <div class="handoff"><button class="btn quiet small" type="button" id="handoffOpen">Someone else should answer this</button>
       <div id="handoffBox" hidden><label class="field small">Who should answer?<input type="text" id="handoffName" name="handoffName" autocomplete="off" maxlength="80"></label>
       <p class="err" id="handoffErr" hidden>Say who should answer.</p>
-      <div class="actions"><button class="btn small" type="button" id="handoffSend">Tell Lena</button></div></div></div></form>`;
+      <div class="actions"><button class="btn small" type="button" id="handoffSend">Tell Lena</button><button class="btn quiet small" type="button" id="handoffClose">Cancel</button></div></div></div></form>`;
 }
 function renderHandoff(reopened){
   const n = esc(S.req.handoff.name);
@@ -907,7 +909,9 @@ function bind(){
     form.querySelectorAll('[data-note]').forEach(b => b.onclick = () => { form.querySelector('#l_' + b.dataset.note).hidden = false; form.querySelector('#n_' + b.dataset.note).focus(); b.remove(); });
     form.addEventListener('submit', e => { e.preventDefault(); submitAnswer(form); });
     const ho = form.querySelector('#handoffOpen');
-    ho.onclick = () => { form.querySelector('#handoffBox').hidden = false; form.querySelector('#handoffName').focus(); ho.remove(); };
+    const box = form.querySelector('#handoffBox');
+    ho.onclick = () => { box.hidden = false; ho.hidden = true; form.querySelector('#handoffName').focus(); };
+    form.querySelector('#handoffClose').onclick = () => { box.hidden = true; ho.hidden = false; form.querySelector('#handoffName').value = ''; form.querySelector('#handoffErr').hidden = true; ho.focus(); };
   }
   const hs = main.querySelector('#handoffSend');
   if (hs) hs.onclick = () => {

@@ -96,7 +96,7 @@ Writes: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request
 
 #### Acceptance criteria for the whole ticket
 
-- The user sends the load planning request on 29 Sep 2026. Every user who can see the pain point sees "Waiting for {owner}, day 0" within the minute, and no email leaves the OS, because DR-2 is not built yet.
+- The user sends the load planning request on 29 Sep 2026. Every user who can see the pain point sees the Waiting label and "{owner}, day 0" within the minute, and no email leaves the OS, because DR-2 is not built yet.
 - The sample data on 12 Oct 2026. The load planning shortlist shows "Late: {owner}, day 13" and the supplier onboarding shortlist shows "Late: {owner}, day 24", each with "Cancel request".
 - Send, cancel and resend on one shortlist in a row. The shortlist never has two open requests, each request has its own id, the resend's parent_request_id points at the cancelled one, and the event log reads created, cancelled, created in that order.
 - Every created and cancelled event carries the id of the user who acted.
@@ -133,14 +133,14 @@ Writes: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request
 
 **What to build**
 
-- While a request is open, replace the send button with its state and age: "Waiting for {owner}, day {n}", "Late: {owner}, day {n}" or "Paused: {owner}, day {n}". Day 0 is the send date in Europe/Berlin.
+- While a request is open, show its state and age under the title: a Waiting, Late or Paused label, then "{owner}, day {n}". Day 0 is the send date in Europe/Berlin.
 - Show the same header to every user who can see the pain point.
 - After an answer, DR-3.2 replaces this with the answers. After a cancel, bring the send button back.
 
 **Acceptance criteria**
 
 - A second user opens the load planning shortlist on 12 Oct 2026. The header reads "Late: {owner}, day 13" with the owner's name, and there is no send button.
-- The request was sent today. The header reads "Waiting for {owner}, day 0".
+- The request was sent today. The header shows the Waiting label and "{owner}, day 0".
 
 **Edge cases**
 
