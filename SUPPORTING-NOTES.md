@@ -1,12 +1,16 @@
 # Supporting notes
 
-Detail behind [PRODUCT-BRIEF.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/PRODUCT-BRIEF.md), written on 12 Oct 2026. These notes hold what was cut from the brief: the causes of silence, the cost formula, the other assumptions, all six borrowed patterns with their sources, the ticket rules and the AI disclosure. Roles are used throughout: the manager is the innovation manager, the owner is the pain point owner, the head of unit is the owner's boss. The full research notes behind the sources are available on request.
+Details behind [PRODUCT-BRIEF.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/PRODUCT-BRIEF.md), written on 12 Oct 2026. These notes hold what was cut from the brief and allow me to talk more in depth about the brief and how it was built. Roles are used throughout:
+
+- the manager is the innovation manager
+- the owner is the pain point owner
+- the head of unit is the owner's boss
 
 ## Why owners go silent
 
-Five reasons an owner might not answer. The first release works on the first one only.
+Five reasons an owner might not answer:
 
-1. Friction and competing work: the ask is open-ended, needs a login, and the owner's own work comes first, which is what heads of venture client units report ([Haarmann et al. 2024](https://www.designsociety.org/publication/47638/The+Venture+Client+Model+and+Its+Challenges+for+Established+Companies), built from 7 interviews with venture client unit heads, 5 workshops and a 35-person world cafe: business units are keen, but day-to-day business often takes precedence).
+1. Friction and competing work: the decision ask is open-ended, needs a login, and the owner's own work comes first, which is what heads of venture client units report ([Haarmann et al. 2024](https://www.designsociety.org/publication/47638/The+Venture+Client+Model+and+Its+Challenges+for+Established+Companies), built from 7 interviews with venture client unit heads, 5 workshops and a 35-person world cafe: business units are keen, but day-to-day business often takes precedence).
 2. The shortlist does not look credible, or the owner needs more to judge it.
 3. The owner has no budget or authority to commit to a pilot.
 4. The problem was solved another way, or went away.
@@ -45,8 +49,6 @@ The three checks before the build and the owner interviews each have three quest
 
 ## Look around, all six patterns
 
-The brief keeps the first, second and fifth rows. The sources are the pages I read.
-
 | Borrowed from | What they do | Used here as | Source |
 |-------|------------|----------|------|
 | E-signature (DocuSign) | Sign from one email button with no account. Reminders and expiry are sender settings. Assign to Someone Else covers forwarded mail. Decline to Sign takes a reason | One email, one button, no login, 14-day expiry, "Not me" and naming who should answer. None of these fit with a required reason | https://community.docusign.com/signing-7/non-registered-users-3966 and https://community.docusign.com/esignature-111/can-you-forward-email-to-other-people-to-sign-97 |
@@ -58,9 +60,9 @@ The brief keeps the first, second and fifth rows. The sources are the pages I re
 
 Enterprise email, the third assumption in the brief: Microsoft Defender's Safe Links scans a URL before delivery, whether or not it rewrites the link, so at least one automated request hits the link before the owner does. A link that is spent on first open would be spent by the scanner. The answer page therefore does nothing until the owner taps a button on it. Source: https://learn.microsoft.com/en-us/defender-office-365/safe-links-about.
 
-## Two measures kept for later
+## Two metrics kept for later
 
-The first release computes Days to answer and No manual chase. These two were in earlier drafts and come back once a quarter of data is in. They are out because each needs rules a first quarter does not: one counts in working days while everything else counts in calendar days, and the other needs a running clock for unanswered requests and a per-unit median.
+The first release computes Days to answer and No manual chase. They are out because each needs rules a first quarter does not: one counts in working days while everything else counts in calendar days, and the other needs a running clock for unanswered requests and a per-unit median.
 
 | Measure | Definition |
 |------|------------|
@@ -77,10 +79,10 @@ All five tickets follow the rules at the top of [TICKETS.md](https://github.com/
 4. A request closes only when a person answers or cancels it.
 5. One event table.
 
-A sub-issue is done when its acceptance criteria pass against the sample data, and a ticket when all its sub-issues are. Three checks come before the build: pull past send and answer dates from the OS to see whether owners stall at the shortlist step (two days, before DR-1), ask the manager at the pilot customer which decisions need the owner (one hour, before DR-1), and send a test link to 10 addresses at that customer to see whether it survives the mail gateway and SSO (one week, before DR-2).
+A sub-issue is done when its acceptance criteria pass against the sample data, and a ticket when all its sub-issues are. Three checks come before the build: pull past Send and Answer dates from the OS to see whether owners stall at the shortlist step (two days, before DR-1), ask the manager at the pilot customer which decisions need the owner (one hour, before DR-1), and send a test link to 10 addresses at that customer to see whether it survives the mail gateway and SSO (one week, before DR-2).
 
 ## AI tools used
 
 | Tool | Used for | Where it helped | Where it got in the way |
 |---|---|---|---|
-| Claude Code | Drafts of the brief, the tickets and the research notes, the prototype, the sample data, and fourteen review passes against the rubric | It built and fixed the prototype over many rounds, kept the sample data consistent, and the reviews caught gaps between the brief, the tickets and the prototype | It paraphrased two survey figures wrongly and once used the invented company data as evidence. I caught both when reading. The reviews kept asking for more text, which I refused |
+| Claude Code | Drafts of the brief, the tickets and the research notes, the prototype and the sample data. | It built and fixed the prototype over many rounds, kept the sample data consistent, and the reviews caught gaps between the brief, the tickets and the prototype | It paraphrased two survey figures wrongly and once used the invented company data as evidence. I caught both when reading. |

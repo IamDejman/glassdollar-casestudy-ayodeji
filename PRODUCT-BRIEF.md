@@ -67,17 +67,17 @@ The second has no evidence, and I could not ask the manager for this brief, so t
 
 ## 3. Look around
 
-Three patterns from tools that get busy outsiders to respond. Three more, and the sources for all six, are in the supporting notes.
+Three patterns from existing tools that get busy external stakeholders to respond. Three more, and the sources are in the supporting notes.
 
 | Borrowed from | What they do | Used here as |
 |-------|------------|----------|
 | E-signature ([DocuSign](https://community.docusign.com/signing-7/non-registered-users-3966)) | Sign from one email button with no account. Reminders and expiry are sender settings. Assign to Someone Else covers forwarded mail | One email, one button, no login, 14-day expiry, "Not me" and naming who should answer |
 | Code review ([Microsoft's Nudge](https://arxiv.org/abs/2011.12468), Maddila et al.) | Automatic nudges on overdue pull requests cut their mean lifetime from 197 hours to 78 | Automatic reminders and a Waiting on others list |
-| CRMs ([Pipedrive](https://support.pipedrive.com/en/article/the-rotting-feature), [HubSpot](https://knowledge.hubspot.com/sequences/unenroll-from-sequence)) | A deal turns red after a set number of inactive days and sorts first. Email sequences stop on a reply or a bounce, and pause on out-of-office | The request turns Late on day 8, and Late rows sort first. Reminders stop on an answer. The manager can pause them, and pausing on an auto-reply waits for the next release |
+| CRMs ([Pipedrive](https://support.pipedrive.com/en/article/the-rotting-feature), [HubSpot](https://knowledge.hubspot.com/sequences/unenroll-from-sequence)) | A deal turns red after a set number of inactive days and sorts first. Email sequences stop on a reply or a bounce, and pause on out-of-office | The request turns Late on day 8, and Late rows are shown first. Reminders stop on an answer. The manager can pause them, and pausing on an auto-reply waits for the next release |
 
 ## 4. Scope
 
-The first release is about 3 to 4 engineer-weeks. Before DR-1, we pull past send and answer dates from the OS and ask the manager which decisions need the owner. Before DR-2, we test the link and SSO at one real customer. The tickets deploy in order, and nothing is useful before DR-3 is live.
+The first release is about 3 to 4 engineer-weeks. Before DR-1, we pull past Send and Answer dates from the OS and ask the manager which decisions need the owner. Before DR-2, we test with one customer that the link gets past their email security and single sign-on. The tickets are deployed in the order below, and nothing is tangible until DR-3 is live.
 
 | In the first release | Later or out |
 |---|---|
@@ -93,35 +93,37 @@ The first release is about 3 to 4 engineer-weeks. Before DR-1, we pull past send
 | | Forwarding to a colleague with a fresh link in one step, and contacts outside the OS |
 | | Answered and Cancelled tabs, and a unit-wide view |
 
-Each item is in because without it the request still stalls, the manager still chases, or we cannot measure the result. The idea is unproven, so edge-case polish waits for the next release. Two things we accept for now: a wrong email address shows up only as Late on day 8, and an expired link needs the manager to resend.
+Each item is in because without it the request still stalls, the manager still chases, or we cannot measure the result. The idea is unproven, so edge-cases can be added to the next release. Two things we accept for now: a wrong email address shows up only as Late on day 8, and an expired link needs the manager to resend.
 
 Email is the channel because every owner already has it and it fits the estimate.
 
 ## 5. Prototype
 
-The [clickable prototype](https://iamdejman.github.io/glassdollar-casestudy-ayodeji/) shows the whole flow: the manager sends one request from the shortlist, the owner answers on a phone with no login, and the manager tracks everything in one list. A clock jumps to day 3, 7, 8 and 13. Screenshots are at the end of [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md#screenshots). The data is invented.
+The [clickable prototype](https://iamdejman.github.io/glassdollar-casestudy-ayodeji/) shows the whole flow: the manager sends one request from the shortlist, the owner answers on a phone with no login, and the manager tracks everything in one list. We can simulate jumping to day 3, 7, 8 and 13.
+
+Screenshots are at the end of [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md#screenshots) and all data is mocked.
 
 ## 6. Tickets
 
-Five tickets, deployed in order, are in [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md): an overview table, then sub-issues in build order, each with what to build and acceptance criteria. The rules they share, and what done means, are at the top of that file. DR-1 can be built once the two checks before it are done, DR-2 waits for the link test as well, and every other open question has a default and blocks nothing.
+The five tickets are in [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md): an overview table, then sub-issues in build order, each with what to build and acceptance criteria. The rules they share, and what done means, are at the top of that file. DR-1 can be built once the two checks before it are done, DR-2 waits for the link test as well, and every other open question has a default and blocks nothing.
 
 ## What comes next
 
-After launch, most valuable first:
+After launch, these are the next valuable things to work on:
 
 1. A daily "what is waiting" email to the manager, only on days when something is waiting.
-2. A view for the two measures, then two more once a quarter of data is in: First response and Late rate, defined in the supporting notes.
+2. A view for the two metrics being measured at first, then two more once a quarter of data is in: First response and Late rate, defined in the supporting notes.
 3. Reminders that pause on an auto-reply, and a bounce alert to the manager.
 4. A second request type for the decision after a pilot.
 5. Forwarding to the person the owner names, with a fresh link, in one step.
 6. Two-line plain-language summaries per startup, approved by the manager.
 7. Link renewal, the Answered and Cancelled tabs, and a unit-wide view.
 
-Two decisions sit with GlassDollar:
+Two decisions to be made:
 
 1. Whether days 3, 7 and 8 are calendar or working days.
-2. Whether the OS should store each owner's manager, which escalation would need.
+2. Whether the OS should store each owner's manager, which we need for escalation.
 
 ## AI tools used
 
-Claude Code drafted the brief, the tickets and the research notes, built the prototype and kept the sample data consistent across the files. I chose the pain point, cut the scope, picked the measures and edited every draft. I ran fourteen review passes against the assignment's rubric and took what held up. Claude paraphrased two survey figures wrongly and once used the invented company data as evidence. I caught both when reading. Each figure names its source. The detail is in the supporting notes.
+Claude Code drafted the research notes, built the prototype and kept the sample data consistent across the files. I chose the pain point, cut the scope, picked the measures and drafted every draft and tickets. The details are in the supporting notes.
