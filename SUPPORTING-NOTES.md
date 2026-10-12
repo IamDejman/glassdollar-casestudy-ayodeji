@@ -1,6 +1,6 @@
 # Supporting notes
 
-Detail behind [PRODUCT-BRIEF.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/PRODUCT-BRIEF.md), written on 12 Oct 2026. The brief stands on its own. These notes hold what was cut from it: the causes of silence, the cost formula, the other assumptions, all six borrowed patterns with their sources, the ticket rules and the AI disclosure. Roles are used throughout: the manager is the innovation manager, the owner is the pain point owner, the head of unit is the owner's boss. The full research notes behind the sources are available on request.
+Detail behind [PRODUCT-BRIEF.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/PRODUCT-BRIEF.md), written on 12 Oct 2026. These notes hold what was cut from the brief: the causes of silence, the cost formula, the other assumptions, all six borrowed patterns with their sources, the ticket rules and the AI disclosure. Roles are used throughout: the manager is the innovation manager, the owner is the pain point owner, the head of unit is the owner's boss. The full research notes behind the sources are available on request.
 
 ## Why owners go silent
 
@@ -12,9 +12,9 @@ Five reasons an owner might not answer. The first release works on the first one
 4. The problem was solved another way, or went away.
 5. Backing a startup is a political risk in the owner's unit.
 
-The OS can only reduce the first. Once the ask is short, the owner's reply gives a clue to the others: a request for more information points at 2, a rejection with a reason at 2 or 4. If the owner still does not respond, the shorter ask was not enough. The manager then looks into remaining friction, competing priorities, missing information or authority, and takes incentives to the head of unit, who sets what the owner is measured on.
+The OS can only reduce the first. Once the ask is short, the owner's reply shows which one: a request for more information points at 2, a rejection with a reason at 2 or 4. If the owner still does not respond, the shorter ask was not enough. The manager then looks into remaining friction, competing priorities, missing information or authority, and takes incentives to the head of unit, who sets what the owner is measured on.
 
-No source observes the disappearing itself. The nearest evidence is that follow-up contact raises survey response (odds 1.35, [Edwards et al. 2009](https://researchonline.lshtm.ac.uk/id/eprint/5119)) and that one named recipient gets more replies than a group (38% alone against 14% in groups of 15 or 50, [Blair et al. 2005](https://psychology.ecu.edu/wp-content/pv-uploads/sites/216/2019/03/Blair-Thompson-Wuensch-2005.pdf), students and a small favour). None of these studies tests a manager rewarded for other work.
+No source measures this directly. The nearest evidence is that follow-up contact raises survey response (odds 1.35, [Edwards et al. 2009](https://researchonline.lshtm.ac.uk/id/eprint/5119)) and that one named recipient gets more replies than a group (38% alone against 14% in groups of 15 or 50, [Blair et al. 2005](https://psychology.ecu.edu/wp-content/pv-uploads/sites/216/2019/03/Blair-Thompson-Wuensch-2005.pdf), students and a small favour). None of these studies tests a manager rewarded for other work.
 
 ## What it costs
 
@@ -83,4 +83,4 @@ A sub-issue is done when its acceptance criteria pass against the sample data, a
 
 | Tool | Used for | Where it helped | Where it got in the way |
 |---|---|---|---|
-| Claude Code | Drafts of the brief, the tickets and the research notes, the prototype, the sample data, and fourteen review passes against the assignment's rubric | It built and fixed the prototype over many rounds, kept the sample data consistent across the files, and the rubric reviews caught gaps between the brief, the tickets and the prototype | Two survey figures were paraphrased wrongly and an early pass used the invented company data as evidence. Both were caught when I read the drafts. The reviews also pushed for additions that would have made the brief longer, which I turned down |
+| Claude Code | Drafts of the brief, the tickets and the research notes, the prototype, the sample data, and fourteen review passes against the rubric | It built and fixed the prototype over many rounds, kept the sample data consistent, and the reviews caught gaps between the brief, the tickets and the prototype | It paraphrased two survey figures wrongly and once used the invented company data as evidence. I caught both when reading. The reviews kept asking for more text, which I refused |
