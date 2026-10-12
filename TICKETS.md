@@ -42,7 +42,7 @@ Test against the sample data at https://github.com/IamDejman/glassdollar-casestu
 - Event payloads: created {recipient_id, parent_request_id}, link_opened {user_agent}, identity_confirmed {}, not_me {}, reminder_sent {n}, reminder_skipped {reason}, remind_now {}, paused {reason: user or handoff}, resumed {}, late {}, handoff {name}, answered {via, rated, choices}, cancelled {reason}.
 - A chain is a request and its resends. Cancel and resend, Resend to a named person and Ask again all create a new request with parent_request_id set to the old one. The list's Age column is per request. The measures count chains from the first request's created, so the clock never stops across a resend.
 - Owner activity means identity_confirmed, a view of the answer page with a session, handoff and answered. link_opened is logged for every fetch, scanners included, and is not activity. Activity drives the reminder skip in DR-4.1 and the Last owner action column in DR-5.1.
-- Reports go by request and business unit. No query returns an owner's name until the works council question in the brief is answered.
+- Reports go by request and business unit. No query returns an owner's name until the works council question in the supporting notes is answered.
 - Sample data: the examples use two pain points from sample-data.json, load planning and supplier onboarding. The load planning request was sent on 29 Sep 2026, reminded on 2 and 6 Oct, Late since 7 Oct, day 13 today. The supplier onboarding request was sent on 18 Sep, open at day 24. Names come from the same file.
 
 ## Open questions
@@ -59,7 +59,7 @@ None of these blocks a build. The two checks that do are above, under The five t
 - Calendar or working days for 3, 7 and 8? Ask the innovation manager.
 - Public holidays: default is to treat them as weekdays. Ask the innovation manager.
 - Read-only access for the head of the business unit? Default: no. Ask the innovation manager.
-- May reports name owners? Default: no, by request and business unit only, until the works council question in the brief is answered. Ask the innovation manager who at the customer answers works council questions.
+- May reports name owners? Default: no, by request and business unit only, until the works council question in the supporting notes is answered. Ask the innovation manager who at the customer answers works council questions.
 
 ## Not in this release
 
