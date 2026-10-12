@@ -2,7 +2,7 @@
 
 ## The problem
 
-A user sends the pain point owner a shortlist and waits. The owner has no login to hand, the user chases by email, and the pain point sits in Shortlist for weeks. The goal is fewer days between the send and the answer.
+A user sends the pain point owner a shortlist and waits. The owner has no GlassDollar login, the user chases by email, and the pain point sits in Shortlist for weeks. The goal is fewer days between the send and the answer.
 
 ## What we are building
 
