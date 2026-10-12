@@ -27,7 +27,7 @@ No source measures this directly. The nearest evidence is that follow-up contact
 The four assumptions in the brief can be checked before the build. These four need the product running.
 
 1. How often the raiser cannot judge the shortlist.
-2. Whether no login raises completion. 18% of US online shoppers say they have abandoned an order because they did not want to create an account ([Baymard 2025](https://baymard.com/lists/cart-abandonment-rate), 1,026 US adults).
+2. Whether no login raises completion. There is no evidence for B2B approvals, so we test it: the five owner interviews, then the prototype test with and without a login.
 3. Whether two reminders and a personal nudge is the right amount of chasing. In one survey the first reminder added 10.3 points on a 6.2% invite response, the second 8.6 and a late third 6.1 ([Van Mol 2014](https://www.nidi.nl/shared/content/output/papers/nidi-wp-2014-15.pdf), 15,651 students).
 4. Whether a German works council allows measuring wait time per named owner. This is the works council question the brief and the tickets refer to. Until it is answered, reports go by request and business unit.
 
