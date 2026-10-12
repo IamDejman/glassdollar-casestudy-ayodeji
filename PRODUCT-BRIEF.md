@@ -1,11 +1,11 @@
 # Decision requests: getting business units to answer startup shortlists
 
-Take-home brief for GlassDollar OS, written on 12 Oct 2026 without access to the product, its users or its data. Nordwind Industrial AG and its people are invented so the examples can be concrete. Outside sources are named. Everything else is an assumption.
+Take-home brief for GlassDollar OS, written on 12 Oct 2026 without access to the product, its users or its data. Nordwind Industrial AG and its people are invented so the examples can be concrete. Where a figure comes from an outside source, the source is named. The rest is assumption.
 
 | Deliverable | Where |
 |------|------------|
 | Functional prototype | [Live prototype](https://iamdejman.github.io/glassdollar-casestudy-ayodeji/) and [code](https://github.com/IamDejman/glassdollar-casestudy-ayodeji) |
-| Tickets, five | Section 6 below, [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md) and [Linear GLA-5](https://linear.app/glassdollar-case/issue/GLA-5) (invite needed) |
+| Five tickets | Section 6 below, [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md) and [Linear GLA-5](https://linear.app/glassdollar-case/issue/GLA-5) (invite needed) |
 | Brief | This document, sections 1 to 5 |
 
 ## 1. Pain point
@@ -37,16 +37,20 @@ Lena sends Jonas a shortlist and waits. Jonas means to look at it, but his own w
 
 ### How we would know it is solved
 
-We would watch four numbers, all pulled from the event log. Nobody measures this step today, so the first quarter is for finding the baseline. Targets come after that.
+We would watch four numbers, all pulled from the event log. Days to answer is the headline and the other three explain it. Nobody measures this step today, so the first quarter is for finding the baseline. Targets come after that.
 
 | Measure | Definition |
 |------|------------|
-| Days to answer (the one that matters) | Median days from sent to answered, with unanswered requests counted as misses, and the share answered by the day 7 due date |
+| Days to answer | Median days from sent to answered, with unanswered requests counted as misses, and the share answered by the day 7 due date |
 | First touch | Share of owners who rate at least one startup or ask for information within one working day |
 | No manual chase | Share of requests answered before Lena presses Remind now. Lena logs her chases for four weeks before launch to give the baseline |
 | Late rate | Share of requests open for longer than 1.2 times the unit's median wait |
 
-Three guardrails keep them honest. Need more info counts as a first touch but does not stop the clock. An answer has to carry a reason, or one click would count as an answer. Reports go by request, and owners' names stay out of them until the works council question is answered.
+Three rules stop the numbers being gamed:
+
+1. Need more info counts as a first touch but does not stop the clock.
+2. An answer has to carry a reason, or one click would count as an answer.
+3. Reports go by request, and owners' names stay out of them until the works council question is answered.
 
 ### Assumptions to validate first
 
@@ -66,7 +70,7 @@ Four more wait for live data:
 
 ## 3. Look around
 
-Patterns borrowed from tools that already get busy outsiders to respond. All from the research notes in the repository.
+These patterns come from tools that already get busy outsiders to respond. The detail is in the research notes in the repository.
 
 | Borrowed from | What they do | Used here as |
 |-------|------------|----------|
@@ -92,19 +96,19 @@ The first release is 5 to 7 engineer-weeks. Before any of it is built, we test t
 | Reminders on days 3 and 7, paused on an auto-reply | Voting by several stakeholders |
 | An event log behind the measures | |
 
-Each item is in because removing it would leave the request stalling, Lena chasing, or the measure missing. Everything else is ordered by value against effort under What comes next.
+Each item is in because without it the request still stalls, Lena still chases, or we cannot measure the result. Everything else is ranked by value against effort under What comes next.
 
-Email is the channel because every owner already has it and it fits the estimate. What changes is the ask. Today's email says "log in and look at the shortlist". The new one asks for three ratings by a date, and Lena hears on day 8 if nothing comes back. If an owner ignores that too, the problem is incentives, which this release measures and does not fix.
+Email is the channel because every owner already has it and it fits the estimate. The difference is what the email asks for. Today's email says "log in and look at the shortlist". The new one asks for three ratings by a date, and Lena hears on day 8 if nothing comes back. If an owner ignores that too, the problem is incentives. This release will show that, but it cannot fix it.
 
 ## 5. Prototype
 
-The main flow end to end, from the [clickable prototype](https://iamdejman.github.io/glassdollar-casestudy-ayodeji/). It has a clock to jump to day 3, 7, 8 and 13, and a switch for Jonas being out of office.
+This is the main flow end to end, taken from the [clickable prototype](https://iamdejman.github.io/glassdollar-casestudy-ayodeji/). It has a clock to jump to day 3, 7, 8 and 13, and a switch for Jonas being out of office.
 
 **Lena sends one request from the shortlist.** The dialog says the due date, the reminder days and when the request goes late.
 
 <img src="images/send-dialog.png" width="560" alt="The send dialog: Ask Jonas Keller to rate this shortlist, with the due date, the reminder days, a note field and a Send request button">
 
-**Jonas answers on his phone with no login.** One email with one button, then an identity tap so mail scanners cannot trigger anything, then three choices per startup.
+**Jonas answers on his phone with no login.** He gets one email with one button. A tap to confirm it is him stops mail scanners from answering for him. Then he rates each startup with one of three choices.
 
 <img src="images/jonas-flow.png" width="900" alt="Three phone screens: the email with a Review 3 startups button, the identity page, and the answer page with three choices per startup">
 
@@ -114,7 +118,7 @@ The main flow end to end, from the [clickable prototype](https://iamdejman.githu
 
 ## 6. Tickets
 
-Five tickets, built in order. Each ships on its own. The full specs, with what to build, user stories, acceptance criteria and edge cases, are in [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md). DR-1 has no dependencies and is ready to pick up.
+There are five tickets, built in order, and each one ships on its own. The full specs, with what to build, user stories, acceptance criteria and edge cases, are in [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md). DR-1 has no dependencies and is ready to pick up.
 
 | Ticket | Title | What it delivers | Skills | Size | Depends on | Status |
 |----|---------|------------------------|-----------|---|------|-------|
@@ -124,13 +128,30 @@ Five tickets, built in order. Each ships on its own. The full specs, with what t
 | DR-4 | Reminders on days 3 and 7, pause when away, Late on day 8 | Two reminders, skipped if the owner was active in the last 24 hours. Pause on an auto-reply or a bounce. Late on day 8 with one alert to Lena | Backend (scheduled jobs), inbound email parsing | L | DR-1, DR-2 | Waits on DR-2 |
 | DR-5 | The Waiting on others list and the four measures | The list with Open, Answered and Cancelled tabs and row actions Remind now, Cancel, Answer on behalf and Send to someone else. The four measures as queries over the event log | Frontend, backend (permissions, reassignment), SQL | L | DR-3, DR-4 | Waits on DR-4 |
 
-All five follow the rules at the top of TICKETS.md: one open request per shortlist, calendar days in Europe/Berlin, jobs at 09:00 on weekdays, nothing closes a request on its own, and one event table. A ticket is done when its acceptance criteria pass against the sample data and the edge cases in the spec are handled.
+All five follow the rules at the top of TICKETS.md:
+
+1. One open request per shortlist.
+2. Calendar days in Europe/Berlin.
+3. Jobs at 09:00 on weekdays.
+4. Nothing closes a request on its own.
+5. One event table.
+
+A ticket is done when its acceptance criteria pass against the sample data and the edge cases in the spec are handled.
 
 ## What comes next
 
-After launch, in order of value against effort: a daily "what is waiting" email to Lena, sent only on days when something is waiting. A view for the four measures above. A second request type for the decision after a pilot. Two-line plain-language summaries per startup, approved by Lena before they go out.
+After launch, in order of value against effort:
 
-Three decisions sit with GlassDollar. Which decisions need the owner at all. Whether days 3, 7 and 8 are calendar or business days. Whether the OS should store each owner's manager, which escalation would need.
+1. A daily "what is waiting" email to Lena, sent only on days when something is waiting.
+2. A view for the four measures above.
+3. A second request type for the decision after a pilot.
+4. Two-line plain-language summaries per startup, approved by Lena before they go out.
+
+Three decisions sit with GlassDollar:
+
+1. Which decisions need the owner at all.
+2. Whether days 3, 7 and 8 are calendar or business days.
+3. Whether the OS should store each owner's manager, which escalation would need.
 
 If the baseline shows most shortlists are already answered within a week, the first request type moves to the decision after a pilot instead.
 
