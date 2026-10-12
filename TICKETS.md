@@ -17,7 +17,7 @@ Build and deploy them in this order. DR-1 to DR-3 together are the first slice a
 | DR-1 | Send and cancel a request from the shortlist | One button opens a dialog with the recipient, owner preselected, and an optional note. Send creates a Waiting request and snapshots the shortlist. The header shows state and age. Cancel takes a reason | Pain points | Backend, frontend | M | Nothing | Ready |
 | DR-2 | The email, and a link that survives mail scanners | One email, one button, a plain-text link. A hashed token that lasts 14 days. Nothing counts until "Yes, I am Jonas Keller" is tapped. An expired link says to ask Lena | Notifications, Shared | Backend, email deliverability (SPF, DKIM, DMARC), security | M | DR-1 | Waits on DR-1 |
 | DR-3 | Jonas answers on one page, Lena sees it on the shortlist | Phone-first page with three choices per startup, or "None of these fit" with a reason. Answers land on the shortlist with one notification. The owner can name who should answer instead, and Lena resends | Pain points, Shared | Frontend (phone-first form, accessibility), backend | M | DR-1, DR-2 | Waits on DR-2 |
-| DR-4 | Reminders on days 3 and 7, Late on day 8, Pause by Lena | Two reminders, skipped if the owner was active in the last 24 hours. Late on day 8 with one alert to Lena. Lena can pause and resume reminders | Notifications | Backend (scheduled jobs) | M | DR-1, DR-2 | Waits on DR-2 |
+| DR-4 | Reminders on days 3 and 7, Late on day 8, Pause by Lena | Two reminders, skipped if the owner was active in the last 24 hours. Late on day 8 with one alert to Lena. Lena can pause and resume reminders, and a pending handoff pauses them | Notifications | Backend (scheduled jobs) | M | DR-1, DR-2 | Waits on DR-2 |
 | DR-5 | The Waiting on others list and the four measures | The list of open requests with row actions Remind now, Cancel, Answer on behalf, Pause and Resume. The four measures as queries over the event log | Pain points, Reports | Frontend, backend (permissions), SQL | M | DR-3, DR-4 | Waits on DR-4 |
 
 Sizes are t-shirt sizes. The whole release is about 3 to 4 engineer-weeks.
@@ -36,6 +36,11 @@ Test against the sample data at https://github.com/IamDejman/glassdollar-casestu
 - Nothing closes a request on its own. Day 14 expires the link and nothing else. A Late request stays until Lena acts.
 - Finalising the pain point, which means it leaves Shortlist, cancels any open request with the reason "finalised". The owner gets no email, and the link shows "Lena no longer needs this".
 - One event table: request_id, type, at, actor, payload. DR-5 lists the types.
+- The request record: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request_id, state, note, created_at, due_at, expires_at, confirmed_at, answered_at, cancelled_at, cancel_reason, via (magic_link or on_behalf), rated, late, handoff_name, reminders_sent (automatic only), chases (Remind now), token_hash, and the snapshot (startups with description and comment). Each ticket names the fields it writes.
+- Event payloads: created {recipient_id, parent_request_id}, link_opened {user_agent}, identity_confirmed {}, not_me {}, reminder_sent {n}, reminder_skipped {reason}, remind_now {}, paused {reason: lena or handoff}, resumed {}, late {}, handoff {name}, answered {via, rated, choices}, cancelled {reason}.
+- A chain is a request and its resends. Cancel and resend, Resend to someone else and Ask again all create a new request with parent_request_id set to the old one. The list's Age column is per request. The measures count chains from the first request's created, so the clock never stops across a resend.
+- Owner activity means identity_confirmed, a view of the answer page with a session, handoff and answered. link_opened is logged for every fetch, scanners included, and is not activity. Activity drives the reminder skip in DR-4 and the Last owner action column in DR-5.
+- Reports go by request and business unit. No query returns an owner's name until the works council question in the brief is answered.
 - Sample data: PP-034 is Jonas Keller's. Sent 29 Sep, reminders on 2 and 6 Oct, Late since 7 Oct, day 13 today. PP-040 is Anneke de Vries's, sent 18 Sep, open at day 24.
 
 ## Open questions
@@ -44,14 +49,15 @@ None of these blocks a build. Each has a default the tickets follow until it is 
 
 - Who can Lena send to? Default: any OS user with an email address, the owner preselected. Ask Lena how often the right person is outside the OS.
 - Should finalising cancel the request? Default: yes, so nothing stays open on a closed pain point. Ask Lena whether late answers are worth keeping.
-- Does Nordwind force SSO on outside links? Ask Nordwind IT.
-- One shared GlassDollar sending domain, or one per customer? Ask Nordwind IT.
+- Does Nordwind force SSO on outside links? Default: assume not, and the one-week link test settles it. Ask Nordwind IT.
+- One shared GlassDollar sending domain, or one per customer? Default: one shared domain, set up once. Ask Nordwind IT.
 - German or English? Default: English until the OS has a workspace language. Ask Lena.
-- Should the confirmation promise a reply time, say "within 3 working days"? Ask Lena.
-- Should Need more info keep the request open? Default: no. It is Answered with rated false, and Lena sends a new request when she has the information. Ask Lena.
+- Should the confirmation promise a reply time, say "within 3 working days"? Default: no promise. Ask Lena.
+- Should Need more info keep the request open? Default: no. It is Answered with rated false, and Lena's Ask again starts a new request in the same chain, so the clock does not stop. Ask Lena.
 - Calendar or working days for 3, 7 and 8? Ask Lena.
 - Public holidays: default is to treat them as weekdays. Ask Lena.
 - Read-only access for Dr. Sabine Koch? Default: no. Ask Lena.
+- May reports name owners? Default: no, by request and unit only, until the works council question in the brief is answered. Ask Lena who at Nordwind answers works council questions.
 
 ## Not in this release
 
@@ -96,7 +102,7 @@ Lena has three startups on the PP-034 shortlist and needs Jonas to say which are
 - Lena sends PP-034 on 29 Sep 2026. The request is Waiting, due 6 Oct at 23:59 Europe/Berlin, the link expires 13 Oct at 23:59, reminders_sent is 0, the snapshot holds Pallet.ai, Cargonaut Labs and Parcelgrid with descriptions and comments, and created is logged.
 - Tobias opens PP-034 on 12 Oct 2026. He sees "Late: Jonas Keller, day 13" and no send button.
 - A shortlist has 2 startups. The button is disabled and reads "Needs 3 to 5 startups".
-- Lena adds a fourth startup while the request is open. The banner shows. "Cancel and resend" cancels the old request and opens the dialog with her note. Send creates a new Waiting request with 4 startups.
+- Lena adds a fourth startup while the request is open. The banner shows. "Cancel and resend" cancels the old request and opens the dialog with her note. Send creates a new Waiting request with 4 startups and parent_request_id set to the old one.
 - Lena picks Petra Ahlers instead of Jonas and sends. The request's recipient is Petra, the email goes to her, and the header reads "Waiting for Petra Ahlers, day 0".
 - Lena cancels PP-034 with the reason "Jonas is on leave". The state is Cancelled, the reason is stored, cancelled is logged, Jonas gets no email, and the button is back.
 - Lena and Tobias press Send within a second. One request exists. The other sees "Already sent by Lena Hartmann".
@@ -104,9 +110,10 @@ Lena has three startups on the PP-034 shortlist and needs Jonas to say which are
 
 #### Edge cases
 
-- No owner, or the owner has no email address in the OS: open the dialog with no recipient and say why, for example "Henrik Vos has no email address in the OS" (PP-017). Lena picks someone else or stops. The sender cannot be the recipient.
+- No owner, or the owner is not an OS user or has no email address in the OS: open the dialog with no recipient and say why, for example "Henrik Vos is not an OS user" (PP-017). Lena picks someone else or stops. The sender cannot be the recipient.
 - Under 3 or over 5 startups: disable the button, "Needs 3 to 5 startups".
 - A description or comment edited after sending: no banner. The snapshot stands.
+- The pain point's owner changes while a request is open: the request keeps its recipient. The header adds "Owner is now Petra Ahlers" with "Resend to Petra Ahlers", which is the cancel and resend.
 
 ---
 
@@ -147,6 +154,7 @@ Jonas gets one email with one button. He taps it, confirms it is him, and lands 
 - A sandbox presses the button: confirmed_at is set. Nothing more can happen without choices, and the measures count answers, not taps.
 - The request was cancelled and resent to Petra Ahlers (DR-1): the old link shows "Lena no longer needs this".
 - The owner's address changes after sending: the old link keeps working. Use the new address from the next email.
+- Accepted risk, to be signed off by Lena before launch: anyone holding the email can tap "Yes, I am Jonas Keller" and see the startup names, descriptions and Lena's comments. That is the DocuSign trade for no login. "Not me" tells Lena, and the link expires after 14 days.
 
 ---
 
@@ -159,11 +167,11 @@ After the identity tap, Jonas gets one page with the three startups and three ch
 #### What to build
 
 - One page, phone first, no navigation, behind the DR-2 session. Show the PP-034 title, Lena's note, and one card per startup from the snapshot: name, description, Lena's comment, the choices Interested, Not now and Need more info, and a comment box. Below the cards: a "None of these fit" checkbox with a comment box that replaces the choices, and "Send to Lena".
-- Require a comment for Need more info and for None of these fit. Keep Send enabled. On a missing field, say what is missing and move focus there. Send nothing until it is complete.
+- Require a comment for Need more info and for None of these fit. None of these fit is rated true, since it is a verdict with a reason. Need more info on every startup is rated false. Keep Send enabled. On a missing field, say what is missing and move focus there. Send nothing until it is complete.
 - After sending, show "Sent to Lena Hartmann." with a summary. A valid link opened again shows the answer read-only.
 - On the shortlist, show each choice with who, when and how. Tell Lena once: "Jonas Keller answered PP-034", or "Jonas Keller needs more information on 3 startups" when nothing was rated.
 - After an answer, bring the button back as "Ask Jonas Keller again". That is the follow-up to Need more info. The information itself goes by email or a call.
-- Under Send: "Someone else should answer this", with a plain name field. "Tell Lena" keeps the request open, tells Lena "Jonas Keller says Petra Ahlers should answer PP-034", and shows "Sent to Lena Hartmann. She'll send PP-034 to Petra Ahlers." On the shortlist header this becomes "Resend to Petra Ahlers" (DR-1). If he answers afterwards, the answer wins and the name is cleared.
+- Under Send: "Someone else should answer this", with a plain name field. "Tell Lena" keeps the request open, tells Lena "Jonas Keller says Petra Ahlers should answer PP-034", and shows "Sent to Lena Hartmann. She'll send PP-034 to Petra Ahlers." On the shortlist header this becomes "Resend to Petra Ahlers" (DR-1). If he answers afterwards, the answer wins and the name is cleared. A handoff also sets the request to Paused with the reason handoff (DR-4), so Jonas gets no reminder and the request does not go Late while Lena decides. Resend or Resume ends the pause.
 
 #### User stories
 
@@ -177,8 +185,9 @@ After the identity tap, Jonas gets one page with the three startups and three ch
 - Jonas rates 2 of 3, or ticks None of these fit without a comment, or sets Need more info without a comment, and presses Send. Nothing is sent. The page says what is missing and focus moves there.
 - Jonas sets Pallet.ai to Interested and the others to Not now and sends on 12 Oct 2026. The request is Answered, via is magic_link, rated is true, the shortlist shows "Jonas Keller, 12 Oct 2026, via link", Lena is told once, and the button reads "Ask Jonas Keller again".
 - All three are Need more info, each with a comment. The request is Answered, rated is false, and Lena's notification reads "Jonas Keller needs more information on 3 startups".
+- Jonas ticks None of these fit with the comment "All three are consumer tools" and sends. The request is Answered, rated is true, and the shortlist shows the comment.
 - PP-034 is finalised on 12 Oct and Jonas sends on 13 Oct. late is true and the shortlist shows "received after shortlist was finalised".
-- Jonas sends a handoff on 1 Oct. The request is still Waiting, Lena is told once, and reopening the link shows "Sent to Lena Hartmann" with Petra's name. He rates all three on 2 Oct: Answered, the name is cleared, and the header no longer offers "Resend to Petra Ahlers".
+- Jonas sends a handoff on 1 Oct. The request is Paused with the reason handoff, Lena is told once, no reminder goes out on 2 Oct, and reopening the link shows "Sent to Lena Hartmann" with Petra's name. He rates all three on 2 Oct: Answered, the name is cleared, and the header no longer offers "Resend to Petra Ahlers".
 - Lena answers on behalf at 10:00 and Jonas presses Send at 10:01. He sees "Already answered by Lena Hartmann". Lena's answer stands.
 
 #### Edge cases
@@ -201,9 +210,9 @@ Today Lena is the reminder system. This ticket moves that into the OS. It sends 
 - On days 3 and 7, send the first email again with "Reminder 1 of 2" or "Reminder 2 of 2" on top and the same link. Subject: "Reminder: PP-034, Lena Hartmann needs your view by 6 Oct 2026". Never more than two.
 - Skip a reminder if the owner confirmed identity or opened the page in the last 24 hours, or if Lena pressed Remind now in the last 24 hours.
 - On day 8 with no answer, set Late and tell Lena "Jonas Keller has not answered PP-034 (day 8)".
-- "Pause reminders", on the shortlist header and in the DR-5 list: set Paused, stop reminders and the Late transition, log paused. Lena uses it when she knows the owner is away.
+- "Pause reminders", on the shortlist header and in the DR-5 list: set Paused, stop reminders and the Late transition, log paused. Lena uses it when she knows the owner is away. A handoff (DR-3) pauses the same way, with the reason handoff.
 - "Resume reminders" sets Waiting, or Late at once if day 8 has passed, logs resumed, and tells Lena once if it went Late. Don't send reminders missed while paused. Send the next one due as normal.
-- Make the jobs idempotent: re-check the state and the event log right before sending. Send only when Waiting, fewer than two sent, and the pain point still in Shortlist.
+- Make the jobs idempotent: re-check the state and the event log right before sending. Send only when Waiting, fewer than two reminder_sent events, and the pain point still in Shortlist. Remind now never uses up an automatic reminder.
 
 #### User stories
 
@@ -219,6 +228,8 @@ Today Lena is the reminder system. This ticket moves that into the OS. It sends 
 - Lena resumes on 4 Oct: Waiting, and the day 7 reminder goes out on 6 Oct. Lena resumes on 9 Oct: Late at the next run, told once.
 - PP-034 is finalised on 5 Oct. The request is Cancelled, no reminder on 6 Oct, never Late.
 - The sample data on 12 Oct. The jobs send nothing and PP-034 stays Late.
+- Lena presses Remind now on 30 Sep. reminders_sent stays 0 and chases is 1. The reminders still go out on 2 Oct and 6 Oct.
+- Jonas sends a handoff on 1 Oct and Lena does nothing. No reminder on 2 Oct or 6 Oct, never Late. She presses Resume on 9 Oct: Late at the next run, told once.
 
 #### Edge cases
 
@@ -227,6 +238,7 @@ Today Lena is the reminder system. This ticket moves that into the OS. It sends 
 - Resume before day 7: send day 7, skip the missed day 3.
 - The job runs twice: one email, because the second run finds the reminder_sent event.
 - Day 3 on a Saturday: Monday at 09:00.
+- A pending handoff: Paused with the reason handoff, no reminders, no Late, until Lena resends or resumes.
 
 ---
 
@@ -239,18 +251,18 @@ Lena needs one place that shows everything still waiting on someone and lets her
 #### What to build
 
 - Add the page "Waiting on others" under Pain points. It lists the open requests of the manager who is logged in. Answered and cancelled requests show on their shortlists.
-- Columns: Request, Owner, Age, Due, State, Reminders, Last owner action. Sort Late first, then oldest, then request id. Show "-" in empty cells. Empty list: "Nothing is waiting on anyone."
+- Columns: Request, Owner, Age, Due, State, Reminders, Last owner action. Reminders shows reminders_sent, with "+1 manual" when Lena has pressed Remind now. Last owner action is the latest owner activity from the rules. Sort Late first, then oldest, then request id. Show "-" in empty cells. Empty list: "Nothing is waiting on anyone."
 - Row actions by state. Waiting and Late: Open shortlist, Remind now, Cancel, Answer on behalf, Pause reminders, and "Resend to Petra Ahlers" when the owner has named someone. Paused: the same with Resume reminders instead of Pause, and Remind now warns "Reminders are paused".
-- Remind now sends the DR-4 reminder now, adds 1 to reminders_sent, and logs remind_now, which counts as a manual chase. It is not limited by the two automatic reminders. Then show "Reminded today" for 24 hours.
+- Remind now sends the DR-4 reminder now, adds 1 to chases, and logs remind_now, which counts as a manual chase. It never uses up an automatic reminder. Then show "Reminded today" for 24 hours.
 - Cancel is DR-1's cancel.
 - Answer on behalf opens the DR-3 form with a required note, default "recorded by Lena Hartmann from a call". via is on_behalf. No email to the owner. His link then shows "Already answered by Lena Hartmann".
 - "Resend to Petra Ahlers" is DR-1's cancel and resend with Petra preselected. The old link shows "Lena no longer needs this".
 - Event types: created, link_opened, identity_confirmed, not_me, reminder_sent, reminder_skipped, remind_now, paused, resumed, late, handoff, answered, cancelled.
-- Four queries over the requests created in a period, with no screen yet:
-  - Owner wait time: the median days from created to answered over answered requests with rated true, and the share of all requests answered by day 7, with unanswered counted as misses.
-  - First touch: the share answered within one working day.
-  - No manual chase: the share of answered requests with no remind_now before the answer.
-  - Late rate: the share whose wait (answered minus created, or today minus created while open) is more than 1.2 times the unit's median, or more than 8 days until the unit has 10 answered requests.
+- Four queries over the chains whose first request was created in a period, with no screen yet. Cancelled chains are left out, and no query returns an owner's name:
+  - Owner wait time: the median days from the chain's first created to answered over chains answered with rated true, and the share of chains answered by day 7, with open chains counted as misses.
+  - First touch: the share of chains answered within one working day of the first created. This is the one measure in working days, as the brief defines it.
+  - No manual chase: the share of answered chains with no remind_now and no on_behalf answer.
+  - Late rate: the share of chains whose wait (answered minus first created, or today minus first created while open) is more than 1.2 times the unit's median, or more than 8 days until the unit has 10 answered chains.
 
 #### User stories
 
@@ -262,12 +274,13 @@ Lena needs one place that shows everything still waiting on someone and lets her
 
 - The sample data on 12 Oct 2026. PP-034 shows Jonas Keller, age 13, due 6 Oct, Late, 2 reminders, last owner action "-". PP-040 (Anneke de Vries, age 24, Late) sorts above it.
 - Tobias sees only his own requests. He opens PP-034 from the pain point and presses Remind now there: it is logged under his name.
-- Lena presses Remind now on PP-034. Reminders is 3, remind_now is logged, Jonas gets the email, and the button reads "Reminded today" for 24 hours.
+- Lena presses Remind now on PP-034. reminders_sent stays 2, chases is 1, the Reminders cell reads "2 +1 manual", remind_now is logged, Jonas gets the email, and the button reads "Reminded today" for 24 hours.
 - Lena answers on behalf for PP-034 with the default note. Answered, via on_behalf, the note is on the shortlist, Jonas gets no email, his link shows "Already answered by Lena Hartmann", and the request counts as manually chased.
-- The sample data read as requests (sent_to_owner_at is created, owner_feedback_at is answered when complete, partial is open, reminders_sent are manual chases): a median of 7 days over 11 answered, 8 of 13 by day 7, 9 of 11 without a chase, and a late rate of 3 of 13 (SL-004, PP-034, PP-040).
+- The sample data read as chains of one request each (sent_to_owner_at is created, owner_feedback_at is answered when complete, partial is open, the sample data's reminders_sent are chases): a median of 7 days over 11 answered, 8 of 13 by day 7, 9 of 11 without a chase, and a late rate of 3 of 13 (PP-019, PP-034, PP-040).
 - No open requests. "Nothing is waiting on anyone."
-- PP-034 has a handoff to Petra Ahlers. Lena presses "Resend to Petra Ahlers" on 1 Oct and sends. The old request is Cancelled, a new one is Waiting for Petra from 1 Oct with due_at 8 Oct and reminders_sent 0, Petra gets the DR-2 email, Jonas gets nothing, and his link shows "Lena no longer needs this".
+- PP-034 has a handoff to Petra Ahlers. Lena presses "Resend to Petra Ahlers" on 1 Oct and sends. The old request is Cancelled, a new one is Waiting for Petra from 1 Oct with due_at 8 Oct, reminders_sent 0 and parent_request_id set to the old one, so the chain still counts from 29 Sep. Petra gets the DR-2 email, Jonas gets nothing, and his link shows "Lena no longer needs this".
 - Lena pauses PP-034 from the list on 3 Oct and resumes on 9 Oct: Paused, then Late at the next run, told once.
+- A query result lists chains by request id and business unit. No column holds an owner's name or user id.
 
 #### Edge cases
 
