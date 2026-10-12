@@ -26,7 +26,7 @@ I chose it because the person who stalls is outside the tool, so the fix has to 
 
 ### When it happens
 
-Right after Lena sends a startup shortlist. Jonas has to judge it, nothing comes back, and Lena chases by email and in corridors. Often the person who raised the problem is not the one who can judge the shortlist.
+Lena sends Jonas a shortlist and waits. Jonas means to look at it, but his own work comes first and days go by with no answer. Lena follows up by email, then catches him in the corridor. Sometimes the shortlist has gone to the wrong person: Jonas raised the problem, but someone else on his team is the one who can say whether a startup would work.
 
 ### What it costs
 
