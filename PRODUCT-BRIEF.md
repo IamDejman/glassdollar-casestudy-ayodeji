@@ -92,29 +92,32 @@ These patterns come from tools that already get busy outsiders to respond. The d
 
 | Borrowed from | What they do | Used here as |
 |-------|------------|----------|
-| E-signature (DocuSign) | Sign from one email button with no account. Reminders and expiry are sender settings. Assign to Someone Else covers forwarded mail | One email, one button, no login, 14-day expiry, "Not me" and a handoff |
+| E-signature (DocuSign) | Sign from one email button with no account. Reminders and expiry are sender settings. Assign to Someone Else covers forwarded mail | One email, one button, no login, 14-day expiry, "Not me" and naming who should answer |
 | Code review (Microsoft's Nudge, Maddila et al.) | An automated nudge after 24 hours of inactivity cut the mean overdue pull request lifetime from 197 hours to 78 | Automatic reminders and a Waiting on others list |
 | Scheduling (Doodle, Calendly) | Reply without an account, give a name and email, see a confirmation on screen | One-page form on the phone, then a confirmation that says what happens next |
 | Service desks (Jira Service Management, Zendesk) | The clock stops at "Waiting for customer". First reply time excludes automated replies | Need more info counts as a first touch but, on purpose, does not stop the clock. Auto-replies never count as an answer |
-| CRMs (Pipedrive, HubSpot) | A deal turns red after a set number of inactive days and sorts first. Email sequences stop on a reply or a bounce, and pause on out-of-office | Late on day 8, Late rows first. Reminders stop on an answer, pause on an auto-reply or a bounce |
+| CRMs (Pipedrive, HubSpot) | A deal turns red after a set number of inactive days and sorts first. Email sequences stop on a reply or a bounce, and pause on out-of-office | Late on day 8, Late rows first. Reminders stop on an answer. Lena can pause them, and pausing on an auto-reply waits for the next release |
 | Survey research (Edwards et al. 2009, Van Mol 2014) | Shorter asks get more replies. The first reminder adds the most | Three ratings, "about 3 minutes", two reminders at most |
 
 ## 4. Scope
 
-The first release is 5 to 7 engineer-weeks. Before any of it is built, we ask Lena which decisions need the owner and test the link and SSO at one real customer.
+The first release is about 3 to 4 engineer-weeks. Before any of it is built, we ask Lena which decisions need the owner and test the link and SSO at one real customer. The tickets deploy in order, and DR-1 to DR-3 together are the first slice a user gets value from.
 
 | In the first release | Later or out |
 |---|---|
-| A Waiting on others list with Late on day 8, and Remind now, Cancel and Answer on behalf on each row | Other request types |
+| Lena picks who answers, owner preselected, and sends with a note | Other request types |
 | One request type: rate up to five startups, or "None of these fit" with a reason | Teams or Slack |
-| Handoff: the owner names who should answer, Lena sends it on with one click and a restarted clock | Buttons inside the email |
-| One email with one button, and a link that lasts 14 days and survives mail scanners | Any owner login or dashboard |
-| A one-page form on the phone, then a confirmation | Automatic email to the owner's manager |
+| One email with one button, and a link that lasts 14 days and survives mail scanners | Buttons inside the email |
+| A one-page form on the phone, then a confirmation | Any owner login or dashboard |
+| The owner can name who should answer, and Lena resends from the same dialog | Automatic email to the owner's manager |
 | The answer lands on the shortlist, with one notification to Lena | Answering by email reply |
-| Reminders on days 3 and 7, paused on an auto-reply | Voting by several stakeholders |
-| An event log behind the measures | |
+| Reminders on days 3 and 7, Late on day 8, and Pause when Lena knows the owner is away | Voting by several stakeholders |
+| A Waiting on others list of open requests, with Remind now, Cancel and Answer on behalf on each row | Auto-reply and bounce detection |
+| An event log behind the measures | Link renewal after day 14 |
+| | One-click send-on with a fresh link, and contacts outside the OS |
+| | Answered and Cancelled tabs, and a unit-wide view |
 
-Each item is in because without it the request still stalls, Lena still chases, or we cannot measure the result. Everything else is ranked by value against effort under What comes next.
+Each item is in because without it the request still stalls, Lena still chases, or we cannot measure the result. Everything else is ranked by value against effort under What comes next. The release tests an unproven idea, so anything that only polishes an edge case waits for the next one. The price is that a wrong email address shows up only as Late on day 8, and an expired link needs Lena to resend.
 
 Email is the channel because every owner already has it and it fits the estimate. Lena hears on day 8 if nothing comes back. If an owner ignores a bounded ask with a date too, the problem is incentives. This release will show that, but it cannot fix it.
 
@@ -124,7 +127,7 @@ The [clickable prototype](https://iamdejman.github.io/glassdollar-casestudy-ayod
 
 ## 6. Tickets
 
-There are five tickets, built in order, and each one ships on its own. The overview table and the full specs, with what to build, user stories, acceptance criteria and edge cases, are in [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md). DR-1 has no dependencies and is ready to pick up.
+There are five tickets, deployed in order. DR-1 to DR-3 together are the first slice a user gets value from. The overview table and the full specs, with what to build, user stories, acceptance criteria and edge cases, are in [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md). DR-1 has no dependencies and is ready to pick up.
 
 All five follow the rules at the top of TICKETS.md:
 
@@ -142,8 +145,11 @@ After launch, in order of value against effort:
 
 1. A daily "what is waiting" email to Lena, sent only on days when something is waiting.
 2. A view for the four measures above.
-3. A second request type for the decision after a pilot.
-4. Two-line plain-language summaries per startup, approved by Lena before they go out.
+3. Reminders that pause on their own on an auto-reply, and a bounce alert to Lena.
+4. A second request type for the decision after a pilot.
+5. One-click send-on with a fresh link when the owner names someone else.
+6. Two-line plain-language summaries per startup, approved by Lena before they go out.
+7. Link renewal, the Answered and Cancelled tabs, and a unit-wide view of the list.
 
 Three decisions sit with GlassDollar:
 

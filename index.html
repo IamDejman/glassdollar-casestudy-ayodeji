@@ -32,7 +32,7 @@ h1{letter-spacing:-0.01em}
 .mail,.email,h1.inbox,.statusbar{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
 h1{font-size:20px}h2{font-size:16px}h3{font-size:15px}
 p{margin:0}
-button,input,textarea{font:inherit;color:inherit}
+button,input,textarea,select{font:inherit;color:inherit}
 button,label,a,summary{touch-action:manipulation}
 button{cursor:pointer}
 :focus-visible{outline:none;box-shadow:var(--focus)}
@@ -219,7 +219,7 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
 .opts label:has(input:focus-visible){box-shadow:var(--focus)}
 .opts label:has(input:disabled){opacity:.5;cursor:not-allowed}
 textarea{width:100%;min-height:64px;padding:10px;border:1px solid var(--line-2);border-radius:var(--radius-s);resize:vertical;background:#fff}
-input[type=text]{width:100%;min-height:40px;padding:8px 10px;border:1px solid var(--line-2);border-radius:var(--radius-s);background:#fff}
+input[type=text],select{width:100%;min-height:40px;padding:8px 10px;border:1px solid var(--line-2);border-radius:var(--radius-s);background:#fff}
 .handoff{display:grid;gap:10px;padding-top:8px;border-top:1px solid var(--line)}
 .handoff .err{color:var(--late);font-size:14px}
 .linkish{all:unset;cursor:pointer;font-weight:700;color:var(--ink)}
@@ -291,9 +291,6 @@ label.field{display:grid;gap:6px}
       <button class="btn small" data-day="8">Day 8</button>
       <button class="btn small" data-day="13">Day 13</button></span>
     </div>
-    <div class="group" id="oooGroup">
-      <label class="check" style="font-size:14px"><input type="checkbox" id="ooo"> Jonas is out of office</label>
-    </div>
     <div class="group" id="resetGroup">
       <button class="btn small" id="reset">Start over</button>
     </div>
@@ -342,17 +339,20 @@ label.field{display:grid;gap:6px}
 
 <dialog id="sendDialog" aria-labelledby="sendTitle">
   <form class="dlg" id="sendForm">
-    <h2 id="sendTitle">Ask Jonas Keller to rate this shortlist</h2>
-    <p>He has until <span id="pvDue">6 Oct 2026</span>. If he hasn't answered, he gets a reminder on <span id="pvR1">2 Oct</span> and another on <span id="pvR2">6 Oct</span>. From <span id="pvLate">7 Oct</span> the request is late and you hear about it.</p>
-    <label class="field">Note to Jonas (optional)
+    <h2 id="sendTitle">Ask someone to rate this shortlist</h2>
+    <label class="field">Who should answer
+      <select id="recipient" name="recipient"></select>
+    </label>
+    <p><span id="pvName">Jonas</span> has until <span id="pvDue">6 Oct 2026</span>. If there is no answer, a reminder goes out on <span id="pvR1">2 Oct</span> and another on <span id="pvR2">6 Oct</span>. From <span id="pvLate">7 Oct</span> the request is late and you hear about it.</p>
+    <label class="field">Note (optional)
       <textarea id="noteInput" name="note" autocomplete="off" maxlength="1000" rows="2"></textarea>
     </label>
     <details class="peek">
       <summary>See the email</summary>
       <div class="preview" aria-label="Email preview">
-        <div><b>To</b> jonas.keller@nordwind.example</div>
+        <div><b>To</b> <span id="pvTo">jonas.keller@nordwind.example</span></div>
         <div><b>Subject</b> PP-034: Lena Hartmann needs your view on 3 startups</div>
-        <p>Hi Jonas, you raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by <span id="pvDueMail">6 Oct 2026</span>. It takes about 3 minutes.</p>
+        <p id="pvBody">Hi Jonas, you raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by 6 Oct 2026. It takes about 3 minutes.</p>
         <span class="cta" aria-hidden="true">Review 3 startups</span>
       </div>
     </details>
@@ -402,6 +402,13 @@ const STARTUPS = [
   { id:'cargonaut', name:'Cargonaut Labs', ini:'CL', hue:'#128AA0', desc:'Route and load planning for hub-and-spoke freight networks.', lena:'Already piloting at the hub on PP-030, so onboarding would be quick.' },
   { id:'parcelgrid', name:'Parcelgrid', ini:'PG', hue:'#2F6FDB', desc:'Dynamic slotting that re-sorts outbound pallets in mid-size distribution centers.', lena:'Ran the PP-024 pilot this summer. Stopped, but the scope was different.' }
 ];
+const PEOPLE = [
+  { name:'Jonas Keller', first:'Jonas', email:'jonas.keller@nordwind.example' },
+  { name:'Petra Ahlers', first:'Petra', email:'petra.ahlers@nordwind.example' },
+  { name:'Fatima El-Amin', first:'Fatima', email:'fatima.el-amin@nordwind.example' },
+  { name:'Anneke de Vries', first:'Anneke', email:'anneke.de-vries@nordwind.example' }
+];
+const JONAS = 'Jonas Keller';
 const CHOICES = [['interested','Interested'],['not_now','Not now'],['need_info','Need more info']];
 const label = c => (CHOICES.find(x => x[0] === c) || [,'-'])[1];
 const short = d => fmt(d).replace(/ \d{4}$/, '');
@@ -410,7 +417,7 @@ const names = list => { const n = list.map(i => STARTUPS.find(s => s.id === i.id
 
 let S;
 function fresh(){
-  S = { day:0, role:'lena', tab:'shortlist', listTab:'open', screen:'inbox', openMail:null, ooo:false,
+  S = { day:0, role:'lena', tab:'shortlist', screen:'inbox', openMail:null, resendTo:null,
         req:null, banners:[], remindNowDay:null, readMail:new Set(), tour:false };
 }
 function log(type, text){ S.req.events.push({ day:S.day, type, text }); }
@@ -420,23 +427,50 @@ function live(text){ byId('live').textContent = text; }
 /* State machine */
 function send(){
   const note = byId('noteInput').value.trim();
-  S.req = { state:'Waiting', sentDay:S.day, owner:'Jonas Keller', note, reminders:0, answer:null, events:[], mails:[], openedDay:null, handoff:null, reassigned:null };
-  log('created', 'Request sent to Jonas Keller');
-  S.req.mails.push({ id:'m0', day:S.day, kind:'request', subject:'PP-034: Lena Hartmann needs your view on 3 startups' });
-  if (S.ooo) pause();
-  live('Request sent to Jonas Keller');
+  const who = byId('recipient').value || JONAS;
+  if (S.resendTo && S.req){
+    log('cancelled', `Lena cancelled the request and resent it to ${who}`);
+    Object.assign(S.req, { owner:who, sentDay:S.day, note, reminders:0, openedDay:null, state:'Waiting', reassigned:{ day:S.day } });
+    S.resendTo = null;
+    log('created', `Request sent to ${who}`);
+    live(`Request sent to ${who}`);
+    return;
+  }
+  S.req = { state:'Waiting', sentDay:S.day, owner:who, note, reminders:0, answer:null, events:[], mails:[], openedDay:null, handoff:null, reassigned:null };
+  log('created', `Request sent to ${who}`);
+  if (who === JONAS) S.req.mails.push({ id:'m0', day:S.day, kind:'request', subject:'PP-034: Lena Hartmann needs your view on 3 startups' });
+  live(`Request sent to ${who}`);
 }
 function pause(){
-  if (!S.req || !['Waiting','Late'].includes(S.req.state)) return;
+  if (!S.req || S.req.state !== 'Waiting') return;
   S.req.state = 'Paused';
-  log('paused', 'Auto-reply received: Jonas Keller is out of office. Reminders paused.');
-  notify('pause', 'Jonas Keller appears to be away. Reminders for PP-034 are paused.');
+  log('paused', 'Lena paused reminders');
+  live('Reminders paused');
 }
 function resume(){
   if (!S.req || S.req.state !== 'Paused') return;
   S.req.state = 'Waiting';
-  log('resumed', 'Reminders resumed');
+  log('resumed', 'Lena resumed reminders');
   if (S.day - S.req.sentDay >= LATE_DAY) markLate();
+  live('Reminders resumed');
+}
+function openSend(to){
+  const sel = byId('recipient');
+  sel.innerHTML = PEOPLE.map(x => `<option value="${x.name}">${x.name}${x.name === JONAS ? ' (pain point owner)' : ''}</option>`).join('');
+  sel.value = to || JONAS;
+  S.resendTo = to || null;
+  byId('noteInput').value = to && S.req ? S.req.note : '';
+  byId('sendTitle').textContent = to ? `Resend this shortlist to ${to}` : 'Ask someone to rate this shortlist';
+  previewSend();
+  byId('sendDialog').showModal();
+}
+function previewSend(){
+  const who = PEOPLE.find(x => x.name === byId('recipient').value) || PEOPLE[0];
+  const due = fmt(S.day + DUE_DAY);
+  byId('pvName').textContent = who.first; byId('pvDue').textContent = due;
+  byId('pvR1').textContent = short(S.day + 3); byId('pvR2').textContent = short(S.day + 7); byId('pvLate').textContent = short(S.day + LATE_DAY);
+  byId('pvTo').textContent = who.email;
+  byId('pvBody').textContent = `Hi ${who.first}, ${who.name === JONAS ? 'you' : JONAS} raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by ${due}. It takes about 3 minutes.`;
 }
 function markLate(){
   S.req.state = 'Late';
@@ -449,12 +483,6 @@ function handoff(name){
   notify('pause', `Jonas Keller says ${name} should answer PP-034.`);
   live('Sent to Lena Hartmann');
 }
-function reassign(){
-  const name = S.req.handoff.name;
-  S.req.owner = name; S.req.sentDay = S.day; S.req.reminders = 0; S.req.openedDay = null; S.req.state = 'Waiting'; S.req.reassigned = { day:S.day };
-  log('reassigned', `Request sent to ${name}. The clock restarted.`);
-  live(`Request sent to ${name}`);
-}
 function jumpTo(d){
   for (let day = S.day + 1; day <= d; day++){
     S.day = day;
@@ -466,7 +494,7 @@ function jumpTo(d){
       } else {
         S.req.reminders++;
         log('reminder_sent', `Reminder ${S.req.reminders} of 2 sent`);
-        if (!S.req.reassigned) S.req.mails.push({ id:'r'+S.req.reminders, day, kind:'reminder', n:S.req.reminders, subject:'Reminder: PP-034, Lena Hartmann needs your view by ' + fmt(S.req.sentDay + DUE_DAY) });
+        if (S.req.owner === JONAS) S.req.mails.push({ id:'r'+S.req.reminders, day, kind:'reminder', n:S.req.reminders, subject:'Reminder: PP-034, Lena Hartmann needs your view by ' + fmt(S.req.sentDay + DUE_DAY) });
       }
     }
     if (age === LATE_DAY) markLate();
@@ -477,7 +505,7 @@ function jumpTo(d){
 function remindNow(){
   S.req.reminders++; S.remindNowDay = S.day;
   log('remind_now', 'Lena sent a reminder by hand');
-  if (!S.req.reassigned) S.req.mails.push({ id:'h'+S.day, day:S.day, kind:'manual', subject:'Lena Hartmann: can you look at PP-034 today?' });
+  if (S.req.owner === JONAS) S.req.mails.push({ id:'h'+S.day, day:S.day, kind:'manual', subject:'Lena Hartmann: can you look at PP-034 today?' });
   live('Reminder sent to ' + S.req.owner);
 }
 function cancel(){
@@ -497,9 +525,7 @@ function otherRows(){
   const age40 = S.day + 11;
   return [
     { id:'PP-040', title:'Supplier onboarding document checks', owner:'Anneke de Vries', sent:fmt(-11), age:age40, due:fmt(-4),
-      state: age40 >= LATE_DAY ? 'Late' : 'Waiting', reminders: age40 >= 7 ? 2 : age40 >= 3 ? 1 : 0, last:'Need more info 24 Sep 2026', fixed:true },
-    { id:'PP-028', title:'Waste-heat recovery at Kiel foundry', owner:'Henrik Vos', sent:'20 Apr 2026', age:8, due:'27 Apr 2026',
-      state:'Answered', reminders:0, last:'Answered 28 Apr 2026', fixed:true }
+      state: age40 >= LATE_DAY ? 'Late' : 'Waiting', reminders: age40 >= 7 ? 2 : age40 >= 3 ? 1 : 0, last:'Need more info 24 Sep 2026', fixed:true }
   ];
 }
 function pp34Row(){
@@ -516,7 +542,7 @@ const main = byId('main'), lenaEl = byId('lena'), jonasEl = byId('jonas');
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function pill(state, text){
   const cls = { Late:'late', Paused:'pause', Answered:'done', Cancelled:'cancel' }[state] || '';
-  return `<span class="pill ${cls}">${text || (state === 'Paused' ? 'Paused, away' : state)}</span>`;
+  return `<span class="pill ${cls}">${text || state}</span>`;
 }
 
 function render(){
@@ -524,7 +550,6 @@ function render(){
   document.querySelectorAll('[data-day]').forEach(b => { b.disabled = +b.dataset.day <= S.day; });
   byId('roleLena').setAttribute('aria-pressed', S.role === 'lena');
   byId('roleJonas').setAttribute('aria-pressed', S.role === 'jonas');
-  byId('ooo').checked = S.ooo;
   byId('lenaPane').classList.toggle('active', S.role === 'lena');
   byId('jonasPane').classList.toggle('active', S.role === 'jonas');
   lenaEl.innerHTML = renderLena();
@@ -544,7 +569,7 @@ let lastStep = 0;
 function stepOf(){
   const r = S.req;
   if (!r) return 1;
-  if (r.state === 'Cancelled' || S.tour || r.reassigned) return 5;
+  if (r.state === 'Cancelled' || S.tour || r.owner !== JONAS) return 5;
   if (r.answer) return 4;
   if (!r.events.some(e => e.type === 'identity_confirmed')) return 2;
   return 3;
@@ -561,7 +586,7 @@ function guide(){
     else { text = 'Go back to the inbox and open the email again.'; target = '[data-screen="inbox"]'; }
   }
   else if (step === 3 && r.handoff){
-    text = `Jonas says ${r.handoff.name} should answer. On Lena\u2019s screen, press \u201cSend to ${r.handoff.name} instead\u201d.`; target = '#reassignBtn, [data-act="reassign"]';
+    text = `Jonas says ${r.handoff.name} should answer. On Lena\u2019s screen, press \u201cResend to ${r.handoff.name}\u201d.`; target = '#reassignBtn, [data-act="reassign"]';
   }
   else if (step === 3){
     pane = 'jonas';
@@ -575,9 +600,9 @@ function guide(){
   else {
     if (r.state === 'Cancelled') text = 'Request cancelled. If Jonas opens the link now he sees that Lena no longer needs it. Press Start over to begin again.';
     else if (r.state === 'Answered') text = 'Answered. Press Start over to begin again.';
-    else if (r.reassigned) text = `PP-034 now waits on ${r.owner} from ${fmt(r.sentDay)}. Use the clock to send reminders, or press Start over.`;
+    else if (r.owner !== JONAS) text = `PP-034 now waits on ${r.owner} from ${fmt(r.sentDay)}. This prototype shows only Jonas\u2019s phone, so use the clock to send reminders, or press Start over.`;
     else {
-      text = 'Jump ahead to day 3 and 7 to send reminders. Day 8 marks it Late. Tick \u201cJonas is out of office\u201d to pause. Open \u201cWaiting on others\u201d to remind, cancel or answer for him.';
+      text = 'Jump ahead to day 3 and 7 to send reminders. Day 8 marks it Late. Press \u201cPause reminders\u201d if you know Jonas is away. Open \u201cWaiting on others\u201d to remind, cancel or answer for him.';
       if (r.state === 'Waiting' && S.day < 3) target = '[data-day="3"]';
       else if (S.day >= LATE_DAY && S.tab !== 'waiting') target = '[data-tab="waiting"]';
     }
@@ -596,8 +621,8 @@ function guide(){
   byId('roleJonas').setAttribute('aria-pressed', S.role === 'jonas');
   byId('lenaPane').classList.toggle('dim', step <= 3 && pane === 'jonas');
   byId('jonasPane').classList.toggle('dim', step <= 3 && pane === 'lena');
-  const showClock = S.tour || S.day > 0 || S.ooo || !!(r && r.reassigned);
-  byId('clockGroup').hidden = !showClock; byId('oooGroup').hidden = !showClock;
+  const showClock = S.tour || S.day > 0 || !!(r && r.owner !== JONAS);
+  byId('clockGroup').hidden = !showClock;
   byId('resetGroup').hidden = !r;
   document.querySelectorAll('.next').forEach(el => el.classList.remove('next'));
   if (target){ const el = document.querySelector(target); if (el && (wide || el.closest('.pane.active') || !el.closest('.pane'))) (el.classList.contains('mail-row') ? el.closest('.mail') : el).classList.add('next'); }
@@ -623,9 +648,10 @@ function renderShortlist(){
     action = `<button class="btn primary" id="askBtn">Ask Jonas Keller to rate this shortlist</button>`;
   } else if (isOpen(r.state) && r.handoff && !r.reassigned){
     status = `${pill(r.state)} <span>Jonas Keller says ${esc(r.handoff.name)} should answer</span>`;
-    action = `<button class="btn primary" id="reassignBtn">Send to ${esc(r.handoff.name)} instead</button>`;
+    action = `<button class="btn primary" id="reassignBtn">Resend to ${esc(r.handoff.name)}</button>`;
   } else if (isOpen(r.state)){
     status = `${pill(r.state)} <span>Waiting for ${esc(r.owner)}, day ${S.day - r.sentDay}</span>`;
+    action = r.state === 'Paused' ? `<button class="btn" data-act="resume">Resume reminders</button>` : r.state === 'Waiting' ? `<button class="btn" data-act="pause">Pause reminders</button>` : '';
   } else if (r.state === 'Answered'){
     status = `${pill('Answered')} <span>${esc(r.owner)}, ${fmt(r.answer.day)}, ${r.answer.via === 'on_behalf' ? 'recorded by Lena' : 'via link'}</span>`;
   } else {
@@ -649,18 +675,15 @@ function renderShortlist(){
 
 function renderWaiting(){
   const all = [pp34Row(), ...otherRows()].filter(Boolean);
-  const open = all.filter(x => isOpen(x.state)).sort((a, b) => (b.state === 'Late') - (a.state === 'Late') || b.age - a.age);
-  const answered = all.filter(x => x.state === 'Answered');
-  const cancelled = all.filter(x => x.state === 'Cancelled');
-  const view = S.listTab;
-  const rows = view === 'open' ? open : view === 'answered' ? answered : cancelled;
+  const rows = all.filter(x => isOpen(x.state)).sort((a, b) => (b.state === 'Late') - (a.state === 'Late') || b.age - a.age);
   const actions = (x, k) => {
     if (x.fixed) return '';
     const r = S.req, remindedToday = S.remindNowDay === S.day;
     const items = [`<button type="button" data-act="open">Open shortlist</button>`];
     if (isOpen(x.state)){
-      if (r.handoff && !r.reassigned) items.push(`<button type="button" data-act="reassign">Send to ${esc(r.handoff.name)} instead</button>`);
+      if (r.handoff && !r.reassigned) items.push(`<button type="button" data-act="reassign">Resend to ${esc(r.handoff.name)}</button>`);
       if (x.state === 'Paused') items.push(`<button type="button" data-act="resume">Resume reminders</button>`);
+      else if (x.state === 'Waiting') items.push(`<button type="button" data-act="pause">Pause reminders</button>`);
       items.push(`<button type="button" data-act="remind" ${remindedToday ? 'disabled' : ''}>${remindedToday ? 'Reminded today' : 'Remind now'}</button>`);
       items.push(`<button type="button" data-act="behalf">Answer on behalf</button>`);
       items.push(`<hr><button type="button" class="danger" data-act="cancel">Cancel request</button>`);
@@ -672,13 +695,8 @@ function renderWaiting(){
     ${rows.map(x => `<tr><td>${reqCell(x)}<br><span class="small muted">${x.title}</span></td><td>${esc(x.owner)}</td><td class="num">${x.age} days</td><td class="num">${x.due}</td><td>${pill(x.state)}</td><td class="num">${x.reminders}</td><td>${esc(x.last)}</td><td>${actions(x, 't') || '-'}</td></tr>`).join('')}</tbody></table></div>
     <div class="rows">${rows.map(x => `<div class="card row-card"><div class="row-head"><b>${reqCell(x)} ${x.title}</b>${pill(x.state)}</div>
       <div class="kv"><span>Owner</span><b>${esc(x.owner)}</b><span>Age</span><b>${x.age} days</b><span>Due</span><b>${x.due}</b><span>Reminders</span><b>${x.reminders}</b><span>Last action</span><b>${esc(x.last)}</b></div><div class="actions">${actions(x, 'c')}</div></div>`).join('')}</div>`
-    : `<div class="card empty">${view === 'open' ? 'Nothing is waiting on anyone.' : view === 'answered' ? 'No answers yet.' : 'Nothing has been cancelled.'}</div>`;
-  return `<div class="head"><h1>Waiting on others</h1>
-    <div class="seg" role="group" aria-label="Filter by state">
-      <button class="btn" aria-pressed="${view === 'open'}" data-list="open">Open (${open.length})</button>
-      <button class="btn" aria-pressed="${view === 'answered'}" data-list="answered">Answered (${answered.length})</button>
-      <button class="btn" aria-pressed="${view === 'cancelled'}" data-list="cancelled">Cancelled (${cancelled.length})</button>
-    </div></div>${table}`;
+    : `<div class="card empty">Nothing is waiting on anyone.</div>`;
+  return `<div class="head"><div><h1>Waiting on others</h1><p class="meta small">Open requests, Late first. Answered and cancelled requests are on their shortlists.</p></div></div>${table}`;
 }
 
 function renderJonas(){
@@ -707,7 +725,7 @@ function renderJonas(){
     body = `<div class="page"><h1>Thanks, we've told Lena Hartmann</h1><p class="lead">Someone else opened this link, so no startups were shown. If you need your own request, ask her for a link.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
   } else if (S.screen === 'answer'){
     if (r.state === 'Cancelled') body = `<div class="page"><h1>Lena no longer needs this</h1><p class="lead">Lena cancelled the request for PP-034 on ${fmt(r.events.find(e => e.type === 'cancelled').day)}. There's nothing you need to do.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
-    else if (r.reassigned) body = `<div class="page"><h1>This request went to ${esc(r.owner)}</h1><p class="lead">Lena sent PP-034 to ${esc(r.owner)} on ${fmt(r.reassigned.day)}. There's nothing you need to do.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
+    else if (r.reassigned) body = `<div class="page"><h1>Lena no longer needs this</h1><p class="lead">Lena sent PP-034 to ${esc(r.owner)} on ${fmt(r.reassigned.day)} instead. There's nothing you need to do.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
     else if (r.handoff) body = renderHandoff(true);
     else if (r.answer) body = renderDone(true);
     else body = renderForm();
@@ -792,6 +810,7 @@ function submitAnswer(form){
 
 function openBehalf(){
   byId('behalfOpts').innerHTML = STARTUPS.map(s => `<fieldset class="choice" style="padding:10px"><legend style="font-size:15px">${s.name}</legend><div class="opts">${CHOICES.map(([v, t]) => `<label><input type="radio" name="b_${s.id}" value="${v}"><span>${t}</span></label>`).join('')}</div></fieldset>`).join('');
+  byId('behalfTitle').textContent = `Answer on behalf of ${S.req.owner}`;
   byId('behalfNote').value = `Recorded by Lena Hartmann from a call on ${fmt(S.day)}.`;
   byId('behalfStatus').textContent = '';
   byId('behalfDialog').showModal();
@@ -806,22 +825,19 @@ function bind(){
       S.tab = S.tab === 'shortlist' ? 'waiting' : 'shortlist'; render(); main.querySelector('[data-tab="' + S.tab + '"]').focus();
     };
   });
-  main.querySelectorAll('[data-list]').forEach(b => b.onclick = () => { S.listTab = b.dataset.list; render(); });
   main.querySelectorAll('[data-dismiss]').forEach(b => b.onclick = () => { S.banners.splice(+b.dataset.dismiss, 1); render(); });
-  const ask = main.querySelector('#askBtn'); if (ask) ask.onclick = () => {
-    byId('pvDue').textContent = fmt(S.day + DUE_DAY); byId('pvDueMail').textContent = fmt(S.day + DUE_DAY); byId('pvR1').textContent = short(S.day + 3); byId('pvR2').textContent = short(S.day + 7); byId('pvLate').textContent = short(S.day + LATE_DAY);
-    byId('sendDialog').showModal();
-  };
+  const ask = main.querySelector('#askBtn'); if (ask) ask.onclick = () => openSend(null);
   main.querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
     const a = b.dataset.act;
     if (a === 'remind'){ remindNow(); render(); }
     else if (a === 'open'){ S.tab = 'shortlist'; render(); focusTop(lenaEl); }
-    else if (a === 'reassign'){ reassign(); render(); }
-    else if (a === 'resume'){ S.ooo = false; resume(); render(); }
+    else if (a === 'reassign') openSend(S.req.handoff.name);
+    else if (a === 'pause'){ pause(); render(); }
+    else if (a === 'resume'){ resume(); render(); }
     else if (a === 'behalf') openBehalf();
-    else if (a === 'cancel') byId('cancelDialog').showModal();
+    else if (a === 'cancel'){ byId('cancelTitle').textContent = `Cancel the request to ${S.req.owner}?`; byId('cancelDialog').showModal(); }
   });
-  const rb = main.querySelector('#reassignBtn'); if (rb) rb.onclick = () => { reassign(); render(); focusTop(lenaEl); };
+  const rb = main.querySelector('#reassignBtn'); if (rb) rb.onclick = () => openSend(S.req.handoff.name);
   main.querySelectorAll('.menu-items').forEach(p => p.addEventListener('toggle', e => {
     if (e.newState !== 'open') return;
     const b = main.querySelector(`[popovertarget="${p.id}"]`), rect = b.getBoundingClientRect();
@@ -855,7 +871,7 @@ function focusTop(el){ const h = el.querySelector('h1'); if (h){ h.setAttribute(
 byId('roleLena').onclick = () => { S.role = 'lena'; render(); };
 byId('roleJonas').onclick = () => { S.role = 'jonas'; render(); };
 document.querySelectorAll('[data-day]').forEach(b => b.onclick = () => { jumpTo(+b.dataset.day); render(); });
-byId('ooo').onchange = e => { S.ooo = e.target.checked; if (S.ooo) pause(); else resume(); render(); };
+byId('recipient').onchange = previewSend;
 byId('reset').onclick = () => { fresh(); lastStep = 0; render(); live('Prototype reset'); };
 window.addEventListener('scroll', () => document.querySelectorAll('.menu-items:popover-open').forEach(p => p.hidePopover()), true);
 
