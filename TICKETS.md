@@ -57,9 +57,11 @@ None of these blocks a build. Each has a default the tickets follow until it is 
 - Calendar or working days for 3, 7 and 8? Ask Lena.
 - Public holidays: default is to treat them as weekdays. Ask Lena.
 - Read-only access for Dr. Sabine Koch? Default: no. Ask Lena.
-- May reports name owners? Default: no, by request and unit only, until the works council question in the brief is answered. Ask Lena who at Nordwind answers works council questions.
+- May reports name owners? Default: no, by request and business unit only, until the works council question in the brief is answered. Ask Lena who at Nordwind answers works council questions.
 
 ## Not in this release
+
+Listed so the cut is explicit. Nothing here is in scope for the first release.
 
 - Auto-reply and bounce detection, with reminders that pause on their own
 - Link renewal after day 14
@@ -250,7 +252,7 @@ Lena needs one place that shows everything still waiting on someone and lets her
 
 #### What to build
 
-- Add the page "Waiting on others" under Pain points. It lists the open requests of the manager who is logged in. Answered and cancelled requests show on their shortlists.
+- Add the page "Waiting on others" under Pain points. It lists the open requests of the innovation manager who is logged in. Answered and cancelled requests show on their shortlists.
 - Columns: Request, Owner, Age, Due, State, Reminders, Last owner action. Reminders shows reminders_sent, with "+1 manual" when Lena has pressed Remind now. Last owner action is the latest owner activity from the rules. Sort Late first, then oldest, then request id. Show "-" in empty cells. Empty list: "Nothing is waiting on anyone."
 - Row actions by state. Waiting and Late: Open shortlist, Remind now, Cancel, Answer on behalf, Pause reminders, and "Resend to Petra Ahlers" when the owner has named someone. Paused: the same with Resume reminders instead of Pause, and Remind now warns "Reminders are paused".
 - Remind now sends the DR-4 reminder now, adds 1 to chases, and logs remind_now, which counts as a manual chase. It never uses up an automatic reminder. Then show "Reminded today" for 24 hours.
@@ -259,10 +261,10 @@ Lena needs one place that shows everything still waiting on someone and lets her
 - "Resend to Petra Ahlers" is DR-1's cancel and resend with Petra preselected. The old link shows "Lena no longer needs this".
 - Event types: created, link_opened, identity_confirmed, not_me, reminder_sent, reminder_skipped, remind_now, paused, resumed, late, handoff, answered, cancelled.
 - Four queries over the chains whose first request was created in a period, with no screen yet. Cancelled chains are left out, and no query returns an owner's name:
-  - Owner wait time: the median days from the chain's first created to answered over chains answered with rated true, and the share of chains answered by day 7, with open chains counted as misses.
+  - Days to answer: the median days from the chain's first created to answered over chains answered with rated true, and the share of chains answered by day 7, with open chains counted as misses.
   - First touch: the share of chains answered within one working day of the first created. This is the one measure in working days, as the brief defines it.
   - No manual chase: the share of answered chains with no remind_now and no on_behalf answer.
-  - Late rate: the share of chains whose wait (answered minus first created, or today minus first created while open) is more than 1.2 times the unit's median, or more than 8 days until the unit has 10 answered chains.
+  - Late rate: the share of chains whose wait (answered minus first created, or today minus first created while open) is more than 1.2 times the business unit's median, or more than 8 days until the business unit has 10 answered chains.
 
 #### User stories
 
