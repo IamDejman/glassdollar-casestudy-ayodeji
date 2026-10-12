@@ -484,10 +484,10 @@ function answer(items, noneFit, noneFitText, via, note){
 
 /* Other requests in the list, relative to the clock */
 function otherRows(){
-  const age40 = S.day + 5;
+  const age40 = S.day + 11;
   return [
-    { id:'PP-040', title:'Supplier onboarding document checks', owner:'Anneke de Vries', sent:fmt(-5), age:age40, due:fmt(2),
-      state: age40 >= LATE_DAY ? 'Late' : 'Waiting', reminders: age40 >= 7 ? 2 : age40 >= 3 ? 1 : 0, last:'Opened the page 26 Sep 2026', fixed:true },
+    { id:'PP-040', title:'Supplier onboarding document checks', owner:'Anneke de Vries', sent:fmt(-11), age:age40, due:fmt(-4),
+      state: age40 >= LATE_DAY ? 'Late' : 'Waiting', reminders: age40 >= 7 ? 2 : age40 >= 3 ? 1 : 0, last:'Need more info 24 Sep 2026', fixed:true },
     { id:'PP-028', title:'Waste-heat recovery at Kiel foundry', owner:'Henrik Vos', sent:'20 Apr 2026', age:8, due:'27 Apr 2026',
       state:'Answered', reminders:0, last:'Answered 28 Apr 2026', fixed:true }
   ];
