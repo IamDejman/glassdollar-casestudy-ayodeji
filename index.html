@@ -204,6 +204,8 @@ td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
 .page .btn{min-height:44px;font-size:16px}
 .page .btn.quiet.small{min-height:36px;font-size:15px;justify-self:start}
 .lena-note{color:var(--ink-2);font-size:15px;padding:10px 12px;background:var(--bg);border-radius:var(--radius-s)}
+.mail-note{color:var(--ink-2);border-left:3px solid var(--line);padding:2px 0 2px 10px;white-space:pre-wrap;margin:8px 0}
+.banner .acts{display:flex;gap:8px;flex-wrap:wrap;flex:none}
 .choice{border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:grid;gap:10px;margin:0;min-width:0}
 .choice legend{float:left;width:100%;font-weight:600;font-size:17px;padding:0;margin:0}
 .choice.invalid{border-color:var(--late)}
@@ -353,6 +355,7 @@ label.field{display:grid;gap:6px}
         <div><b>To</b> <span id="pvTo">jonas.keller@nordwind.example</span></div>
         <div><b>Subject</b> PP-034: Lena Hartmann needs your view on 3 startups</div>
         <p id="pvBody">Hi Jonas, you raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by 6 Oct 2026. It takes about 3 minutes.</p>
+        <p id="pvNote" class="mail-note" hidden></p>
         <span class="cta" aria-hidden="true">Review 3 startups</span>
       </div>
     </details>
@@ -418,10 +421,11 @@ const names = list => { const n = list.map(i => STARTUPS.find(s => s.id === i.id
 let S;
 function fresh(){
   S = { day:0, role:'lena', tab:'shortlist', screen:'inbox', openMail:null, resendTo:null,
-        req:null, banners:[], remindNowDay:null, readMail:new Set(), tour:false };
+        req:null, banners:[], remindNowDay:null, readMail:new Set(), tour:false,
+        cancelTarget:null, other:{ 'PP-040': { cancelled:false, remindedDay:null, extra:0 } } };
 }
 function log(type, text){ S.req.events.push({ day:S.day, type, text }); }
-function notify(kind, text){ S.banners.unshift({ kind, text }); S.banners = S.banners.slice(0,2); }
+function notify(kind, text, acts){ S.banners.unshift({ kind, text, acts }); S.banners = S.banners.slice(0,2); }
 function live(text){ byId('live').textContent = text; }
 
 /* State machine */
@@ -436,7 +440,8 @@ function send(){
     live(`Request sent to ${who}`);
     return;
   }
-  S.req = { state:'Waiting', sentDay:S.day, owner:who, note, reminders:0, answer:null, events:[], mails:[], openedDay:null, handoff:null, reassigned:null };
+  const prev = S.req && S.req.answer ? { answer:S.req.answer, owner:S.req.owner } : null;
+  S.req = { state:'Waiting', sentDay:S.day, owner:who, note, reminders:0, answer:null, events:[], mails:[], openedDay:null, handoff:null, reassigned:null, prev };
   log('created', `Request sent to ${who}`);
   if (who === JONAS) S.req.mails.push({ id:'m0', day:S.day, kind:'request', subject:'PP-034: Lena Hartmann needs your view on 3 startups' });
   live(`Request sent to ${who}`);
@@ -471,15 +476,18 @@ function previewSend(){
   byId('pvR1').textContent = short(S.day + 3); byId('pvR2').textContent = short(S.day + 7); byId('pvLate').textContent = short(S.day + LATE_DAY);
   byId('pvTo').textContent = who.email;
   byId('pvBody').textContent = `Hi ${who.first}, ${who.name === JONAS ? 'you' : JONAS} raised PP-034, manual load planning for outbound trucks. I've found three startups that could fix it and I need your view on each by ${due}. It takes about 3 minutes.`;
+  const noteNow = byId('noteInput').value.trim();
+  byId('pvNote').textContent = noteNow; byId('pvNote').hidden = !noteNow;
 }
 function markLate(){
   S.req.state = 'Late';
   log('late', 'Day 8, still no answer. Lena notified.');
-  notify('late', `${S.req.owner} has not answered PP-034 (day 8).`);
+  notify('late', `${S.req.owner} has not answered PP-034 (day 8).`, [['remind', 'Remind now'], ['waiting', 'Open Waiting on others']]);
 }
 function handoff(name){
   S.req.handoff = { name, day:S.day };
   log('handoff', `Jonas Keller says ${name} should answer`);
+  if (S.req.state === 'Waiting'){ S.req.state = 'Paused'; log('paused', 'Reminders paused while Lena decides who should answer'); }
   notify('pause', `Jonas Keller says ${name} should answer PP-034.`);
   live('Sent to Lena Hartmann');
 }
@@ -522,10 +530,12 @@ function answer(items, noneFit, noneFitText, via, note){
 
 /* Other requests in the list, relative to the clock */
 function otherRows(){
+  const o = S.other['PP-040'];
+  if (o.cancelled) return [];
   const age40 = S.day + 11;
   return [
     { id:'PP-040', title:'Supplier onboarding document checks', owner:'Anneke de Vries', sent:fmt(-11), age:age40, due:fmt(-4),
-      state: age40 >= LATE_DAY ? 'Late' : 'Waiting', reminders: age40 >= 7 ? 2 : age40 >= 3 ? 1 : 0, last:'Need more info 24 Sep 2026', fixed:true }
+      state: age40 >= LATE_DAY ? 'Late' : 'Waiting', reminders: (age40 >= 7 ? 2 : age40 >= 3 ? 1 : 0) + o.extra, last:'Opened the page 24 Sep 2026', fixed:true }
   ];
 }
 function pp34Row(){
@@ -583,6 +593,7 @@ function guide(){
     if (S.screen === 'inbox'){ text = 'Switch to Jonas\u2019s phone and open the email from Lena.'; target = '.mail-row'; }
     else if (S.screen === 'email'){ text = 'Press \u201cReview 3 startups\u201d.'; target = '.email .cta'; }
     else if (S.screen === 'identity'){ text = 'Confirm it\u2019s Jonas.'; target = '[data-screen="answer"]'; }
+    else if (S.screen === 'whoelse'){ text = 'Say who should answer instead and press \u201cTell Lena\u201d.'; target = '#handoffSend'; }
     else { text = 'Go back to the inbox and open the email again.'; target = '[data-screen="inbox"]'; }
   }
   else if (step === 3 && r.handoff){
@@ -599,7 +610,7 @@ function guide(){
   }
   else {
     if (r.state === 'Cancelled') text = 'Request cancelled. If Jonas opens the link now he sees that Lena no longer needs it. Press Start over to begin again.';
-    else if (r.state === 'Answered') text = 'Answered. Press Start over to begin again.';
+    else if (r.state === 'Answered') text = 'Answered. If Jonas needs to look again, press \u201cAsk Jonas Keller again\u201d. Or press Start over.';
     else if (r.owner !== JONAS) text = `PP-034 now waits on ${r.owner} from ${fmt(r.sentDay)}. This prototype shows only Jonas\u2019s phone, so use the clock to send reminders, or press Start over.`;
     else {
       text = 'Jump ahead to day 3 and 7 to send reminders. Day 8 marks it Late. Press \u201cPause reminders\u201d if you know Jonas is away. Open \u201cWaiting on others\u201d to remind, cancel or answer for him.';
@@ -629,7 +640,10 @@ function guide(){
 }
 
 function renderLena(){
-  const banners = S.banners.map((b, i) => `<div class="banner ${b.kind}" role="status"><span>${esc(b.text)}</span><button class="btn quiet small" data-dismiss="${i}">Dismiss</button></div>`).join('');
+  const banners = S.banners.map((b, i) => {
+    const acts = (b.acts && S.req && isOpen(S.req.state) ? b.acts : []).map(([a, t]) => `<button class="btn small" data-act="${a}" data-id="PP-034">${t}</button>`).join('');
+    return `<div class="banner ${b.kind}" role="status"><span>${esc(b.text)}</span><div class="acts">${acts}<button class="btn quiet small" data-dismiss="${i}">Dismiss</button></div></div>`;
+  }).join('');
   const openCount = [pp34Row(), ...otherRows()].filter(x => x && isOpen(x.state)).length;
   return `<div class="wrap">
     ${banners}
@@ -648,21 +662,24 @@ function renderShortlist(){
     action = `<button class="btn primary" id="askBtn">Ask Jonas Keller to rate this shortlist</button>`;
   } else if (isOpen(r.state) && r.handoff && !r.reassigned){
     status = `${pill(r.state)} <span>Jonas Keller says ${esc(r.handoff.name)} should answer</span>`;
-    action = `<button class="btn primary" id="reassignBtn">Resend to ${esc(r.handoff.name)}</button>`;
+    action = `<button class="btn primary" id="reassignBtn">Resend to ${esc(r.handoff.name)}</button><button class="btn" data-act="cancel" data-id="PP-034">Cancel request</button>`;
   } else if (isOpen(r.state)){
     status = `${pill(r.state)} <span>Waiting for ${esc(r.owner)}, day ${S.day - r.sentDay}</span>`;
-    action = r.state === 'Paused' ? `<button class="btn" data-act="resume">Resume reminders</button>` : r.state === 'Waiting' ? `<button class="btn" data-act="pause">Pause reminders</button>` : '';
+    action = (r.state === 'Paused' ? `<button class="btn" data-act="resume">Resume reminders</button>` : r.state === 'Waiting' ? `<button class="btn" data-act="pause">Pause reminders</button>` : '') + `<button class="btn" data-act="cancel" data-id="PP-034">Cancel request</button>`;
   } else if (r.state === 'Answered'){
     status = `${pill('Answered')} <span>${esc(r.owner)}, ${fmt(r.answer.day)}, ${r.answer.via === 'on_behalf' ? 'recorded by Lena' : 'via link'}</span>`;
+    action = `<button class="btn primary" id="askBtn">Ask ${esc(r.owner)} again</button>`;
   } else {
     status = pill('Cancelled');
     action = `<button class="btn primary" id="askBtn">Ask Jonas Keller again</button>`;
   }
   const cards = STARTUPS.map(s => {
     let ans = '';
-    if (r && r.answer && !r.answer.noneFit){
-      const it = r.answer.items.find(i => i.id === s.id);
-      ans = `<div class="answer-line"><span class="pill ${it.choice === 'interested' ? 'done' : ''}">${label(it.choice)}</span>${it.comment ? `<span>${esc(it.comment)}</span>` : ''}</div>`;
+    const a = r && (r.answer || (r.prev && r.prev.answer));
+    if (a && !a.noneFit){
+      const it = a.items.find(i => i.id === s.id);
+      const earlier = r.answer ? '' : `<span class="muted small">earlier answer, ${fmt(a.day)}</span>`;
+      ans = `<div class="answer-line"><span class="pill ${it.choice === 'interested' ? 'done' : ''}">${label(it.choice)}</span>${it.comment ? `<span>${esc(it.comment)}</span>` : ''}${earlier}</div>`;
     }
     return `<div class="card startup"><div class="s-head"><span class="avatar" style="background:${s.hue}" aria-hidden="true">${s.ini}</span><h3>${s.name}</h3></div><p>${s.desc}</p><p class="note"><span class="lena-label">Lena's note:</span> ${s.lena}</p>${ans}</div>`;
   }).join('');
@@ -677,16 +694,15 @@ function renderWaiting(){
   const all = [pp34Row(), ...otherRows()].filter(Boolean);
   const rows = all.filter(x => isOpen(x.state)).sort((a, b) => (b.state === 'Late') - (a.state === 'Late') || b.age - a.age);
   const actions = (x, k) => {
-    if (x.fixed) return '';
-    const r = S.req, remindedToday = S.remindNowDay === S.day;
-    const items = [`<button type="button" data-act="open">Open shortlist</button>`];
+    const r = S.req, remindedToday = x.fixed ? S.other[x.id].remindedDay === S.day : S.remindNowDay === S.day;
+    const items = x.fixed ? [] : [`<button type="button" data-act="open">Open shortlist</button>`];
     if (isOpen(x.state)){
-      if (r.handoff && !r.reassigned) items.push(`<button type="button" data-act="reassign">Resend to ${esc(r.handoff.name)}</button>`);
+      if (!x.fixed && r.handoff && !r.reassigned) items.push(`<button type="button" data-act="reassign">Resend to ${esc(r.handoff.name)}</button>`);
       if (x.state === 'Paused') items.push(`<button type="button" data-act="resume">Resume reminders</button>`);
       else if (x.state === 'Waiting') items.push(`<button type="button" data-act="pause">Pause reminders</button>`);
-      items.push(`<button type="button" data-act="remind" ${remindedToday ? 'disabled' : ''}>${remindedToday ? 'Reminded today' : 'Remind now'}</button>`);
-      items.push(`<button type="button" data-act="behalf">Answer on behalf</button>`);
-      items.push(`<hr><button type="button" class="danger" data-act="cancel">Cancel request</button>`);
+      items.push(`<button type="button" data-act="remind" data-id="${x.id}" ${remindedToday ? 'disabled' : ''}>${remindedToday ? 'Reminded today' : 'Remind now'}</button>`);
+      if (!x.fixed) items.push(`<button type="button" data-act="behalf">Answer on behalf</button>`);
+      items.push(`<hr><button type="button" class="danger" data-act="cancel" data-id="${x.id}">Cancel request</button>`);
     }
     return `<button type="button" class="btn small menu-btn" popovertarget="menu-${k}-${x.id}">Actions</button><div class="menu-items" id="menu-${k}-${x.id}" popover>${items.join('')}</div>`;
   };
@@ -715,12 +731,18 @@ function renderJonas(){
       : `<p>Hi Jonas, could you look at PP-034 today? It's three startups and takes about 3 minutes. I'd like to brief the Hamburg team this week.</p>`;
     body = `<button class="btn quiet" data-screen="inbox">Back to inbox</button>
       <div class="mail"><div class="email"><div class="hdr"><b>${esc(m.subject)}</b><span>Lena Hartmann via GlassDollar, ${fmt(m.day)}</span><span>To jonas.keller@nordwind.example</span></div>
-      ${text}<button class="cta" data-screen="identity">Review 3 startups</button>
+      ${text}${r.note && m.kind !== 'manual' ? `<p class="mail-note">${esc(r.note)}</p>` : ''}<button class="cta" data-screen="identity">Review 3 startups</button>
       <p class="url">If the button doesn't work, copy this link: https://os.glassdollar.com/r/7Qk2mN9x</p>
       <p class="small">Reply to this email to reach me.<br>Lena Hartmann, Nordwind Venture Client Unit</p></div></div>`;
   } else if (S.screen === 'identity'){
     body = `<div class="page"><h1>Review 3 startups for PP-034</h1><p class="lead">This link was sent to jonas.keller@nordwind.example. Confirm it's you and we'll show the startups.</p>
-      <button class="btn primary" data-screen="answer">Yes, I am Jonas Keller</button><button class="btn" data-screen="notme">Not me</button></div>`;
+      <button class="btn primary" data-screen="answer">Yes, I am Jonas Keller</button><button class="btn" data-screen="notme">Not me</button>
+      <button class="btn quiet" data-screen="whoelse">I'm not the right person for this</button></div>`;
+  } else if (S.screen === 'whoelse'){
+    body = `<div class="page"><h1>Who should answer instead?</h1><p class="lead">Lena will send PP-034 to them. Nothing goes to them until she does.</p>
+      <label class="field">Their name<input type="text" id="handoffName" name="handoffName" autocomplete="off" maxlength="80"></label>
+      <p class="err" id="handoffErr" hidden>Say who should answer.</p>
+      <div class="actions"><button class="btn primary" type="button" id="handoffSend">Tell Lena</button><button class="btn" data-screen="identity">Back</button></div></div>`;
   } else if (S.screen === 'notme'){
     body = `<div class="page"><h1>Thanks, we've told Lena Hartmann</h1><p class="lead">Someone else opened this link, so no startups were shown. If you need your own request, ask her for a link.</p><button class="btn" data-screen="inbox">Back to inbox</button></div>`;
   } else if (S.screen === 'answer'){
@@ -797,10 +819,17 @@ function submitAnswer(form){
   } else {
     const items = readItems(form, 'c_', 'n_');
     const missing = items.filter(i => !i.choice);
-    missing.forEach(i => { form.querySelector('#f_' + i.id).classList.add('invalid'); form.querySelector('#e_' + i.id).hidden = false; });
+    missing.forEach(i => { form.querySelector('#f_' + i.id).classList.add('invalid'); const e = form.querySelector('#e_' + i.id); e.textContent = 'Pick one before you send.'; e.hidden = false; });
     if (missing.length){
       status.textContent = `Rate ${names(missing)} before you send.`;
       form.querySelector(`input[name="c_${missing[0].id}"]`).focus();
+      return;
+    }
+    const noWhy = items.filter(i => i.choice === 'need_info' && !i.comment);
+    noWhy.forEach(i => { form.querySelector('#f_' + i.id).classList.add('invalid'); form.querySelector('#l_' + i.id).hidden = false; const e = form.querySelector('#e_' + i.id); e.textContent = 'Say what you need to know before you send.'; e.hidden = false; });
+    if (noWhy.length){
+      status.textContent = `Say what you need to know about ${names(noWhy)} before you send.`;
+      form.querySelector('#n_' + noWhy[0].id).focus();
       return;
     }
     answer(items, false, '', 'magic_link', '');
@@ -828,8 +857,16 @@ function bind(){
   main.querySelectorAll('[data-dismiss]').forEach(b => b.onclick = () => { S.banners.splice(+b.dataset.dismiss, 1); render(); });
   const ask = main.querySelector('#askBtn'); if (ask) ask.onclick = () => openSend(null);
   main.querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
-    const a = b.dataset.act;
-    if (a === 'remind'){ remindNow(); render(); }
+    const a = b.dataset.act, id = b.dataset.id || 'PP-034';
+    if (id !== 'PP-034'){
+      const o = S.other[id], row = otherRows().find(x => x.id === id);
+      if (a === 'remind'){ if (o.remindedDay !== S.day){ o.extra++; o.remindedDay = S.day; live('Reminder sent to ' + row.owner); } render(); }
+      else if (a === 'cancel'){ S.cancelTarget = id; byId('cancelTitle').textContent = `Cancel the request to ${row.owner}?`; byId('cancelDialog').showModal(); }
+      return;
+    }
+    S.cancelTarget = null;
+    if (a === 'remind'){ if (S.remindNowDay !== S.day) remindNow(); render(); }
+    else if (a === 'waiting'){ S.tab = 'waiting'; render(); }
     else if (a === 'open'){ S.tab = 'shortlist'; render(); focusTop(lenaEl); }
     else if (a === 'reassign') openSend(S.req.handoff.name);
     else if (a === 'pause'){ pause(); render(); }
@@ -849,22 +886,34 @@ function bind(){
     const to = b.dataset.screen;
     if (to === 'identity' && !S.req.events.some(e => e.type === 'link_opened')) log('link_opened', 'Link opened from the email');
     if (to === 'answer'){ S.req.openedDay = S.day; if (!S.req.events.some(e => e.type === 'identity_confirmed')) log('identity_confirmed', 'Jonas Keller confirmed it\'s him and opened the page'); }
+    if (to === 'notme' && !S.req.events.some(e => e.type === 'not_me')){ log('not_me', 'Someone pressed Not me on the link'); notify('pause', 'Someone other than Jonas Keller opened the PP-034 link.'); }
     S.screen = to; render(); focusTop(jonasEl);
   });
   const form = main.querySelector('#answerForm');
   if (form){
     form.querySelector('#noneFit').addEventListener('change', () => syncNoneFit(form));
-    form.querySelectorAll('.opts input').forEach(i => i.addEventListener('change', () => { const f = i.closest('.choice'); f.classList.remove('invalid'); form.querySelector('#e_' + f.dataset.startup).hidden = true; }));
+    form.querySelectorAll('.opts input').forEach(i => i.addEventListener('change', () => {
+      const f = i.closest('.choice'), id = f.dataset.startup;
+      f.classList.remove('invalid'); form.querySelector('#e_' + id).hidden = true; form.querySelector('#formStatus').textContent = '';
+      const ta = form.querySelector('#n_' + id);
+      if (i.value === 'need_info'){ form.querySelector('#l_' + id).hidden = false; ta.placeholder = 'What do you need to know?'; const nb = form.querySelector(`[data-note="${id}"]`); if (nb) nb.remove(); }
+      else ta.placeholder = 'Anything Lena should know';
+    }));
+    form.querySelectorAll('textarea').forEach(t => t.addEventListener('input', () => {
+      const f = t.closest('.choice'); if (f){ f.classList.remove('invalid'); form.querySelector('#e_' + f.dataset.startup).hidden = true; }
+      form.querySelector('#formStatus').textContent = '';
+    }));
     form.querySelectorAll('[data-note]').forEach(b => b.onclick = () => { form.querySelector('#l_' + b.dataset.note).hidden = false; form.querySelector('#n_' + b.dataset.note).focus(); b.remove(); });
     form.addEventListener('submit', e => { e.preventDefault(); submitAnswer(form); });
     const ho = form.querySelector('#handoffOpen');
     ho.onclick = () => { form.querySelector('#handoffBox').hidden = false; form.querySelector('#handoffName').focus(); ho.remove(); };
-    form.querySelector('#handoffSend').onclick = () => {
-      const name = form.querySelector('#handoffName').value.trim();
-      if (!name){ form.querySelector('#handoffErr').hidden = false; form.querySelector('#handoffName').focus(); return; }
-      handoff(name); S.screen = 'handoff'; render(); focusTop(jonasEl);
-    };
   }
+  const hs = main.querySelector('#handoffSend');
+  if (hs) hs.onclick = () => {
+    const inp = main.querySelector('#handoffName'), name = inp.value.trim();
+    if (!name){ main.querySelector('#handoffErr').hidden = false; inp.focus(); return; }
+    handoff(name); S.screen = 'handoff'; render(); focusTop(jonasEl);
+  };
 }
 function focusTop(el){ const h = el.querySelector('h1'); if (h){ h.setAttribute('tabindex','-1'); h.focus(); } }
 
@@ -872,6 +921,7 @@ byId('roleLena').onclick = () => { S.role = 'lena'; render(); };
 byId('roleJonas').onclick = () => { S.role = 'jonas'; render(); };
 document.querySelectorAll('[data-day]').forEach(b => b.onclick = () => { jumpTo(+b.dataset.day); render(); });
 byId('recipient').onchange = previewSend;
+byId('noteInput').oninput = previewSend;
 byId('reset').onclick = () => { fresh(); lastStep = 0; render(); live('Prototype reset'); };
 window.addEventListener('scroll', () => document.querySelectorAll('.menu-items:popover-open').forEach(p => p.hidePopover()), true);
 
@@ -881,7 +931,11 @@ byId('sendForm').addEventListener('submit', e => { e.preventDefault(); send(); s
 
 const cancelDialog = byId('cancelDialog');
 byId('cancelKeep').onclick = () => cancelDialog.close();
-byId('cancelForm').addEventListener('submit', e => { e.preventDefault(); cancel(); cancelDialog.close(); render(); });
+byId('cancelForm').addEventListener('submit', e => {
+  e.preventDefault();
+  if (S.cancelTarget && S.cancelTarget !== 'PP-034'){ S.other[S.cancelTarget].cancelled = true; live('Request cancelled'); } else cancel();
+  S.cancelTarget = null; cancelDialog.close(); render();
+});
 
 const behalfDialog = byId('behalfDialog');
 byId('behalfCancel').onclick = () => behalfDialog.close();
