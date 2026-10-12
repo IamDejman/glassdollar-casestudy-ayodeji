@@ -57,7 +57,12 @@ Three guardrails keep them honest. Need more info counts as a first touch but do
 | Emailed links survive enterprise mail gateways and SSO | Microsoft Safe Links opens links before delivery. Some tenants enforce SSO on outside links | Send to 10 addresses at one customer and ask IT | 1 week |
 | A bounded ask with a date gets an answer where an open-ended one does not | Mixed. Shorter asks get more replies (Edwards et al. 2009). A stated time cost and a deadline showed no effect in the same review | 5 owner interviews, then a prototype test | 2 weeks |
 
-Four more wait for live data: how often the raiser cannot judge the shortlist, whether no login raises completion (forced account creation drives 18% of consumer checkout abandonments, Baymard 2025), whether two reminders and a personal nudge is the right cadence, and whether measuring days per person is allowed at German customers.
+Four more wait for live data:
+
+1. How often the raiser cannot judge the shortlist.
+2. Whether no login raises completion. Forced account creation drives 18% of consumer checkout abandonments (Baymard 2025).
+3. Whether two reminders and a personal nudge is the right cadence.
+4. Whether measuring days per person is allowed at German customers.
 
 ## 3. Look around
 
