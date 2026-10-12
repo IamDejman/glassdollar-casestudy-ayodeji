@@ -57,15 +57,15 @@ We would watch four numbers, all pulled from the event log. Days to answer is th
 
 | Measure | Definition |
 |------|------------|
-| Days to answer | Median days from sent to answered, with unanswered requests counted as misses, and the share answered by the day 7 due date |
+| Days to answer | Median days from the first send to answered, counted across resends, with unanswered requests counted as misses, and the share answered by the day 7 due date |
 | First touch | Share of owners who rate at least one startup or ask for information within one working day |
 | No manual chase | Share of requests answered before Lena chases by hand. Lena logs her chases for four weeks before launch to give the baseline |
-| Late rate | Share of requests open for longer than 1.2 times the unit's median wait |
+| Late rate | Share of requests, open or answered, whose wait is more than 1.2 times the unit's median, or more than 8 days until the unit has 10 answered requests |
 
 Three rules stop the numbers being gamed:
 
-1. A request for more information counts as a first touch but does not stop the clock.
-2. An answer has to carry a reason, or one click would count as an answer.
+1. A request for more information counts as a first touch but does not stop the clock. A resend keeps the first send date.
+2. An answer is a choice for every startup, and Need more info and None of these fit carry a reason, so one click cannot count as an answer.
 3. Reports go by request, and owners' names stay out of them until the works council question is answered.
 
 ### Assumptions to validate first
