@@ -26,13 +26,13 @@ I chose it because the person who stalls is outside the tool, and the result can
 |-----|---------|-----------|
 | Lena Hartmann | Innovation manager, the primary user (GlassDollar's label; venture client manager elsewhere) | In the tool every day, runs many pain points at once, chases owners herself by email |
 | Jonas Keller | Pain point owner, the line manager who raised the problem | Measured on his operation, opens the tool a few times a year, reads email on his phone |
-| Dr. Sabine Koch | Head of the business unit | Lena's escalation point when an owner stays silent. If the cause turns out to be incentives rather than friction, she is the lever, because she sets what Jonas is measured on. Not a user of this release |
+| Dr. Sabine Koch | Head of the business unit | Lena's escalation point when an owner stays silent. She sets what Jonas is measured on, so if owners go quiet because of incentives rather than friction, she is the one who can change that. Not a user of this release |
 
-Jonas raised the problem because it costs his operation, and he wants it gone. What answering gets him is a pilot that might fix it, months away, paid for with time he has to find today. That is the trade he makes every time the shortlist email arrives.
+Jonas raised the problem because it costs his operation, and he wants it gone. But answering costs him time now, and what he gets back is a pilot months away that might not work. So the email waits.
 
 ### When it happens
 
-Lena sends Jonas a shortlist and waits. Jonas means to look at it, but his own work comes first and days go by with no answer. Lena follows up by email, then catches him in the corridor. Sometimes the shortlist has gone to the wrong person: Jonas raised the problem, but someone else on his team is the one who can say whether a startup would work.
+Lena sends Jonas a shortlist and waits. Jonas means to look at it, but his own work comes first and days go by with no answer. Lena follows up by email, then catches him in the corridor. Sometimes the shortlist has gone to the wrong person: Jonas raised the problem, but someone else on his team is the one who can judge the startups.
 
 Today's email asks for the wrong thing. It says "log in and look at the shortlist", with no question, no date and no way to answer without an account. The new one asks for three ratings by a date.
 
@@ -46,17 +46,17 @@ Five reasons Jonas might not answer. This release works on the first one only.
 4. The problem was solved another way, or went away.
 5. Backing a startup is a political risk in his unit.
 
-The first is the only one the OS can remove on its own, and removing it exposes the others: a request for more information points at 2, a rejection with a reason at 2 or 4, and silence after a bounded ask with a date at 3 or 5, which is Sabine's conversation, not the tool's.
+The OS can only remove the first. Once it is gone, the owner's reply tells us which of the others is in play: a request for more information means 2, a rejection with a reason means 2 or 4, and silence after a short ask with a date means 3 or 5. Those two are for Sabine to sort out, not the tool.
 
 ### What it costs
 
-- No source measures response time at the shortlist step itself, so the cost is an argument rather than a measured figure.
-- Each waiting day defers a pilot, worth about EUR 25,000 (Gimmy), and whatever adoption follows it. Value is deferred rather than lost, and the odds at shortlist stage are lower than at pilot stage. Startups feel the wait too: half name slow corporate decisions as a top barrier (Nesta 2016, n=134).
-- Lena's own cost is the one nobody counts: shortlists per quarter, times days waiting, times chases per waiting day, times minutes per chase. The four-week chase log before launch fills this in and becomes the baseline for No manual chase.
+- Nobody measures response time at the shortlist step, so the cost below is an estimate, not a measurement.
+- Each waiting day pushes back a pilot worth about EUR 25,000 (Gimmy), and whatever rollout follows it. The money is delayed, not lost, and not every shortlist leads to a pilot. The wait hurts startups too: half name slow corporate decisions as a top barrier (Nesta 2016, n=134).
+- Nobody counts Lena's own time. The formula is shortlists per quarter, times days waiting, times chases per waiting day, times minutes per chase. Lena logs her chases for four weeks before launch to fill it in, and that log is the baseline for No manual chase.
 
 ### How we would know it is solved
 
-We would watch four numbers, all pulled from the event log. Days to answer is the headline and the other three explain it. Nobody measures this step today, so the first quarter is for finding the baseline. Targets come after that.
+Four numbers, all from the event log. Days to answer is the main one and the other three explain it. Nobody measures this step today, so the first quarter sets the baseline. Targets come after that.
 
 | Measure | Definition |
 |------|------------|
@@ -78,15 +78,15 @@ Three rules stop the numbers being gamed:
 | Owners stall at the shortlist step | The literature measures losses after the pilot. Nobody measures the shortlist step | Sent and answered timestamps for two quarters at two customers | 2 days |
 | Lena needs the owner's answer and cannot pick alone | None | Ask Lena which decisions truly need the owner | 1 hour |
 | Emailed links survive enterprise mail gateways and SSO | Microsoft Safe Links opens links before delivery. Some tenants enforce SSO on outside links | Send to 10 addresses at one customer and ask IT | 1 week |
-| A bounded ask with a date gets an answer where an open-ended one does not | Mixed. Shorter asks get more replies (Edwards et al. 2009). A stated time cost and a deadline showed no effect in the same review | 5 owner interviews, then a prototype test | 2 weeks |
+| A short ask with a date gets an answer where an open-ended one does not | Mixed. Shorter asks get more replies (Edwards et al. 2009). A stated time cost and a deadline showed no effect in the same review | 5 owner interviews, then a prototype test | 2 weeks |
 
-The second assumption has no evidence yet. I could not ask Lena for this brief, so that hour is the first hour of the project, before the link test. If most shortlists turn out not to need the owner, the first request type moves to the decision after a pilot, where the owner's answer is unavoidable.
+The second assumption has no evidence yet. I could not ask Lena for this brief, so that hour comes first in the project, before the link test. If most shortlists do not need the owner, the first request type becomes the decision after a pilot, where the owner has to answer.
 
-Four more wait for live data:
+Four more need live data:
 
 1. How often the raiser cannot judge the shortlist.
 2. Whether no login raises completion. Forced account creation drives 18% of consumer checkout abandonments (Baymard 2025).
-3. Whether two reminders and a personal nudge is the right cadence.
+3. Whether two reminders and a personal nudge is the right amount of chasing.
 4. Whether a German works council allows measuring wait time per named owner. This is the works council question the tickets refer to. Until it is answered, reports go by request and business unit.
 
 ## 3. Look around
@@ -110,7 +110,7 @@ The first release is about 3 to 4 engineer-weeks. Before any of it is built, we 
 |---|---|
 | Lena picks who answers, owner preselected, and sends with a note | Other request types |
 | One request type: rate up to five startups, or "None of these fit" with a reason | Teams or Slack |
-| One email with one button, and a link that lasts 14 days and survives mail scanners | Buttons inside the email |
+| One email with one button, and a link that works for 14 days without a login | Buttons inside the email |
 | A one-page form on the phone, then a confirmation | Any owner login or dashboard |
 | The owner can name who should answer, and Lena resends from the same dialog | Automatic email to the owner's manager |
 | The answer lands on the shortlist, with one notification to Lena | Answering by email reply |
@@ -120,13 +120,13 @@ The first release is about 3 to 4 engineer-weeks. Before any of it is built, we 
 | | One-click send-on with a fresh link, and contacts outside the OS |
 | | Answered and Cancelled tabs, and a unit-wide view |
 
-Each item is in because without it the request still stalls, Lena still chases, or we cannot measure the result. Everything else is ranked by value against effort under What comes next. The release tests an unproven idea, so anything that only polishes an edge case waits for the next one. The price is that a wrong email address shows up only as Late on day 8, and an expired link needs Lena to resend.
+Each item is in because without it the request still stalls, Lena still chases, or we cannot measure the result. Everything else is ranked by value against effort under What comes next. The idea is unproven, so edge-case polish waits for the next release. Two things we accept for now: a wrong email address shows up only as Late on day 8, and an expired link needs Lena to resend.
 
-Email is the channel because every owner already has it and it fits the estimate. Lena hears on day 8 if nothing comes back. If an owner ignores a bounded ask with a date too, the problem is incentives. This release will show that, but it cannot fix it.
+Email is the channel because every owner already has it and it fits the estimate. Lena hears on day 8 if nothing comes back. If an owner ignores a short ask with a date too, the problem is incentives. This release shows that. Only Sabine can fix it.
 
 ## 5. Prototype
 
-The [clickable prototype](https://iamdejman.github.io/glassdollar-casestudy-ayodeji/) covers the main flow end to end: Lena sends one request from the shortlist, Jonas answers on his phone with no login, and Lena tracks everything in one list. It has a clock to jump to day 3, 7, 8 and 13, and a Pause reminders button for when Jonas is away. Screenshots are at the end of [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md).
+The [clickable prototype](https://iamdejman.github.io/glassdollar-casestudy-ayodeji/) shows the whole flow: Lena sends one request from the shortlist, Jonas answers on his phone with no login, and Lena tracks everything in one list. It has a clock to jump to day 3, 7, 8 and 13, and a Pause reminders button for when Jonas is away. Screenshots are at the end of [TICKETS.md](https://github.com/IamDejman/glassdollar-casestudy-ayodeji/blob/main/TICKETS.md).
 
 ## 6. Tickets
 
