@@ -43,7 +43,7 @@ Test against the sample data at https://github.com/IamDejman/glassdollar-casestu
 - A chain is a request and its resends. Cancel and resend, Resend to a named person and Ask again all create a new request with parent_request_id set to the old one. The list's Age column is per request. The measures count chains from the first request's created, so the clock never stops across a resend.
 - Owner activity means identity_confirmed, a view of the answer page with a session, handoff and answered. link_opened is logged for every fetch, scanners included, and is not activity. Activity drives the reminder skip in DR-4.1 and the Last owner action column in DR-5.1.
 - Reports go by request and business unit. No query returns an owner's name until the works council question in the brief is answered.
-- Sample data: PP-034 was sent on 29 Sep 2026, reminded on 2 and 6 Oct, Late since 7 Oct, day 13 today. PP-040 was sent on 18 Sep, open at day 24. Names come from sample-data.json.
+- Sample data: the examples use two pain points from sample-data.json, load planning and supplier onboarding. The load planning request was sent on 29 Sep 2026, reminded on 2 and 6 Oct, Late since 7 Oct, day 13 today. The supplier onboarding request was sent on 18 Sep, open at day 24. Names come from the same file.
 
 ## Open questions
 
@@ -96,8 +96,8 @@ Writes: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request
 
 #### Acceptance criteria for the whole ticket
 
-- The user sends PP-034 on 29 Sep 2026. Every user who can see the pain point sees "Waiting for {owner}, day 0" within the minute, and no email leaves the OS, because DR-2 is not built yet.
-- The sample data on 12 Oct 2026. PP-034 shows "Late: {owner}, day 13" and PP-040 shows "Late: {owner}, day 24", each with "Cancel request".
+- The user sends the load planning request on 29 Sep 2026. Every user who can see the pain point sees "Waiting for {owner}, day 0" within the minute, and no email leaves the OS, because DR-2 is not built yet.
+- The sample data on 12 Oct 2026. The load planning shortlist shows "Late: {owner}, day 13" and the supplier onboarding shortlist shows "Late: {owner}, day 24", each with "Cancel request".
 - Send, cancel and resend on one shortlist in a row. The shortlist never has two open requests, each request has its own id, the resend's parent_request_id points at the cancelled one, and the event log reads created, cancelled, created in that order.
 - Every created and cancelled event carries the id of the user who acted.
 
@@ -116,11 +116,11 @@ Writes: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request
 
 **Acceptance criteria**
 
-- The user sends PP-034 on 29 Sep 2026. The request is Waiting, due 6 Oct at 23:59 Europe/Berlin, the link expires 13 Oct at 23:59, the snapshot holds Pallet.ai, Cargonaut Labs and Parcelgrid with descriptions and comments, and created is logged.
+- The user sends the load planning request on 29 Sep 2026. The request is Waiting, due 6 Oct at 23:59 Europe/Berlin, the link expires 13 Oct at 23:59, the snapshot holds Pallet.ai, Cargonaut Labs and Parcelgrid with descriptions and comments, and created is logged.
 - A shortlist has 2 startups. The button is disabled and reads "Needs 3 to 5 startups".
 - The user picks another OS user instead of the owner and sends. The request's recipient is that person.
-- The owner of PP-017 is not an OS user. The dialog opens with no recipient and says so.
-- Two users press Send on PP-034 within a second. One request exists. The second user sees "Already sent by {user}" with the first sender's name.
+- The pain point's owner is not an OS user. The dialog opens with no recipient and says so.
+- Two users press Send on the same pain point within a second. One request exists. The second user sees "Already sent by {user}" with the first sender's name.
 
 **Edge cases**
 
@@ -139,7 +139,7 @@ Writes: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request
 
 **Acceptance criteria**
 
-- A second user opens PP-034 on 12 Oct 2026. The header reads "Late: {owner}, day 13" with the owner's name, and there is no send button.
+- A second user opens the load planning shortlist on 12 Oct 2026. The header reads "Late: {owner}, day 13" with the owner's name, and there is no send button.
 - The request was sent today. The header reads "Waiting for {owner}, day 0".
 
 **Edge cases**
@@ -158,8 +158,8 @@ Writes: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request
 
 **Acceptance criteria**
 
-- The user cancels PP-034 with the reason "Owner is on leave". The state is Cancelled, the reason is stored, cancelled is logged, the owner gets no email, and the send button is back.
-- PP-034 is finalised on 12 Oct 2026 while the request is open. The request is Cancelled with the reason "finalised", cancelled is logged, the owner gets no email, and the button does not come back.
+- The user cancels the load planning request with the reason "Owner is on leave". The state is Cancelled, the reason is stored, cancelled is logged, the owner gets no email, and the send button is back.
+- The shortlist is finalised on 12 Oct 2026 while the request is open. The request is Cancelled with the reason "finalised", cancelled is logged, the owner gets no email, and the button does not come back.
 
 **Edge cases**
 
@@ -178,8 +178,8 @@ Writes: id, shortlist_id, pain_point_id, sender_id, recipient_id, parent_request
 
 **Acceptance criteria**
 
-- The user adds a fourth startup while PP-034 is open. The banner shows. Cancel and resend cancels the old request and opens the dialog with the note. Send creates a new Waiting request with 4 startups and parent_request_id set to the old one.
-- The owner of PP-034 named someone else on 1 Oct 2026. The user presses "Resend to {named person}" and sends. The old request is Cancelled, the new one is Waiting for the named person from 1 Oct with due_at 8 Oct, reminders_sent 0 and parent_request_id set to the old one.
+- The user adds a fourth startup while the load planning request is open. The banner shows. Cancel and resend cancels the old request and opens the dialog with the note. Send creates a new Waiting request with 4 startups and parent_request_id set to the old one.
+- The load planning owner named someone else on 1 Oct 2026. The user presses "Resend to {named person}" and sends. The old request is Cancelled, the new one is Waiting for the named person from 1 Oct with due_at 8 Oct, reminders_sent 0 and parent_request_id set to the old one.
 
 **Edge cases**
 
@@ -204,7 +204,7 @@ Writes: token_hash, confirmed_at. Events: link_opened, identity_confirmed, not_m
 
 #### Acceptance criteria for the whole ticket
 
-- The user sends PP-034. The owner's email arrives with one button, the first tap shows the identity page, "Yes, I am {owner}" opens the answer page (a placeholder until DR-3), and confirmed_at is set once.
+- The user sends the load planning request. The owner's email arrives with one button, the first tap shows the identity page, "Yes, I am {owner}" opens the answer page (a placeholder until DR-3), and confirmed_at is set once.
 - Ten fetches of the link by three different user agents with no tap leave the request Waiting with confirmed_at empty.
 - The same link works on day 1, on day 7 from a reminder, and on day 13. On day 14 it shows the expired page.
 - A test send to a mailbox outside GlassDollar passes SPF, DKIM and DMARC alignment.
@@ -222,7 +222,7 @@ Writes: token_hash, confirmed_at. Events: link_opened, identity_confirmed, not_m
 
 **Acceptance criteria**
 
-- The PP-034 email contains "Review 3 startups", "about 3 minutes" and 6 Oct 2026. It does not contain Pallet.ai, Cargonaut Labs or Parcelgrid.
+- The load planning email contains "Review 3 startups", "about 3 minutes" and 6 Oct 2026. It does not contain Pallet.ai, Cargonaut Labs or Parcelgrid.
 - The user's note "Call me if anything is unclear." appears in the body. With no note, the body has no empty note block.
 - Images are blocked. The button is readable text and the URL is visible under it.
 - The owner replies to the email. The reply lands in the user's inbox.
@@ -244,7 +244,7 @@ Writes: token_hash, confirmed_at. Events: link_opened, identity_confirmed, not_m
 **Acceptance criteria**
 
 - The owner opens the link on 13 Oct 2026 and the page opens. On 14 Oct the page reads "This link has expired. Ask {user} for a new one." and nothing is sent.
-- The user cancelled PP-034. The owner opens the link and sees "{user} no longer needs this", with no identity page.
+- The user cancelled the load planning request. The owner opens the link and sees "{user} no longer needs this", with no identity page.
 - The request was cancelled and resent to a named person (DR-1.4). The old link shows "{user} no longer needs this" and the new link works.
 - The database holds no plain token.
 
@@ -266,7 +266,7 @@ Writes: token_hash, confirmed_at. Events: link_opened, identity_confirmed, not_m
 
 - A scanner fetches a new link three times. The request is still Waiting, confirmed_at is empty, link_opened is logged three times, and no owner activity is logged.
 - The owner taps on a phone on 1 Oct 2026 and opens the link on a laptop on 2 Oct. The laptop shows the identity page once, then the answer page. confirmed_at stays 1 Oct.
-- Someone else taps "Not me" on a forwarded email. That person sees no startup. The user is told "Someone other than {owner} opened the PP-034 link". A second "Not me" tells the user nothing more.
+- Someone else taps "Not me" on a forwarded email. That person sees no startup. The user is told "Someone other than {owner} opened the {pain point} link". A second "Not me" tells the user nothing more.
 
 **Edge cases**
 
@@ -291,7 +291,7 @@ Writes: answered_at, via, rated, late, handoff_name. Events: answered, handoff, 
 
 #### Acceptance criteria for the whole ticket
 
-- The owner opens the PP-034 link, confirms identity, rates three startups and sends. Within the minute the shortlist shows the three choices with "{owner}, {date}, via link", the user has one notification and one email, and the request is Answered with rated true.
+- The owner opens the load planning link, confirms identity, rates three startups and sends. Within the minute the shortlist shows the three choices with "{owner}, {date}, via link", the user has one notification and one email, and the request is Answered with rated true.
 - No partial answer is ever stored. Every path to Answered has a choice for every startup or None of these fit, and a comment wherever one is required.
 - A handoff never closes the request and an answer always does, in whichever order they happen.
 - Every text on the owner's pages takes the user's and owner's names from the request. No name is hard-coded.
@@ -337,10 +337,10 @@ Writes: answered_at, via, rated, late, handoff_name. Events: answered, handoff, 
 
 **Acceptance criteria**
 
-- The owner answers PP-034 on 12 Oct 2026 with one Interested and two Not now. The shortlist shows "{owner}, 12 Oct 2026, via link" with the three choices, the user is told once, and the button reads "Ask {owner} again".
+- The owner answers the load planning request on 12 Oct 2026 with one Interested and two Not now. The shortlist shows "{owner}, 12 Oct 2026, via link" with the three choices, the user is told once, and the button reads "Ask {owner} again".
 - All three are Need more info. The notification reads "{owner} needs more information on 3 startups" and the shortlist shows "Not rated: needs more information".
 - The user presses "Ask {owner} again" and sends. The new request is Waiting with parent_request_id set to the answered one, and the earlier answer stays visible under it.
-- PP-034 is finalised at 10:00:00 and the owner's Send, started before, lands at 10:00:02. The answer is stored, late is true, and the shortlist shows "received after shortlist was finalised".
+- The shortlist is finalised at 10:00:00 and the owner's Send, started before, lands at 10:00:02. The answer is stored, late is true, and the shortlist shows "received after shortlist was finalised".
 
 **Edge cases**
 
@@ -407,7 +407,7 @@ Writes: reminders_sent, the states Late and Paused. Events: reminder_sent, remin
 - Sent 29 Sep 2026, no answer. Reminders go out on 2 Oct and 6 Oct at 09:00, and reminders_sent is 2.
 - The owner opened the page on 2 Oct at 08:10. The 09:00 job sends nothing and logs reminder_skipped. The day 7 reminder still goes out on 6 Oct.
 - The user pressed Remind now on 30 Sep. reminders_sent stays 0. The reminders still go out on 2 Oct and 6 Oct.
-- PP-034 is finalised on 5 Oct. The request is Cancelled and no reminder goes out on 6 Oct.
+- The shortlist is finalised on 5 Oct. The request is Cancelled and no reminder goes out on 6 Oct.
 - The sample data on 12 Oct 2026. The job sends nothing.
 
 **Edge cases**
@@ -429,7 +429,7 @@ Writes: reminders_sent, the states Late and Paused. Events: reminder_sent, remin
 **Acceptance criteria**
 
 - Sent 29 Sep 2026, no answer. On 7 Oct at 09:00 the state is Late, late is logged, and the user gets one in-app notification and one email.
-- The sample data on 12 Oct 2026. PP-034 stays Late and the user is not told again.
+- The sample data on 12 Oct 2026. The load planning request stays Late and the user is not told again.
 
 **Edge cases**
 
@@ -477,7 +477,7 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 
 #### Acceptance criteria for the whole ticket
 
-- The sample data on 12 Oct 2026. The list shows the open requests only, PP-040 then PP-034, with every column filled or "-", and every row action does what its sub-issue says without leaving the list.
+- The sample data on 12 Oct 2026. The list shows the open requests only, supplier onboarding then load planning, with every column filled or "-", and every row action does what its sub-issue says without leaving the list.
 - Every action from the list writes the same record and event as the same action from the shortlist header.
 - The four queries run on the sample data return the figures in DR-5.3, with no owner name or user id in any column.
 - A user without edit rights on a pain point sees none of its row actions.
@@ -495,7 +495,7 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 
 **Acceptance criteria**
 
-- The sample data on 12 Oct 2026. PP-034 shows the owner's name, age 13, due 6 Oct, Late, 2 reminders, last owner action "-". PP-040 (age 24, Late) sorts above it.
+- The sample data on 12 Oct 2026. The load planning request shows the owner's name, age 13, due 6 Oct, Late, 2 reminders, last owner action "-". The supplier onboarding request (age 24, Late) sorts above it.
 - A second user sees only the requests they sent.
 - No open requests: "Nothing is waiting on anyone."
 - A request with reminders_sent 2 and chases 1 shows "2 +1 manual".
@@ -518,11 +518,11 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 
 **Acceptance criteria**
 
-- The user presses Remind now on PP-034 on 12 Oct 2026. reminders_sent stays 2, chases is 1, the Reminders cell reads "2 +1 manual", remind_now is logged, the owner gets the email, and the button reads "Reminded today" for 24 hours.
-- The user answers on behalf for PP-034 with the default note. Answered, via on_behalf, the note is on the shortlist, the owner gets no email, and the owner's link shows "Already answered by {user}".
-- PP-034 has a handoff. The user presses "Resend to {named person}" on 1 Oct and sends. The old request is Cancelled, the new one is Waiting for the named person from 1 Oct, the named person gets the DR-2.1 email, and the old owner gets nothing.
-- The user pauses PP-034 from the list on 3 Oct and resumes on 9 Oct: Paused, then Late at the next run, told once.
-- A second user opens PP-034 from the pain point and presses Remind now there: remind_now is logged under that user's name.
+- The user presses Remind now on the load planning request on 12 Oct 2026. reminders_sent stays 2, chases is 1, the Reminders cell reads "2 +1 manual", remind_now is logged, the owner gets the email, and the button reads "Reminded today" for 24 hours.
+- The user answers on behalf for the load planning request with the default note. Answered, via on_behalf, the note is on the shortlist, the owner gets no email, and the owner's link shows "Already answered by {user}".
+- The load planning request has a handoff. The user presses "Resend to {named person}" on 1 Oct and sends. The old request is Cancelled, the new one is Waiting for the named person from 1 Oct, the named person gets the DR-2.1 email, and the old owner gets nothing.
+- The user pauses the load planning request from the list on 3 Oct and resumes on 9 Oct: Paused, then Late at the next run, told once.
+- A second user opens the load planning shortlist and presses Remind now there: remind_now is logged under that user's name.
 
 **Edge cases**
 
@@ -544,7 +544,7 @@ Writes: chases, via on_behalf. Events: remind_now, answered with via on_behalf.
 
 **Acceptance criteria**
 
-- The sample data read as chains of one request each (sent_to_owner_at is created, owner_feedback_at is answered when complete, partial is open, the sample data's reminders_sent are chases): a median of 7 days over 11 answered, 8 of 13 by day 7, 9 of 11 without a chase, and a late rate of 3 of 13 (PP-019, PP-034, PP-040).
+- The sample data read as chains of one request each (sent_to_owner_at is created, owner_feedback_at is answered when complete, partial is open, the sample data's reminders_sent are chases): a median of 7 days over 11 answered, 8 of 13 by day 7, 9 of 11 without a chase, and a late rate of 3 of 13.
 - A chain of two requests, the first sent 29 Sep 2026 and resent 1 Oct, answered 3 Oct: Days to answer counts 4 days, not 2.
 - A query result lists chains by request id and business unit. No column holds an owner's name or user id.
 
@@ -569,4 +569,4 @@ From the [live prototype](https://iamdejman.github.io/glassdollar-casestudy-ayod
 
 **The user tracks everything in one list.** On day 8 the request goes Late and the user hears about it once. Each row shows owner, age, due date, state and reminders, with Remind now, Cancel and Answer on behalf.
 
-<img src="images/waiting-on-others.png" width="900" alt="The Waiting on others list on day 8: PP-040 and PP-034 both Late, with the notice that the owner has not answered PP-034">
+<img src="images/waiting-on-others.png" width="900" alt="The Waiting on others list on day 8: both requests Late, with the notice that the owner has not answered">
