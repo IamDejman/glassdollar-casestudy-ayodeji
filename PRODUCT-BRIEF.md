@@ -126,4 +126,4 @@ Two decisions to be made:
 
 ## AI tools used
 
-Claude Code drafted the research notes, built the prototype and kept the sample data consistent across the files. I chose the pain point, cut the scope, picked the measures and drafted every draft and tickets. The details are in the supporting notes.
+Claude Code drafted the research notes, built the prototype and kept the sample data consistent across the files. I chose the pain point, cut the scope, picked the measures and wrote every draft of the brief and the tickets. The details are in the supporting notes.
