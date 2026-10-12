@@ -374,6 +374,8 @@ label.field{display:grid;gap:6px}
     <h2 id="behalfTitle">Answer on behalf of Jonas Keller</h2>
     <p class="muted small">Use this when Jonas gave you his view on the phone or in person. He won't get an email.</p>
     <div id="behalfOpts" class="stack"></div>
+    <label class="check"><input type="checkbox" id="behalfNone" name="behalfNone"><span>None of these fit</span></label>
+    <label class="field" id="behalfNoneLabel" hidden>Why none of these fit<textarea id="behalfNoneText" name="behalfNoneText" autocomplete="off" maxlength="1000"></textarea></label>
     <label class="field">Where this came from
       <textarea id="behalfNote" name="behalfNote" autocomplete="off" required></textarea>
     </label>
@@ -437,14 +439,15 @@ function send(){
   const who = byId('recipient').value || JONAS;
   if (S.resendTo && S.req){
     log('cancelled', `Lena cancelled the request and resent it to ${who}`);
-    Object.assign(S.req, { owner:who, sentDay:S.day, note, reminders:0, openedDay:null, state:'Waiting', reassigned:{ day:S.day } });
+    Object.assign(S.req, { owner:who, sentDay:S.day, note, reminders:0, chases:0, openedDay:null, state:'Waiting', reassigned:{ day:S.day } });
     S.resendTo = null;
+    S.banners = S.banners.filter(b => b.kind !== 'pause');
     log('created', `Request sent to ${who}`);
     live(`Request sent to ${who}`);
     return;
   }
   const prev = S.req && S.req.answer ? { answer:S.req.answer, owner:S.req.owner } : null;
-  S.req = { state:'Waiting', sentDay:S.day, owner:who, note, reminders:0, answer:null, events:[], mails:[], openedDay:null, handoff:null, reassigned:null, prev };
+  S.req = { state:'Waiting', sentDay:S.day, owner:who, note, reminders:0, chases:0, answer:null, events:[], mails:[], openedDay:null, handoff:null, reassigned:null, prev };
   log('created', `Request sent to ${who}`);
   if (who === JONAS) S.req.mails.push({ id:'m0', day:S.day, kind:'request', subject:'Reduce manual load planning for outbound trucks: Lena Hartmann needs your view on 3 startups' });
   live(`Request sent to ${who}`);
@@ -514,17 +517,19 @@ function jumpTo(d){
   live('Today is ' + fmt(d) + ', day ' + d);
 }
 function remindNow(){
-  S.req.reminders++; S.remindNowDay = S.day;
+  S.req.chases++; S.remindNowDay = S.day;
   log('remind_now', 'Lena sent a reminder by hand');
   if (S.req.owner === JONAS) S.req.mails.push({ id:'h'+S.day, day:S.day, kind:'manual', subject:'Lena Hartmann: can you look at the load planning shortlist today?' });
   live('Reminder sent to ' + S.req.owner);
 }
 function cancel(){
   S.req.state = 'Cancelled'; log('cancelled', 'Lena cancelled the request'); live('Request cancelled');
+  S.banners = S.banners.filter(b => b.kind !== 'late' && b.kind !== 'pause');
 }
 function answer(items, noneFit, noneFitText, via, note){
   S.req.answer = { items, noneFit, noneFitText, via, note, day:S.day };
   S.req.state = 'Answered';
+  S.banners = S.banners.filter(b => b.kind !== 'late' && b.kind !== 'pause');
   const rated = noneFit || items.some(i => i.choice !== 'need_info');
   log('answered', via === 'on_behalf' ? 'Answered on behalf by Lena' : rated ? `${S.req.owner} answered from the link` : `${S.req.owner} asked for more information from the link`);
   notify('done', rated ? `${S.req.owner} answered "Reduce manual load planning for outbound trucks" on ${fmt(S.day)}.` : `${S.req.owner} needs more information on ${items.length} startups.`);
@@ -538,7 +543,7 @@ function otherRows(){
   const age40 = S.day + 11;
   return [
     { id:'PP-040', title:'Supplier onboarding document checks', owner:'Anneke de Vries', sent:fmt(-11), age:age40, due:fmt(-4),
-      state: age40 >= LATE_DAY ? 'Late' : 'Waiting', reminders: (age40 >= 7 ? 2 : age40 >= 3 ? 1 : 0) + o.extra, last:'Opened the page 24 Sep 2026', fixed:true }
+      state: age40 >= LATE_DAY ? 'Late' : 'Waiting', reminders: (age40 >= 7 ? 2 : age40 >= 3 ? 1 : 0), chases:o.extra, last:'Opened the page 24 Sep 2026', fixed:true }
   ];
 }
 function pp34Row(){
@@ -546,7 +551,7 @@ function pp34Row(){
   const r = S.req, age = S.day - r.sentDay;
   const last = r.answer ? 'Answered ' + fmt(r.answer.day) : r.openedDay != null ? 'Opened the page ' + fmt(r.openedDay) : r.handoff && !r.reassigned ? `Named ${r.handoff.name} ${fmt(r.handoff.day)}` : '-';
   return { id:'PP-034', title:'Reduce manual load planning for outbound trucks', owner:r.owner, sent:fmt(r.sentDay), age, due:fmt(r.sentDay + DUE_DAY),
-           state:r.state, reminders:r.reminders, last, fixed:false };
+           state:r.state, reminders:r.reminders, chases:r.chases || 0, last, fixed:false };
 }
 const isOpen = s => ['Waiting','Late','Paused'].includes(s);
 
@@ -644,7 +649,7 @@ function guide(){
 
 function renderLena(){
   const banners = S.banners.map((b, i) => {
-    const acts = (b.acts && S.req && isOpen(S.req.state) ? b.acts : []).map(([a, t]) => `<button class="btn small" data-act="${a}" data-id="PP-034">${t}</button>`).join('');
+    const acts = (b.acts && S.req && isOpen(S.req.state) ? b.acts : []).map(([a, t]) => a === 'remind' && S.remindNowDay === S.day ? `<button class="btn small" disabled>Reminded today</button>` : `<button class="btn small" data-act="${a}" data-id="PP-034">${t}</button>`).join('');
     return `<div class="banner ${b.kind}" role="status"><span>${esc(b.text)}</span><div class="acts">${acts}<button class="btn quiet small" data-dismiss="${i}">Dismiss</button></div></div>`;
   }).join('');
   const openCount = [pp34Row(), ...otherRows()].filter(x => x && isOpen(x.state)).length;
@@ -710,10 +715,11 @@ function renderWaiting(){
     return `<button type="button" class="btn small menu-btn" popovertarget="menu-${k}-${x.id}">Actions</button><div class="menu-items" id="menu-${k}-${x.id}" popover>${items.join('')}</div>`;
   };
   const reqCell = x => x.fixed ? `<b>${x.title}</b>` : `<button type="button" class="linkish" data-act="open">${x.title}</button>`;
+  const remCell = x => x.chases ? `${x.reminders} +${x.chases} manual` : String(x.reminders);
   const table = rows.length ? `<div class="tablecard"><table class="list"><thead><tr><th>Request</th><th>Owner</th><th>Age</th><th>Due</th><th>State</th><th>Reminders</th><th>Last owner action</th><th>Actions</th></tr></thead><tbody>
-    ${rows.map(x => `<tr><td>${reqCell(x)}</td><td>${esc(x.owner)}</td><td class="num">${x.age} days</td><td class="num">${x.due}</td><td>${pill(x.state)}</td><td class="num">${x.reminders}</td><td>${esc(x.last)}</td><td>${actions(x, 't') || '-'}</td></tr>`).join('')}</tbody></table></div>
+    ${rows.map(x => `<tr><td>${reqCell(x)}</td><td>${esc(x.owner)}</td><td class="num">${x.age} days</td><td class="num">${x.due}</td><td>${pill(x.state)}</td><td class="num">${remCell(x)}</td><td>${esc(x.last)}</td><td>${actions(x, 't') || '-'}</td></tr>`).join('')}</tbody></table></div>
     <div class="rows">${rows.map(x => `<div class="card row-card"><div class="row-head"><b>${reqCell(x)}</b>${pill(x.state)}</div>
-      <div class="kv"><span>Owner</span><b>${esc(x.owner)}</b><span>Age</span><b>${x.age} days</b><span>Due</span><b>${x.due}</b><span>Reminders</span><b>${x.reminders}</b><span>Last action</span><b>${esc(x.last)}</b></div><div class="actions">${actions(x, 'c')}</div></div>`).join('')}</div>`
+      <div class="kv"><span>Owner</span><b>${esc(x.owner)}</b><span>Age</span><b>${x.age} days</b><span>Due</span><b>${x.due}</b><span>Reminders</span><b>${remCell(x)}</b><span>Last action</span><b>${esc(x.last)}</b></div><div class="actions">${actions(x, 'c')}</div></div>`).join('')}</div>`
     : `<div class="card empty">Nothing is waiting on anyone.</div>`;
   return `<div class="head"><div><h1>Waiting on others</h1></div></div>${table}`;
 }
@@ -844,6 +850,7 @@ function openBehalf(){
   byId('behalfOpts').innerHTML = STARTUPS.map(s => `<fieldset class="choice" style="padding:10px"><legend style="font-size:15px">${s.name}</legend><div class="opts">${CHOICES.map(([v, t]) => `<label><input type="radio" name="b_${s.id}" value="${v}"><span>${t}</span></label>`).join('')}</div></fieldset>`).join('');
   byId('behalfTitle').textContent = `Answer on behalf of ${S.req.owner}`;
   byId('behalfNote').value = `Recorded by Lena Hartmann from a call on ${fmt(S.day)}.`;
+  byId('behalfNone').checked = false; byId('behalfNoneLabel').hidden = true; byId('behalfNoneText').value = '';
   byId('behalfStatus').textContent = '';
   byId('behalfDialog').showModal();
 }
@@ -944,12 +951,25 @@ byId('cancelForm').addEventListener('submit', e => {
 
 const behalfDialog = byId('behalfDialog');
 byId('behalfCancel').onclick = () => behalfDialog.close();
+byId('behalfNone').addEventListener('change', e => {
+  const none = e.target.checked;
+  behalfDialog.querySelectorAll('#behalfOpts input').forEach(i => { i.disabled = none; });
+  byId('behalfNoneLabel').hidden = !none;
+  byId('behalfStatus').textContent = '';
+  if (none) byId('behalfNoneText').focus();
+});
 byId('behalfForm').addEventListener('submit', e => {
   e.preventDefault();
   const items = readItems(behalfDialog, 'b_', null);
   const missing = items.filter(i => !i.choice);
   const note = byId('behalfNote').value.trim();
   const status = byId('behalfStatus');
+  const none = byId('behalfNone').checked, noneText = byId('behalfNoneText').value.trim();
+  if (none && !noneText){ status.textContent = 'Say why none of these fit, then save.'; byId('behalfNoneText').focus(); return; }
+  if (none){
+    if (!note){ status.textContent = 'Say where this answer came from, then save.'; byId('behalfNote').focus(); return; }
+    answer(items, true, noneText, 'on_behalf', note); behalfDialog.close(); render(); return;
+  }
   if (missing.length){ status.textContent = `Rate ${names(missing)} before you save.`; behalfDialog.querySelector(`input[name="b_${missing[0].id}"]`).focus(); return; }
   if (!note){ status.textContent = 'Say where this answer came from, then save.'; byId('behalfNote').focus(); return; }
   answer(items, false, '', 'on_behalf', note);
